@@ -1,0 +1,17 @@
+{
+  "module": "m01",
+  "attempts": [
+    {
+      "kind": "quiz",
+      "date": "2026-11-04",
+      "score": 80,
+      "questions": [
+        { "id": "q1", "type": "scenario", "concept": "Stateless API", "question": "Your chat feature gets slower and pricier after ten turns. Why?", "answer": "Every request resends the whole history.", "result": "correct", "explanation": "The API keeps no memory between requests, so the history grows with each turn and you pay for it every time.", "from_weak_points": false },
+        { "id": "q2", "type": "scenario", "concept": "Temperature", "question": "A product manager wants identical answers for the same question. What do you set, and what do you promise?", "answer": "temperature 0, and promise it'll be identical.", "result": "wrong", "explanation": "Temperature 0 makes output much more consistent but providers don't guarantee determinism. Promise 'very similar', and cache answers if they must be identical.", "from_weak_points": false },
+        { "id": "q3", "type": "recall", "concept": "Context window vs max_tokens", "question": "Which limit does max_tokens set?", "answer": "The output length.", "result": "correct", "explanation": "max_tokens caps the generated output; the context window covers input and output together.", "from_weak_points": false },
+        { "id": "q4", "type": "scenario", "concept": "Stateless API", "question": "The model 'forgot' the user's name from yesterday. What's your fix?", "answer": "Store it and send it in the system prompt.", "result": "correct", "explanation": "Memory is your application's job: persist what matters and send it with each request.", "from_weak_points": false },
+        { "id": "q5", "type": "scenario", "concept": "Context window", "question": "Where does a 120k context window run out first in a support bot?", "answer": "In the conversation history and attached documents.", "result": "correct", "explanation": "Long histories and pasted documents fill the window long before the system prompt does.", "from_weak_points": false }
+      ]
+    }
+  ]
+}

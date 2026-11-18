@@ -1,0 +1,18 @@
+{
+  "currency": "USD",
+  "as_of": "YYYY-MM-DD",
+  "source": "https://… (provider pricing page)",
+  "note": "Template. Fill in current per-million-token prices before using; prices change.",
+  "models": {
+    "gpt-6-luna": {
+      "input_per_mtok": 0,
+      "cached_input_per_mtok": 0,
+      "output_per_mtok": 0
+    },
+    "claude-haiku-5-5": {
+      "input_per_mtok": 0,
+      "cached_input_per_mtok": 0,
+      "output_per_mtok": 0
+    }
+  }
+}

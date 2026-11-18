@@ -1,0 +1,7 @@
+# Recommended Codex settings for Respec.
+# Codex only reads this file when the project is marked as trusted.
+# Keep personal preferences in ~/.codex/config.toml; CLI flags
+# (--model, -c) override this file.
+
+model = "gpt-6.1-sol"
+model_reasoning_effort = "medium"

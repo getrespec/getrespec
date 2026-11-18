@@ -1,0 +1,8 @@
+# Learner-specific data (CV, progress, assignments, API keys)
+learner/
+.env
+node_modules/
+.DS_Store
+.claude/settings.local.json
+# Local tool caches
+.serena/

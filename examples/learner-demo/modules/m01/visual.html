@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Context window</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; margin: 16px; color: #142033; background: #fff; }
+  .bar { display: flex; height: 36px; border: 1.5px solid #142033; border-radius: 6px; overflow: hidden; margin: 12px 0; }
+  .seg { display: grid; place-items: center; font-size: 12px; color: #fff; white-space: nowrap; overflow: hidden; }
+  .history { background: #2f45c8; } .prompt { background: #5468e0; } .output { background: #e3a008; color: #142033; }
+  .free { background: repeating-linear-gradient(45deg, #fff, #fff 6px, #edf1f3 6px, #edf1f3 12px); color: #4a5a6c; }
+  label { display: block; margin-top: 8px; }
+  @media (prefers-color-scheme: dark) { body { background: #152033; color: #e7edf3; } .bar { border-color: #e7edf3; } .free { background: #0e1624; color: #a5b3c2; } }
+  @media (prefers-reduced-motion: no-preference) { .seg { transition: flex-basis .25s; } }
+</style>
+</head>
+<body>
+  <p>Move the slider to add conversation turns. The window is fixed; history eats into it.</p>
+  <label for="turns">Turns: <output id="out">1</output></label>
+  <input id="turns" type="range" min="1" max="12" value="1">
+  <div class="bar" role="img" id="bar" aria-label=""></div>
+  <p id="note"></p>
+<script>
+  const WINDOW = 8000, PROMPT = 600, OUTPUT = 1000, PER_TURN = 700;
+  const bar = document.getElementById("bar"), note = document.getElementById("note");
+  function draw(t) {
+    const history = Math.min((t - 1) * PER_TURN, WINDOW);
+    const used = Math.min(history + PROMPT + OUTPUT, WINDOW);
+    const free = WINDOW - used;
+    const segs = [["history", history, "History"], ["prompt", PROMPT, "Prompt"], ["output", OUTPUT, "max_tokens"], ["free", free, "Free"]];
+    bar.innerHTML = segs.filter(s => s[1] > 0).map(([c, v, l]) => `<div class="seg ${c}" style="flex-basis:${v / WINDOW * 100}%">${l}</div>`).join("");
+    bar.setAttribute("aria-label", `History ${history} tokens, prompt ${PROMPT}, output budget ${OUTPUT}, free ${free} of ${WINDOW}`);
+    note.textContent = free === 0 ? "The window is full: old turns must be dropped or summarized." : `${free} tokens left of ${WINDOW}.`;
+    document.getElementById("out").textContent = t;
+  }
+  document.getElementById("turns").addEventListener("input", e => draw(+e.target.value));
+  draw(1);
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "module": "m03",
+  "attempts": [
+    {
+      "date": "2026-11-12",
+      "task": "assignment.md",
+      "total": 62,
+      "passed": false,
+      "rubric": [
+        { "item": "Answers only from the policy", "weight": 35, "score": 24, "comment": "Grounding works for covered questions, fails for gaps.", "evidence": [{ "file": "work/cases.md", "line": 4, "note": "Case 2: invented a yes" }] },
+        { "item": "Says \"I don't know\" when it should", "weight": 25, "score": 8, "comment": "Declined 1 of 4 out-of-policy questions.", "evidence": [{ "file": "work/cases.md", "line": 6, "note": "Case 4 answered instead of declining" }, { "file": "work/cases.md", "line": 8, "note": "Case 6 answered instead of declining" }] },
+        { "item": "Consistent format", "weight": 20, "score": 16, "comment": "Mostly bullets.", "evidence": [] },
+        { "item": "Reasoning and understanding", "weight": 20, "score": 14, "comment": "Relied on the instruction alone to make it decline.", "evidence": [] }
+      ],
+      "strengths": ["Policy is clearly delimited"],
+      "gaps": ["No examples of declining", "Instruction alone doesn't stop invented answers"],
+      "defense": [{ "question": "Why do you think it invented a rule for case 2?", "answer": "It probably filled the gap with what most shops do." }],
+      "usage": { "requests": 21, "input_tokens": 31840, "output_tokens": 8120, "latency_p50_ms": 2290 },
+      "next_step": "Add 'I don't know' examples and rerun the cases."
+    },
+    {
+      "date": "2026-11-13",
+      "task": "assignment-remedial-1.md",
+      "total": 74,
+      "passed": true,
+      "rubric": [
+        { "item": "Answers only from the policy", "weight": 35, "score": 30, "comment": "No invented rules in 10 cases.", "evidence": [{ "file": "work/prompt.md", "line": 1, "note": "ONLY from the policy, with tags" }] },
+        { "item": "Says \"I don't know\" when it should", "weight": 25, "score": 22, "comment": "4 of 4 declined correctly.", "evidence": [{ "file": "work/prompt.md", "line": 10, "note": "Declining examples" }] },
+        { "item": "Consistent format", "weight": 20, "score": 8, "comment": "Case 10 broke the three-bullet limit.", "evidence": [{ "file": "work/cases.md", "line": 12, "note": "Third bullet added" }] },
+        { "item": "Reasoning and understanding", "weight": 20, "score": 14, "comment": "Explained why examples beat instructions.", "evidence": [] }
+      ],
+      "strengths": ["Declining examples fixed the main problem", "Kept a before/after table"],
+      "gaps": ["Format limit not enforced"],
+      "defense": [{ "question": "Why did the examples work when the instruction didn't?", "answer": "The model copies what it sees more than what it's told." }],
+      "usage": { "requests": 13, "input_tokens": 19407, "output_tokens": 5290, "latency_p50_ms": 2310 },
+      "next_step": "Validate the output format in code next module (structured output)."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "module": "m02",
+  "attempts": [
+    {
+      "date": "2026-11-08",
+      "task": "assignment.md",
+      "total": 86,
+      "passed": true,
+      "rubric": [
+        { "item": "Key stays on the server", "weight": 20, "score": 20, "comment": "The client only talks to /api/chat.", "evidence": [{ "file": "work/src/route.ts", "line": 3, "note": "Client created on the server from env" }] },
+        { "item": "Streaming works; first token shows quickly", "weight": 25, "score": 23, "comment": "Median time to first token 354 ms in the proxy log.", "evidence": [{ "file": "work/src/route.ts", "line": 20, "note": "Chunks are enqueued as they arrive" }] },
+        { "item": "Stop and retry behave correctly", "weight": 20, "score": 14, "comment": "Stop works and aborts upstream; retry sends the wrong message.", "evidence": [{ "file": "work/src/route.ts", "line": 27, "note": "cancel() aborts the upstream stream" }, { "file": "work/src/Chat.tsx", "line": 40, "note": "Retry sends the literal string \"retry\"" }] },
+        { "item": "Accessible status updates", "weight": 15, "score": 13, "comment": "Polite live region for status; the answer region has no label.", "evidence": [{ "file": "work/src/Chat.tsx", "line": 37, "note": "aria-live=\"polite\" status line" }] },
+        { "item": "Reasoning and understanding", "weight": 20, "score": 16, "comment": "Explained why stopped isn't an error; unsure how to resume after a dropped connection.", "evidence": [] }
+      ],
+      "strengths": ["Clean server/client split", "cancel() aborts the upstream call", "Status changes are announced politely"],
+      "gaps": ["Retry doesn't resend the last question", "The answer region isn't labelled"],
+      "defense": [
+        { "question": "Why isn't 'stopped' an error?", "answer": "Because the user chose it, and the partial answer is still useful." },
+        { "question": "What would you do if the connection dropped mid-answer?", "answer": "Show an error and let them retry; wasn't sure if I could resume." }
+      ],
+      "usage": { "requests": 18, "input_tokens": 14033, "output_tokens": 4414, "latency_p50_ms": 1417 },
+      "next_step": "Keep the last question in state and reuse it on retry."
+    }
+  ]
+}

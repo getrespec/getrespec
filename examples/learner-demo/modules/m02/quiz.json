@@ -1,0 +1,15 @@
+{
+  "module": "m02",
+  "attempts": [
+    {
+      "kind": "quiz",
+      "date": "2026-11-06",
+      "score": 100,
+      "questions": [
+        { "id": "q1", "type": "scenario", "concept": "API key handling", "question": "Where does the API key live in a Next.js app?", "answer": "In a Route Handler on the server, read from env.", "result": "correct", "explanation": "Anything in client code is public; the server holds the key and proxies the call.", "from_weak_points": false },
+        { "id": "q2", "type": "scenario", "concept": "Stream end states", "question": "The user clicks Stop halfway. What do you show?", "answer": "The partial answer, marked as stopped, with a regenerate button.", "result": "correct", "explanation": "Stopped is a normal end state, not an error; keep what arrived.", "from_weak_points": false },
+        { "id": "q3", "type": "scenario", "concept": "When to stream", "question": "Should a JSON extraction endpoint stream?", "answer": "No, I need the whole object before I can validate it.", "result": "correct", "explanation": "Streaming helps people read; a parser needs the complete object.", "from_weak_points": true }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,438 @@
+{
+  "schema_version": 2,
+  "learner": {
+    "name": "Sample Learner",
+    "current_role": "Senior Frontend Developer",
+    "years": 12,
+    "weekly_hours": 8,
+    "target_market": "Remote (EU/US) + home country",
+    "english": "fluent",
+    "language": "en",
+    "form_of_address": "informal"
+  },
+  "placement": {
+    "date": "2026-11-01",
+    "known": [
+      "Consuming REST APIs",
+      "Streaming UI state",
+      "TypeScript"
+    ],
+    "partial": [
+      "Tokens and context",
+      "Prompt design"
+    ],
+    "unknown": [
+      "RAG",
+      "Embeddings",
+      "Evals",
+      "Tool use",
+      "Python"
+    ]
+  },
+  "target_role": {
+    "id": "ai-engineer",
+    "title": "Applied AI Engineer",
+    "chosen_at": "2026-11-02",
+    "reason": "I want to use my interface experience while learning the model layer."
+  },
+  "curriculum": {
+    "created_at": "2026-11-02",
+    "phases": [
+      {
+        "id": "f1",
+        "title": "Foundations"
+      },
+      {
+        "id": "f2",
+        "title": "Core skills"
+      },
+      {
+        "id": "f3",
+        "title": "Production"
+      },
+      {
+        "id": "f4",
+        "title": "Capstone and job readiness"
+      }
+    ],
+    "skipped": [
+      {
+        "topic": "HTTP and REST basics",
+        "reason": "Marked as known in placement"
+      }
+    ],
+    "modules": [
+      {
+        "id": "m01",
+        "title": "How LLMs work: tokens, context, temperature",
+        "phase": "f1",
+        "type": "theory",
+        "objectives": [
+          "Can explain tokens and the context window",
+          "Can predict how temperature affects output"
+        ],
+        "why": "A prerequisite in every AI Engineer posting.",
+        "est_hours": 3,
+        "resources": [
+          {
+            "title": "Anthropic Academy",
+            "url": "https://anthropic.skilljar.com"
+          }
+        ],
+        "status": "completed",
+        "stage": "done",
+        "score": {
+          "quiz": 80,
+          "assignment": null
+        },
+        "attempts": 1,
+        "started_at": "2026-11-02",
+        "completed_at": "2026-11-04"
+      },
+      {
+        "id": "m02",
+        "title": "First LLM API integration and streaming",
+        "phase": "f1",
+        "type": "mixed",
+        "objectives": [
+          "Can stream a response from an LLM API and show it in the UI",
+          "Can cancel a request and handle errors"
+        ],
+        "why": "Core work in product-side AI roles.",
+        "est_hours": 5,
+        "resources": [
+          {
+            "title": "AI SDK",
+            "url": "https://ai-sdk.dev"
+          }
+        ],
+        "status": "completed",
+        "stage": "done",
+        "score": {
+          "quiz": 100,
+          "assignment": 86
+        },
+        "attempts": 1,
+        "started_at": "2026-11-04",
+        "completed_at": "2026-11-08"
+      },
+      {
+        "id": "m03",
+        "title": "Prompt and context design",
+        "phase": "f1",
+        "type": "mixed",
+        "objectives": [
+          "Can design a system prompt and examples for a task",
+          "Can decide what goes into the context and what doesn't"
+        ],
+        "why": "Listed in postings as prompt/context engineering.",
+        "est_hours": 4,
+        "resources": [
+          {
+            "title": "DeepLearning.AI Short Courses",
+            "url": "https://www.deeplearning.ai/short-courses/"
+          }
+        ],
+        "status": "completed",
+        "stage": "done",
+        "score": {
+          "quiz": 60,
+          "assignment": 74
+        },
+        "attempts": 2,
+        "started_at": "2026-11-08",
+        "completed_at": "2026-11-13"
+      },
+      {
+        "id": "m04",
+        "title": "Structured output and schema validation",
+        "phase": "f1",
+        "type": "practice",
+        "objectives": [
+          "Can get schema-conforming JSON from a model",
+          "Can catch invalid output and retry"
+        ],
+        "why": "The standard way to turn AI output into application data.",
+        "est_hours": 4,
+        "resources": [
+          {
+            "title": "AI SDK",
+            "url": "https://ai-sdk.dev"
+          }
+        ],
+        "status": "active",
+        "stage": "quiz",
+        "score": {
+          "quiz": null,
+          "assignment": null
+        },
+        "attempts": 0,
+        "started_at": "2026-11-14",
+        "completed_at": null
+      },
+      {
+        "id": "m05",
+        "title": "Tool use and function calling",
+        "phase": "f2",
+        "type": "practice",
+        "objectives": [
+          "Can define tools for a model and execute its calls safely"
+        ],
+        "why": "The foundation of agents.",
+        "est_hours": 5,
+        "resources": [],
+        "status": "locked",
+        "stage": null,
+        "score": {
+          "quiz": null,
+          "assignment": null
+        },
+        "attempts": 0,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "id": "m06",
+        "title": "Embeddings and vector search",
+        "phase": "f2",
+        "type": "mixed",
+        "objectives": [
+          "Can generate embeddings and run a similarity search"
+        ],
+        "why": "A prerequisite for RAG.",
+        "est_hours": 4,
+        "resources": [],
+        "status": "locked",
+        "stage": null,
+        "score": {
+          "quiz": null,
+          "assignment": null
+        },
+        "attempts": 0,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "id": "m07",
+        "title": "RAG pipeline",
+        "phase": "f2",
+        "type": "practice",
+        "objectives": [
+          "Can build Q&A over their own documents"
+        ],
+        "why": "The skill AI Engineer postings ask for most.",
+        "est_hours": 8,
+        "resources": [],
+        "status": "locked",
+        "stage": null,
+        "score": {
+          "quiz": null,
+          "assignment": null
+        },
+        "attempts": 0,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "id": "m08",
+        "title": "The agent loop and orchestration",
+        "phase": "f2",
+        "type": "practice",
+        "objectives": [
+          "Can build a multi-step agent"
+        ],
+        "why": "Central to the 2026 AI Engineer definition.",
+        "est_hours": 8,
+        "resources": [],
+        "status": "locked",
+        "stage": null,
+        "score": {
+          "quiz": null,
+          "assignment": null
+        },
+        "attempts": 0,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "id": "m09",
+        "title": "Evals: testing non-deterministic output",
+        "phase": "f2",
+        "type": "practice",
+        "objectives": [
+          "Can write an eval set and measure prompt changes"
+        ],
+        "why": "Quality assurance for AI in production.",
+        "est_hours": 6,
+        "resources": [],
+        "status": "locked",
+        "stage": null,
+        "score": {
+          "quiz": null,
+          "assignment": null
+        },
+        "attempts": 0,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "id": "m10",
+        "title": "Cost, latency, and caching",
+        "phase": "f3",
+        "type": "mixed",
+        "objectives": [
+          "Can measure and reduce per-request cost and latency"
+        ],
+        "why": "The basis of production decisions.",
+        "est_hours": 4,
+        "resources": [],
+        "status": "locked",
+        "stage": null,
+        "score": {
+          "quiz": null,
+          "assignment": null
+        },
+        "attempts": 0,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "id": "m11",
+        "title": "Security: prompt injection and safe rendering",
+        "phase": "f3",
+        "type": "mixed",
+        "objectives": [
+          "Can mitigate the OWASP LLM risks"
+        ],
+        "why": "Mandatory for every AI product.",
+        "est_hours": 4,
+        "resources": [],
+        "status": "locked",
+        "stage": null,
+        "score": {
+          "quiz": null,
+          "assignment": null
+        },
+        "attempts": 0,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "id": "m12",
+        "title": "Observability and deployment",
+        "phase": "f3",
+        "type": "practice",
+        "objectives": [
+          "Can ship an AI feature with monitoring"
+        ],
+        "why": "Taking the product from demo to production.",
+        "est_hours": 5,
+        "resources": [],
+        "status": "locked",
+        "stage": null,
+        "score": {
+          "quiz": null,
+          "assignment": null
+        },
+        "attempts": 0,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "id": "m13",
+        "title": "Capstone project",
+        "phase": "f4",
+        "type": "capstone",
+        "objectives": [
+          "Can ship a product with RAG, tool use, and evals"
+        ],
+        "why": "Proof to show employers.",
+        "est_hours": 20,
+        "resources": [],
+        "status": "locked",
+        "stage": null,
+        "score": {
+          "quiz": null,
+          "assignment": null
+        },
+        "attempts": 0,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "id": "m14",
+        "title": "Portfolio, CV, and interview prep",
+        "phase": "f4",
+        "type": "mixed",
+        "objectives": [
+          "Can prepare a CV and portfolio for the new role"
+        ],
+        "why": "The last step of the transition.",
+        "est_hours": 4,
+        "resources": [],
+        "status": "locked",
+        "stage": null,
+        "score": {
+          "quiz": null,
+          "assignment": null
+        },
+        "attempts": 0,
+        "started_at": null,
+        "completed_at": null
+      }
+    ]
+  },
+  "weak_points": [
+    {
+      "concept": "Temperature 0 doesn't guarantee identical answers",
+      "module": "m01",
+      "added_at": "2026-11-04",
+      "correct_count": 1
+    },
+    {
+      "concept": "Order and delimiters in the context",
+      "module": "m03",
+      "added_at": "2026-11-11",
+      "correct_count": 0
+    }
+  ],
+  "history": [
+    {
+      "date": "2026-11-01",
+      "event": "Profile created, placement completed"
+    },
+    {
+      "date": "2026-11-02",
+      "event": "Target role chosen: Applied AI Engineer"
+    },
+    {
+      "date": "2026-11-02",
+      "event": "Curriculum created (14 modules)"
+    },
+    {
+      "date": "2026-11-04",
+      "event": "m01 completed (quiz 80%)"
+    },
+    {
+      "date": "2026-11-08",
+      "event": "m02 completed (assignment 86/100)"
+    },
+    {
+      "date": "2026-11-11",
+      "event": "m03 quiz 60%, review done"
+    },
+    {
+      "date": "2026-11-12",
+      "event": "m03 assignment 62/100, remedial task given"
+    },
+    {
+      "date": "2026-11-13",
+      "event": "m03 completed (assignment 74/100, 2nd attempt)"
+    },
+    {
+      "date": "2026-11-14",
+      "event": "m04 started"
+    }
+  ],
+  "notes": ""
+}
