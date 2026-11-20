@@ -8,7 +8,16 @@
     "target_market": "Remote (EU/US) + home country",
     "english": "fluent",
     "language": "en",
-    "form_of_address": "informal"
+    "form_of_address": "informal",
+    "preferences": {
+      "goal": "new-role",
+      "scope": "job-ready",
+      "example_context": "Support chat for an online bookstore",
+      "capstone_context": "Support chat for an online bookstore",
+      "lesson_order": "scenario-first",
+      "llm_access": "openai",
+      "asked_at": "2026-11-02"
+    }
   },
   "placement": {
     "date": "2026-11-01",
@@ -55,13 +64,34 @@
         "title": "Capstone and job readiness"
       }
     ],
-    "skipped": [
-      {
-        "topic": "HTTP and REST basics",
-        "reason": "Marked as known in placement"
-      }
-    ],
     "modules": [
+      {
+        "id": "m00",
+        "title": "Role map: what an Applied AI Engineer actually does",
+        "phase": "f1",
+        "type": "theory",
+        "objectives": [
+          "Can describe the typical weekly tasks of the role and what each delivers",
+          "Can map a job posting's requirements to skills and modules"
+        ],
+        "why": "The title covers very different jobs; knowing the real work makes every later module easier to place.",
+        "est_hours": 1,
+        "resources": [
+          {
+            "title": "GreatFrontEnd – Frontend Developer to AI Engineer",
+            "url": "https://www.greatfrontend.com/blog/frontend-developer-to-ai-engineer"
+          }
+        ],
+        "status": "completed",
+        "stage": "done",
+        "score": {
+          "quiz": 100,
+          "assignment": null
+        },
+        "attempts": 1,
+        "started_at": "2026-11-02",
+        "completed_at": "2026-11-03"
+      },
       {
         "id": "m01",
         "title": "How LLMs work: tokens, context, temperature",
@@ -86,7 +116,7 @@
           "assignment": null
         },
         "attempts": 1,
-        "started_at": "2026-11-02",
+        "started_at": "2026-11-03",
         "completed_at": "2026-11-04"
       },
       {
@@ -380,6 +410,139 @@
         "started_at": null,
         "completed_at": null
       }
+    ],
+    "coverage": [
+      {
+        "skill": "Tokens, context window, temperature",
+        "status": "covered",
+        "modules": [
+          "m01"
+        ],
+        "note": "Placement: partially known; one short theory module"
+      },
+      {
+        "skill": "LLM API integration and streaming",
+        "status": "covered",
+        "modules": [
+          "m02"
+        ],
+        "note": "In almost every posting"
+      },
+      {
+        "skill": "Prompt and context design",
+        "status": "covered",
+        "modules": [
+          "m03"
+        ],
+        "note": "Placement: partially known; accelerated"
+      },
+      {
+        "skill": "Structured output",
+        "status": "covered",
+        "modules": [
+          "m04"
+        ],
+        "note": "Listed in the role's typical skills"
+      },
+      {
+        "skill": "Tool use",
+        "status": "covered",
+        "modules": [
+          "m05"
+        ],
+        "note": "Listed in the role's typical skills"
+      },
+      {
+        "skill": "Embeddings and vector search",
+        "status": "covered",
+        "modules": [
+          "m06"
+        ],
+        "note": "Needed for RAG"
+      },
+      {
+        "skill": "RAG",
+        "status": "covered",
+        "modules": [
+          "m07"
+        ],
+        "note": "One of the skills LinkedIn lists most for this role"
+      },
+      {
+        "skill": "Agent loop and orchestration",
+        "status": "covered",
+        "modules": [
+          "m08"
+        ],
+        "note": "Part of the 2026 expectation (ODSC)"
+      },
+      {
+        "skill": "Evals",
+        "status": "covered",
+        "modules": [
+          "m09"
+        ],
+        "note": "Part of the 2026 expectation (ODSC)"
+      },
+      {
+        "skill": "Cost, latency, prompt caching",
+        "status": "covered",
+        "modules": [
+          "m10"
+        ],
+        "note": "Listed in the role's typical skills"
+      },
+      {
+        "skill": "Prompt injection and safe rendering",
+        "status": "covered",
+        "modules": [
+          "m11"
+        ],
+        "note": "OWASP Top 10 for LLM Applications 2026: LLM01 (prompt injection) and LLM10 (improper output handling)"
+      },
+      {
+        "skill": "Observability and deployment",
+        "status": "covered",
+        "modules": [
+          "m12"
+        ],
+        "note": "Part of the 2026 expectation (ODSC)"
+      },
+      {
+        "skill": "Consuming REST APIs",
+        "status": "known",
+        "note": "Placement: knows"
+      },
+      {
+        "skill": "Streaming UI state",
+        "status": "known",
+        "note": "Placement: knows"
+      },
+      {
+        "skill": "TypeScript",
+        "status": "known",
+        "note": "Placement: knows; product-side roles accept it"
+      },
+      {
+        "skill": "Python",
+        "status": "optional",
+        "note": "Some postings require it; product-side roles accept TypeScript"
+      },
+      {
+        "skill": "LangChain",
+        "status": "optional",
+        "note": "You'll learn the patterns directly; add it if a posting you target asks for it"
+      },
+      {
+        "skill": "Fine-tuning",
+        "status": "optional",
+        "note": "Worth it only after prompting and RAG fall short"
+      },
+      {
+        "skill": "PyTorch",
+        "status": "optional",
+        "note": "Mostly in ML-heavy postings, which aren't the target"
+      }
     ]
   },
   "weak_points": [
@@ -407,7 +570,11 @@
     },
     {
       "date": "2026-11-02",
-      "event": "Curriculum created (14 modules)"
+      "event": "Curriculum created (role map + 14 modules)"
+    },
+    {
+      "date": "2026-11-03",
+      "event": "m00 completed (quiz 100%); most interested in evals"
     },
     {
       "date": "2026-11-04",

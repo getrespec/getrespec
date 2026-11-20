@@ -16,6 +16,7 @@ import { dirname, join, resolve, relative, extname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { loadUsage, loadPricing, summarize } from "./lib/usage.mjs";
+import { compareVersions, currentVersion, fetchLatestRelease, readCache, status as versionStatus, updatesDisabled } from "./lib/version.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
@@ -154,6 +155,15 @@ function api(req, res, url) {
     return send(res, 200, state);
   }
 
+  if (p === "/api/version") {
+    // The newest of: what this server fetched at startup, and what the agent's last check cached.
+    const cache = readCache(learnerDir);
+    const known = [latestRelease, cache?.current === VERSION ? cache.latest : null].filter(Boolean);
+    const latest = known.sort((a, b) => compareVersions(b.version, a.version))[0] ?? null;
+    const s = versionStatus(VERSION, latest, latestRelease ? latestCheckedAt : cache?.checked_at);
+    return send(res, 200, { ...s, latest: s.latest && { version: s.latest.version, url: s.latest.url }, disabled: updatesDisabled() });
+  }
+
   if (p === "/api/profile") {
     const pp = join(learnerDir, "profile.md");
     if (!existsSync(pp)) return send(res, 404, { error: "no_profile" });
@@ -210,8 +220,24 @@ function rawFile(res, url) {
     "x-content-type-options": "nosniff",
     "cache-control": "no-store",
   });
-  createReadStream(abs).pipe(res);
+  if (extname(abs).toLowerCase() !== ".html") return createReadStream(abs).pipe(res);
+  // Lets the dashboard size the iframe to the page: report the content height to the parent.
+  // The frame stays sandboxed (no same-origin access); this only sends a number.
+  res.end(readFileSync(abs, "utf8") + FRAME_HEIGHT_SCRIPT);
 }
+
+const FRAME_HEIGHT_SCRIPT = `
+<script>(() => {
+  const send = () => {
+    const b = document.body;
+    if (!b || !innerWidth) return; // not laid out yet
+    const h = b.getBoundingClientRect().bottom + parseFloat(getComputedStyle(b).marginBottom || "0") + scrollY;
+    parent.postMessage({ respecHeight: Math.ceil(h) }, "*");
+  };
+  addEventListener("DOMContentLoaded", () => new ResizeObserver(send).observe(document.body));
+  addEventListener("load", () => (send(), setTimeout(send, 300)));
+})();</script>
+`;
 
 function staticFile(res, url) {
   if (!existsSync(join(distDir, "index.html"))) {
@@ -223,7 +249,8 @@ function staticFile(res, url) {
   const isIndex = abs.endsWith("index.html");
   res.writeHead(200, {
     "content-type": TYPES[extname(abs)] ?? "application/octet-stream",
-    "cache-control": isIndex ? "no-store" : "public, max-age=31536000, immutable",
+    // Built files keep the same names across builds (dashboard/vite.config.ts), so the browser must revalidate.
+    "cache-control": isIndex ? "no-store" : "no-cache",
     "x-content-type-options": "nosniff",
     "referrer-policy": "no-referrer",
   });
@@ -248,9 +275,19 @@ server.on("error", (e) => {
   process.exit(1);
 });
 
+// Version and update check. The check runs once at startup, in memory only (the server writes no files).
+const VERSION = currentVersion();
+let latestRelease = null;
+let latestCheckedAt = null;
+if (!updatesDisabled())
+  fetchLatestRelease().then((r) => {
+    latestRelease = r;
+    latestCheckedAt = new Date().toISOString();
+  });
+
 server.listen(PORT, HOST, () => {
   const link = `http://127.0.0.1:${PORT}`;
-  console.log(`Respec dashboard: ${link}`);
+  console.log(`Respec ${VERSION} dashboard: ${link}`);
   console.log(`Reading ${relative(root, learnerDir) || learnerDir} (read-only). Press Ctrl+C to stop.`);
   if (!existsSync(join(learnerDir, "state.json"))) console.log("No state.json yet; run /respec start in your agent.");
   if (args.includes("--open")) {

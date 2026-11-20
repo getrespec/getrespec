@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { State } from "./types";
+import type { State, VersionInfo } from "./types";
 import { LiveContext, useApi, useLiveConnection } from "./api";
 import { I18nContext, stringsFor, useT } from "./i18n";
 import { progress, nextLevelHint } from "./lib";
@@ -45,6 +45,7 @@ function Shell({ state, route, connected, notice }: { state: State | null; route
   const { t } = useT();
   const p = state ? progress(state) : null;
   const level = p ? t.levels[p.levelIdx] : null;
+  const ver = useApi<VersionInfo>("/api/version").data;
 
   // Move focus to the main heading after navigating, so screen-reader and keyboard users land on the new page.
   const first = useRef(true);
@@ -89,6 +90,18 @@ function Shell({ state, route, connected, notice }: { state: State | null; route
         </div>
       </header>
       <main id="main" tabIndex={-1} className="wrap">
+        {ver?.update_available && ver.latest && route.page === "overview" && (
+          <p className="update-note" role="status">
+            <span>
+              <strong>{t.updateTitle(ver.latest.version)}</strong> {t.updateBody(ver.current)} <Cmd>/respec update</Cmd>
+            </span>
+            {ver.latest.url && (
+              <a href={ver.latest.url} target="_blank" rel="noreferrer noopener">
+                {t.whatsNew}
+              </a>
+            )}
+          </p>
+        )}
         {state && p && route.page === "overview" && (
           <div className="hero">
             <div>
@@ -120,6 +133,21 @@ function Shell({ state, route, connected, notice }: { state: State | null; route
         {route.page === "profile" && <Profile />}
         {notice}
       </main>
+      {ver && (
+        <footer className="wrap foot">
+          <span>Respec {ver.current}</span>
+          {ver.update_available && ver.latest ? (
+            <span>
+              {t.updateShort(ver.latest.version)} <Cmd>/respec update</Cmd>
+            </span>
+          ) : ver.checked_at && !ver.disabled ? (
+            <span>{t.upToDate}</span>
+          ) : null}
+          <a href="https://github.com/getrespec/getrespec/blob/main/CHANGELOG.md" target="_blank" rel="noreferrer noopener">
+            {t.changelog}
+          </a>
+        </footer>
+      )}
     </>
   );
 }

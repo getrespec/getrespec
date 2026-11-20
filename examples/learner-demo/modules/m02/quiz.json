@@ -6,9 +6,46 @@
       "date": "2026-11-06",
       "score": 100,
       "questions": [
-        { "id": "q1", "type": "scenario", "concept": "API key handling", "question": "Where does the API key live in a Next.js app?", "answer": "In a Route Handler on the server, read from env.", "result": "correct", "explanation": "Anything in client code is public; the server holds the key and proxies the call.", "from_weak_points": false },
-        { "id": "q2", "type": "scenario", "concept": "Stream end states", "question": "The user clicks Stop halfway. What do you show?", "answer": "The partial answer, marked as stopped, with a regenerate button.", "result": "correct", "explanation": "Stopped is a normal end state, not an error; keep what arrived.", "from_weak_points": false },
-        { "id": "q3", "type": "scenario", "concept": "When to stream", "question": "Should a JSON extraction endpoint stream?", "answer": "No, I need the whole object before I can validate it.", "result": "correct", "explanation": "Streaming helps people read; a parser needs the complete object.", "from_weak_points": true }
+        {
+          "id": "q1",
+          "type": "scenario",
+          "concept": "API key handling",
+          "question": "The order help box needs the model. Where does the API key live in the Next.js app?",
+          "answer": "In a Route Handler on the server, read from env.",
+          "result": "correct",
+          "explanation": "Anything in client code is public; the server holds the key and calls the model for the browser.",
+          "from_weak_points": false
+        },
+        {
+          "id": "q2",
+          "type": "scenario",
+          "concept": "Stream end states",
+          "question": "The customer clicks Stop halfway through an answer. What does the help box show?",
+          "answer": "The partial answer, marked as stopped, with a regenerate button.",
+          "result": "correct",
+          "explanation": "Stopped is a normal way to end, not an error; keep what arrived.",
+          "from_weak_points": false
+        },
+        {
+          "id": "q3",
+          "type": "scenario",
+          "concept": "When to stream",
+          "question": "The nightly job that extracts order details from support emails as JSON: should it stream?",
+          "answer": "No, I need the whole object before I can validate it.",
+          "result": "correct",
+          "explanation": "Streaming helps people read; a parser needs the complete object.",
+          "from_weak_points": false
+        },
+        {
+          "id": "q4",
+          "type": "scenario",
+          "concept": "Temperature 0 doesn't guarantee identical answers",
+          "question": "The order-status answer and the new 'suggest a gift message' button share one endpoint. What temperature does each get, and can you promise the status answer is identical every time?",
+          "answer": "Low for the status answer, higher for gift ideas. I can promise consistent, not identical; if it must be identical, store it.",
+          "result": "correct",
+          "explanation": "Right: low temperature makes answers consistent but not guaranteed identical. Review of a weak spot from m01.",
+          "from_weak_points": true
+        }
       ]
     }
   ]

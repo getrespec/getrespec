@@ -3,7 +3,7 @@ import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import http from "node:http";
 import { spawn } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, cpSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, cpSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -41,6 +41,7 @@ const json = async (path) => {
 before(async () => {
   server = spawn(process.execPath, [join(root, "scripts", "serve.mjs"), "--port", String(port), "--learner", learner, "--dist", dist], {
     stdio: ["ignore", "pipe", "inherit"],
+    env: { ...process.env, RESPEC_NO_UPDATE_CHECK: "1" },
   });
   await new Promise((r) => server.stdout.once("data", r));
 });
@@ -142,4 +143,13 @@ test("old schema is reported, not served", async () => {
   );
   s2.kill();
   assert.equal(r, 409);
+});
+
+test("reports the installed version", async () => {
+  const r = await json("/api/version");
+  assert.equal(r.status, 200);
+  const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+  assert.equal(r.data.current, pkg.version);
+  assert.equal(r.data.update_available, false);
+  assert.equal(r.data.disabled, true);
 });

@@ -6,11 +6,56 @@
       "date": "2026-11-11",
       "score": 60,
       "questions": [
-        { "id": "q1", "type": "scenario", "concept": "Few-shot examples", "question": "Answers keep coming back as paragraphs instead of bullet lists. Fix?", "answer": "Add \"use bullet points\" in caps.", "result": "wrong", "explanation": "Show two short examples in the target format; examples steer format more reliably than emphasis.", "from_weak_points": false },
-        { "id": "q2", "type": "scenario", "concept": "Grounding", "question": "A support bot invents refund rules. Fix?", "answer": "Put the policy text in context and tell it to answer only from it.", "result": "correct", "explanation": "Grounding the answer in provided text is the first line of defense against invented facts.", "from_weak_points": false },
-        { "id": "q3", "type": "scenario", "concept": "Context structure", "question": "Where do you put a long reference document: system prompt or user message?", "answer": "Doesn't matter.", "result": "wrong", "explanation": "Keep stable instructions in the system prompt and the document in a clearly delimited block; order and delimiters change what the model attends to.", "from_weak_points": false },
-        { "id": "q4", "type": "recall", "concept": "System prompts", "question": "What's a sign your system prompt is too long?", "answer": "Rules contradict each other and nobody tests them.", "result": "correct", "explanation": "Untested rules pile up; evals keep a prompt honest.", "from_weak_points": false },
-        { "id": "q5", "type": "recall", "concept": "Context window vs max_tokens", "question": "Which one caps the answer length?", "answer": "max_tokens.", "result": "correct", "explanation": "max_tokens limits output; the window limits input plus output.", "from_weak_points": true }
+        {
+          "id": "q1",
+          "type": "scenario",
+          "concept": "Few-shot examples",
+          "question": "The bookstore bot's answers keep coming back as long paragraphs instead of short bullet lists. Fix?",
+          "answer": "Add \"USE BULLET POINTS\" in capitals.",
+          "result": "wrong",
+          "explanation": "Show two short examples in the target format; examples steer format more reliably than emphasis.",
+          "from_weak_points": false
+        },
+        {
+          "id": "q2",
+          "type": "scenario",
+          "concept": "Grounding",
+          "question": "The bot tells a customer signed first editions can be returned within 60 days. The policy doesn't mention them. Fix?",
+          "answer": "Put the policy text in context and tell it to answer only from it.",
+          "result": "correct",
+          "explanation": "Grounding the answer in the text you provide is the first defence against invented rules.",
+          "from_weak_points": false
+        },
+        {
+          "id": "q3",
+          "type": "scenario",
+          "concept": "Order and delimiters in the context",
+          "question": "Where do you put the five-paragraph returns policy: in the system prompt or in the customer's message?",
+          "answer": "Doesn't matter.",
+          "result": "wrong",
+          "explanation": "Keep the rules and the policy in the system prompt, the policy in its own delimited block; order and delimiters change how the model reads it.",
+          "from_weak_points": false
+        },
+        {
+          "id": "q4",
+          "type": "recall",
+          "concept": "System prompts",
+          "question": "What's a sign your system prompt is too long?",
+          "answer": "Rules contradict each other and nobody tests them.",
+          "result": "correct",
+          "explanation": "Untested rules pile up; test cases (and later evals) keep a prompt honest.",
+          "from_weak_points": false
+        },
+        {
+          "id": "q5",
+          "type": "recall",
+          "concept": "Context window vs max_tokens",
+          "question": "Context window vs max_tokens again: which one caps the length of the bot's answer?",
+          "answer": "max_tokens.",
+          "result": "correct",
+          "explanation": "max_tokens limits the answer; the window limits input and answer together.",
+          "from_weak_points": false
+        }
       ]
     },
     {
@@ -18,8 +63,26 @@
       "date": "2026-11-12",
       "score": 100,
       "questions": [
-        { "id": "r1", "type": "scenario", "concept": "Few-shot examples", "question": "Three examples all end with \"Hope this helps!\". What happens?", "answer": "Most answers will end that way too.", "result": "correct", "explanation": "The model copies patterns in examples, including the ones you didn't mean.", "from_weak_points": false },
-        { "id": "r2", "type": "scenario", "concept": "Few-shot examples", "question": "Instruction says \"no summary\", examples have summaries. Which wins?", "answer": "Usually the examples.", "result": "correct", "explanation": "When instructions and examples disagree, examples tend to win.", "from_weak_points": false }
+        {
+          "id": "r1",
+          "type": "scenario",
+          "concept": "Few-shot examples",
+          "question": "All three of your examples end with \"Happy reading!\". What happens?",
+          "answer": "Most answers will end that way too.",
+          "result": "correct",
+          "explanation": "The model copies patterns in examples, including the ones you didn't mean.",
+          "from_weak_points": false
+        },
+        {
+          "id": "r2",
+          "type": "scenario",
+          "concept": "Few-shot examples",
+          "question": "The instruction says \"no closing line\", the examples have one. Which wins?",
+          "answer": "Usually the examples.",
+          "result": "correct",
+          "explanation": "When instructions and examples disagree, examples tend to win.",
+          "from_weak_points": false
+        }
       ]
     }
   ]

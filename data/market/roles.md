@@ -69,7 +69,7 @@ Postings for "Yapay Zeka Mühendisi" appear on kariyer.net and techcareer.net in
 **Transition map**
 | From | Transfers | New to learn |
 |---|---|---|
-| Frontend | Streaming UIs, error/retry UX, safe rendering of model output (OWASP LLM05), accessible status updates (WCAG 4.1.3), product sense | Tool use, structured output, evals, RAG, cost/latency, prompt injection (OWASP LLM01), Python for some postings |
+| Frontend | Streaming UIs, error/retry UX, safe rendering of model output (OWASP LLM10:2026, Improper Output Handling), accessible status updates (WCAG 4.1.3), product sense | Tool use, structured output, evals, RAG, cost/latency, prompt injection (OWASP LLM01:2026), Python for some postings |
 | Backend | API design, data modeling, system design, deployment, observability | LLM behavior, RAG, evals, agent orchestration |
 | Fullstack | Both of the above | Mostly evals and RAG |
 | Data engineer | Data pipelines, Python | The LLM application layer; ML Engineer is a shorter move |
@@ -103,7 +103,7 @@ Postings for "Yapay Zeka Mühendisi" appear on kariyer.net and techcareer.net in
 
 ## ai-product-engineer — AI Frontend / AI Product Engineer
 
-**Definition:** The engineer who builds the user-facing side of AI products: streaming interfaces, rendering tool calls, generative UI, agent UX. **There's no standard title**; the same work shows up as "Frontend Software Engineer" (at AI companies), "Applied AI Engineer, Fullstack", or "Product Engineer" ([GreatFrontEnd](https://www.greatfrontend.com/blog/frontend-developer-to-ai-engineer), 2026-10).
+**Definition:** A full-stack product engineer who owns AI features end to end: the interface, the backend and data around the model, the agents and tools, the evals and guardrails, and running it in production. Postings titled "AI Product Engineer" in late 2026 ask for full-stack ownership and product sense, not only the user-facing layer ([role pack](../roles/ai-product-engineer.md), 9 postings, 2026-11). **There's no standard title**; the same work shows up as "Applied AI Product Engineer", "Product Engineer" (at AI companies), "Full Stack AI Engineer", or "AI-native Software Engineer" ([GreatFrontEnd](https://www.greatfrontend.com/blog/frontend-developer-to-ai-engineer), 2026-10).
 
 **Demand signals**
 | Signal | Value | Scope | Type | Source | Date |
@@ -114,7 +114,7 @@ Postings for "Yapay Zeka Mühendisi" appear on kariyer.net and techcareer.net in
 
 **Market notes — Turkey:** EPAM Turkey "Senior AI Engineer with ReactJS" ([Kariyer.net](https://www.kariyer.net/is-ilani/epam-systems-turkey-yazilim-gelistirme-limited-sir-senior-ai-engineer-with-reactjs-4517381), 2026).
 
-**Typical skills:** Vercel AI SDK (or equivalent), streaming and cancellation (AbortController), rendering tool calls, UI driven by structured output, safe rendering of model output, accessibility, eval-driven product iteration.
+**Typical skills:** LLM API integration, prompt and context design, tool use and agents, evals, guardrails and LLM security, full-stack TypeScript with a database, deployment and operations, building with AI coding agents, product sense. On the interface side: streaming and cancellation, rendering tool calls, UI driven by structured output, safe rendering of model output, accessibility. The full, sourced skill tree with priorities is in the [role pack](../roles/ai-product-engineer.md).
 
 **For whom:** The most natural move for frontend developers; for people who enjoy the interface layer more than the model layer.
 
@@ -159,5 +159,6 @@ Roles not yet confirmed by two independent sources, or with unclear volume:
 
 ## Changelog
 
+- **2026-11-20** – `ai-product-engineer`: definition and typical skills updated from 9 current postings (the role is now full-stack, not frontend-only); links to the new role pack `data/roles/ai-product-engineer.md`. OWASP references updated to the 2026 edition.
 - **2026-11-18** – Translated to English; Turkey data moved into per-role "Market notes". Role id `ai-yetkin-gelistirici` renamed to `ai-fluent-developer`.
 - **2026-11-18** – First version. Sources: LinkedIn Jobs on the Rise 2026, Dice, Ceipal, Indeed Hiring Lab, Lightcast, Veritone, GreatFrontEnd, Kariyer.net.

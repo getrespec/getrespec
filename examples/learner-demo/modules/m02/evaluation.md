@@ -8,10 +8,10 @@
 | Accessible status updates | 13/15 |
 | Reasoning and understanding | 16/20 |
 
-**Strengths:** clean server/client split; `cancel()` aborts the upstream call; status line is announced politely.
+**Strengths:** clean server/client split, including the system prompt (`work/src/route.ts:11`); `cancel()` aborts the upstream call (`work/src/route.ts:29`); the status line is announced politely.
 
-**Gaps:** "Try again" sends the literal string "retry" instead of the last question (`work/src/Chat.tsx:40`); the answer region isn't labelled.
+**Gaps:** "Try again" sends the literal string "retry" instead of the customer's last question (`work/src/Chat.tsx:40`); the answer region isn't labelled.
 
 **Usage:** 18 requests, median latency 1.4 s, first token at 0.35 s.
 
-**Next:** keep the last question in state and reuse it on retry.
+**Next:** keep the customer's last question in state and resend it on "Try again".

@@ -1,0 +1,21 @@
+{
+  "name": "respec",
+  "version": "0.1.0",
+  "description": "Respec your career for the AI era: a folder your coding agent turns into a tutor, evaluator, and career guide.",
+  "license": "FSL-1.1-ALv2",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getrespec/getrespec.git"
+  },
+  "homepage": "https://getrespec.dev",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dashboard": "node scripts/serve.mjs",
+    "check-update": "node scripts/check-update.mjs",
+    "release": "node scripts/release.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}

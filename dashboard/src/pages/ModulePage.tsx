@@ -1,8 +1,9 @@
 import type { EvaluationFile, FileContent, FileEntry, Module, QuizFile, State, Usage } from "../types";
 import { useT } from "../i18n";
 import { useApi, fileUrl } from "../api";
-import { langForFile, useDateFormat } from "../lib";
-import { Cmd, CodeView, Empty, Markdown, Meter, StatusMark, Stepper } from "../components/ui";
+import { langForFile, splitLesson, useDateFormat, visualSlot } from "../lib";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Cmd, CodeView, Empty, Markdown, Meter, StatusMark, Stepper, type Linker } from "../components/ui";
 import { ModuleUsage } from "./Usage";
 
 export type ModuleRoute = { id: string; tab?: string; file?: string; line?: number };
@@ -35,6 +36,18 @@ export function ModulePage({ state, route }: { state: State; route: ModuleRoute 
     .map((f) => f.path.slice(base.length))
     .filter((f) => /^assignment-remedial-\d+\.md$/.test(f))
     .sort((a, b) => Number(a.match(/\d+/)![0]) - Number(b.match(/\d+/)![0]));
+
+  const modules = state.curriculum?.modules ?? [];
+  const linker: Linker = (text) => {
+    const m = /^([\w.\-/]+?)(?::(\d+))?$/.exec(text.trim());
+    if (!m) return null;
+    if (/^m\d{2,}$/.test(m[1]) && !m[2]) return modules.some((x) => x.id === m[1]) && m[1] !== route.id ? `#/m/${m[1]}` : null;
+    if (!files.some((f) => f.path === base + m[1])) return null;
+    return `#/m/${route.id}/files?f=${encodeURIComponent(m[1])}${m[2] ? `&l=${m[2]}` : ""}`;
+  };
+  const idx = modules.findIndex((m) => m.id === route.id);
+  const prev = idx > 0 ? modules[idx - 1] : null;
+  const next = idx >= 0 && idx < modules.length - 1 ? modules[idx + 1] : null;
 
   if (!module) {
     return (
@@ -92,27 +105,43 @@ export function ModulePage({ state, route }: { state: State; route: ModuleRoute 
         <>
           <Plan module={module} />
           <nav className="tabs" aria-label={module.title}>
-            {TABS.map((k) =>
-              available[k] || k === "lesson" ? (
-                <a key={k} href={`#/m/${module.id}/${k}`} aria-current={tab === k ? "page" : undefined} className="tab">
-                  {t.tabs[k]}
-                </a>
-              ) : (
-                <span key={k} className="tab tab-off" title={t.notYet}>
-                  {t.tabs[k]}
-                </span>
-              )
-            )}
+            {TABS.filter((k) => available[k] || k === "lesson" || k === tab).map((k) => (
+              <a key={k} href={`#/m/${module.id}/${k}`} aria-current={tab === k ? "page" : undefined} className="tab">
+                {t.tabs[k]}
+              </a>
+            ))}
           </nav>
           <div className="tab-panel">
-            {tab === "lesson" && <LessonTab module={module} hasLesson={available.lesson} hasVisual={has("visual.html")} hasReview={has("review.md")} />}
+            {tab === "lesson" && <LessonTab module={module} hasLesson={available.lesson} hasVisual={has("visual.html")} hasReview={has("review.md")} linker={linker} />}
             {tab === "quiz" && <QuizTab module={module} hasJson={has("quiz.json")} hasMd={has("quiz.md")} />}
-            {tab === "assignment" && <AssignmentTab module={module} has={available.assignment} remedials={remedials} />}
+            {tab === "assignment" && <AssignmentTab module={module} has={available.assignment} remedials={remedials} linker={linker} />}
             {tab === "evaluation" && <EvaluationTab module={module} hasJson={has("evaluation.json")} hasMd={has("evaluation.md")} />}
             {tab === "files" && <FilesTab module={module} files={files} selected={route.file} line={route.line} />}
             {tab === "usage" && <ModuleUsage usage={usage.data} moduleId={module.id} />}
           </div>
         </>
+      )}
+      {(prev || next) && (
+        <nav className="pager" aria-label={`${t.prevModule} / ${t.nextModule}`}>
+          {prev ? (
+            <a className="pager-prev" href={`#/m/${prev.id}`}>
+              <span className="sub">← {t.prevModule}</span>
+              <span>
+                <span className="mod-id">{prev.id}</span> {prev.title}
+              </span>
+            </a>
+          ) : (
+            <span />
+          )}
+          {next ? (
+            <a className="pager-next" href={`#/m/${next.id}`}>
+              <span className="sub">{t.nextModule} →</span>
+              <span>
+                <span className="mod-id">{next.id}</span> {next.title}
+              </span>
+            </a>
+          ) : null}
+        </nav>
       )}
     </>
   );
@@ -165,10 +194,12 @@ function Plan({ module, open = false }: { module: Module; open?: boolean }) {
   );
 }
 
-function LessonTab({ module, hasLesson, hasVisual, hasReview }: { module: Module; hasLesson: boolean; hasVisual: boolean; hasReview: boolean }) {
+function LessonTab({ module, hasLesson, hasVisual, hasReview, linker }: { module: Module; hasLesson: boolean; hasVisual: boolean; hasReview: boolean; linker: Linker }) {
   const { t } = useT();
   const lesson = useText(hasLesson ? `modules/${module.id}/lesson.md` : null);
   const review = useText(hasReview ? `modules/${module.id}/review.md` : null);
+  const sections = useMemo(() => (lesson ? splitLesson(lesson) : []), [lesson]);
+  const active = useActiveSection(sections.map((s) => s.id));
   if (!hasLesson)
     return (
       <div className="card">
@@ -177,32 +208,125 @@ function LessonTab({ module, hasLesson, hasVisual, hasReview }: { module: Module
         </Empty>
       </div>
     );
-  const visualSrc = `/files/modules/${encodeURIComponent(module.id)}/visual.html`;
-  return (
-    <>
-      {hasVisual && (
-        <section className="card visual" aria-labelledby="visual-h">
-          <div className="visual-head">
-            <h2 id="visual-h" className="card-h">
-              {t.visual}
-            </h2>
-            <a href={visualSrc} target="_blank" rel="noreferrer">
-              {t.openVisual}
-            </a>
-          </div>
-          <iframe title={t.visual} src={visualSrc} sandbox="allow-scripts" loading="lazy" />
-        </section>
-      )}
-      <article className="card">{lesson ? <Markdown>{lesson}</Markdown> : <p className="muted">{t.loading}</p>}</article>
+  if (!lesson) return <p className="muted">{t.loading}</p>;
+  const slot = hasVisual ? visualSlot(sections) : -1;
+  const toc = sections.filter((s) => s.title);
+  const go = (id: string) => (e: React.MouseEvent) => {
+    // Hash routing owns location.hash, so scroll instead of using #fragment links.
+    e.preventDefault();
+    const el = document.getElementById(id);
+    el?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    el?.focus({ preventScroll: true });
+  };
+  const tocList = (
+    <ol>
+      {toc.map((s) => (
+        <li key={s.id}>
+          <a href={`#${s.id}`} onClick={go(s.id)} aria-current={active === s.id ? "true" : undefined}>
+            {s.title}
+          </a>
+        </li>
+      ))}
       {review && (
-        <section className="card" aria-labelledby="review-h">
-          <h2 id="review-h" className="card-h">
+        <li>
+          <a href="#review-h" onClick={go("review-sec")}>
             {t.reviewNotes}
-          </h2>
-          <Markdown>{review}</Markdown>
-        </section>
+          </a>
+        </li>
       )}
-    </>
+    </ol>
+  );
+  return (
+    <div className={toc.length > 2 ? "lesson-layout" : undefined}>
+      <div className="lesson-main">
+        {toc.length > 2 && (
+          <details className="toc-mobile card">
+            <summary>{t.inThisLesson}</summary>
+            <nav aria-label={t.inThisLesson}>{tocList}</nav>
+          </details>
+        )}
+        <article className="card lesson">
+          {sections.map((sec, i) => (
+            <div key={sec.id} className="ls-wrap">
+              {i === slot && <Visual module={module} />}
+              <section id={sec.id} tabIndex={-1} className={`ls${sec.kind ? ` ls-${sec.kind}` : ""}`}>
+                <Markdown linker={linker} terms={sec.kind === "terms"}>
+                  {sec.body}
+                </Markdown>
+              </section>
+            </div>
+          ))}
+          {slot === sections.length && <Visual module={module} />}
+        </article>
+        {review && (
+          <section id="review-sec" tabIndex={-1} className="card" aria-labelledby="review-h">
+            <h2 id="review-h" className="card-h">
+              {t.reviewNotes}
+            </h2>
+            <Markdown linker={linker}>{review}</Markdown>
+          </section>
+        )}
+      </div>
+      {toc.length > 2 && (
+        <nav className="toc" aria-label={t.inThisLesson}>
+          <p className="toc-h">{t.inThisLesson}</p>
+          {tocList}
+        </nav>
+      )}
+    </div>
+  );
+}
+
+// Which section is at the top of the viewport, for the table of contents.
+function useActiveSection(ids: string[]) {
+  const [active, setActive] = useState<string | null>(null);
+  const key = ids.join("|");
+  useEffect(() => {
+    if (!ids.length) return;
+    const onScroll = () => {
+      let cur: string | null = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top < 140) cur = id;
+      }
+      setActive(cur);
+    };
+    onScroll();
+    addEventListener("scroll", onScroll, { passive: true });
+    return () => removeEventListener("scroll", onScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+  return active;
+}
+
+// The lesson's visual.html, sized to its content. The server adds a small script to sandboxed HTML
+// files that reports the page height; anything else from the frame is ignored.
+function Visual({ module }: { module: Module }) {
+  const { t } = useT();
+  const ref = useRef<HTMLIFrameElement>(null);
+  const [height, setHeight] = useState(520);
+  const src = `/files/modules/${encodeURIComponent(module.id)}/visual.html`;
+  useEffect(() => {
+    const on = (e: MessageEvent) => {
+      if (e.source !== ref.current?.contentWindow) return;
+      const h = Number((e.data as { respecHeight?: unknown })?.respecHeight);
+      if (Number.isFinite(h) && h > 0) setHeight(Math.min(Math.max(Math.ceil(h) + 4, 160), 2400));
+    };
+    addEventListener("message", on);
+    return () => removeEventListener("message", on);
+  }, []);
+  return (
+    <section className="visual" aria-labelledby={`visual-h-${module.id}`}>
+      <div className="visual-head">
+        <h2 id={`visual-h-${module.id}`} className="card-h">
+          {t.visual}
+        </h2>
+        <a href={src} target="_blank" rel="noreferrer">
+          {t.openVisual}
+        </a>
+      </div>
+      <iframe ref={ref} title={t.visual} src={src} sandbox="allow-scripts" style={{ height }} />
+    </section>
   );
 }
 
@@ -262,7 +386,7 @@ function QuizTab({ module, hasJson, hasMd }: { module: Module; hasJson: boolean;
   );
 }
 
-function AssignmentTab({ module, has, remedials }: { module: Module; has: boolean; remedials: string[] }) {
+function AssignmentTab({ module, has, remedials, linker }: { module: Module; has: boolean; remedials: string[]; linker: Linker }) {
   const { t } = useT();
   const text = useText(has ? `modules/${module.id}/assignment.md` : null);
   if (!has)
@@ -273,21 +397,21 @@ function AssignmentTab({ module, has, remedials }: { module: Module; has: boolea
     );
   return (
     <>
-      <article className="card">{text ? <Markdown>{text}</Markdown> : <p className="muted">{t.loading}</p>}</article>
+      <article className="card">{text ? <Markdown linker={linker}>{text}</Markdown> : <p className="muted">{t.loading}</p>}</article>
       {remedials.map((f) => (
-        <Remedial key={f} path={`modules/${module.id}/${f}`} n={f.match(/\d+/)![0]} />
+        <Remedial key={f} path={`modules/${module.id}/${f}`} n={f.match(/\d+/)![0]} linker={linker} />
       ))}
     </>
   );
 }
 
-function Remedial({ path, n }: { path: string; n: string }) {
+function Remedial({ path, n, linker }: { path: string; n: string; linker: Linker }) {
   const { t } = useT();
   const text = useText(path);
   return (
     <section className="card remedial" aria-label={t.remedial(n)}>
       <p className="eyebrow-h">{t.remedial(n)}</p>
-      {text && <Markdown>{text}</Markdown>}
+      {text && <Markdown linker={linker}>{text}</Markdown>}
     </section>
   );
 }
