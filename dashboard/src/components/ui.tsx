@@ -1,14 +1,29 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { useEffect, useRef } from "react";
+import { Children, isValidElement, useEffect, useRef } from "react";
 import type { Module } from "../types";
 import { useT } from "../i18n";
 import { highlightBlock, highlightLines } from "../highlight";
 import { stagesFor } from "../lib";
 
+// Turns inline code that names a module file (`examples/tokens.ts`, `work/src/Chat.tsx:40`) or a
+// module id (`m05`) into a link. Returns null when the text isn't a known file or module.
+export type Linker = (text: string) => string | null;
+
+export const slug = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+const textOf = (n: React.ReactNode): string =>
+  typeof n === "string" || typeof n === "number" ? String(n) : Array.isArray(n) ? n.map(textOf).join("") : isValidElement(n) ? textOf((n.props as { children?: React.ReactNode }).children) : "";
+
 // Markdown written by the agent. Raw HTML is not rendered (react-markdown default), so
-// generated content can't inject markup. Links open in a new tab.
-export function Markdown({ children }: { children: string }) {
+// generated content can't inject markup. External links open in a new tab.
+export function Markdown({ children, linker, terms = false, headingIds = false }: { children: string; linker?: Linker; terms?: boolean; headingIds?: boolean }) {
   return (
     <div className="prose">
       <ReactMarkdown
@@ -18,7 +33,16 @@ export function Markdown({ children }: { children: string }) {
             const lang = /language-(\w+)/.exec(className ?? "")?.[1];
             const text = String(children ?? "");
             // Inline code has no language class and no newline.
-            if (!lang && !text.includes("\n")) return <code>{children}</code>;
+            if (!lang && !text.includes("\n")) {
+              const href = linker?.(text);
+              return href ? (
+                <a className="code-link" href={href}>
+                  <code>{children}</code>
+                </a>
+              ) : (
+                <code>{children}</code>
+              );
+            }
             return <code className="hljs" dangerouslySetInnerHTML={{ __html: highlightBlock(text.replace(/\n$/, ""), lang) }} />;
           },
           a: ({ href, children }) => (
@@ -26,6 +50,22 @@ export function Markdown({ children }: { children: string }) {
               {children}
             </a>
           ),
+          h2: ({ children }) => <h2 id={headingIds ? `s-${slug(textOf(children))}` : undefined}>{children}</h2>,
+          li: ({ children }) => {
+            if (!terms) return <li>{children}</li>;
+            // Glossary rows: "**Term** – explanation" becomes a two-column row.
+            const parts = Children.toArray(children);
+            const first = parts[0];
+            if (!isValidElement(first) || (first.type !== "strong" && first.type !== "code" && typeof first.type !== "function")) return <li>{children}</li>;
+            const rest = parts.slice(1);
+            if (typeof rest[0] === "string") rest[0] = (rest[0] as string).replace(/^\s*[–—:-]\s*/, "");
+            return (
+              <li className="term">
+                <span className="term-name">{first}</span>
+                <span className="term-def">{rest}</span>
+              </li>
+            );
+          },
         }}
       >
         {children}
@@ -74,6 +114,41 @@ export function StatusMark({ status }: { status: Module["status"] }) {
         {STATUS_ICON[status]}
       </span>
       <span className="status-label">{t.status[status]}</span>
+    </span>
+  );
+}
+
+// Icon-only status for dense lists; the label is still read by screen readers.
+export function StatusIcon({ status }: { status: Module["status"] }) {
+  const { t } = useT();
+  return (
+    <span className={`status st-${status}`} title={t.status[status]}>
+      <span className="status-icon" aria-hidden="true">
+        {status === "locked" ? (
+          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
+            <rect x="1.5" y="4.5" width="7" height="5" rx="1" fill="currentColor" />
+            <path d="M3 4.5V3a2 2 0 0 1 4 0v1.5" fill="none" stroke="currentColor" strokeWidth="1.2" />
+          </svg>
+        ) : (
+          STATUS_ICON[status]
+        )}
+      </span>
+      <span className="sr-only">{t.status[status]}</span>
+    </span>
+  );
+}
+
+// A compact stage indicator for list rows: one segment per stage.
+export function StageBar({ module }: { module: Module }) {
+  const { t } = useT();
+  const steps = stagesFor(module);
+  const cur = module.stage === "review" ? "quiz" : module.stage;
+  const idx = module.stage === "done" ? steps.length : steps.indexOf(cur ?? "");
+  return (
+    <span className="stagebar" role="img" aria-label={t.stageLabel(t.stageNames[module.stage ?? ""] ?? "")}>
+      {steps.map((s, i) => (
+        <span key={s} className={i < idx ? "past" : i === idx ? "current" : ""} />
+      ))}
     </span>
   );
 }

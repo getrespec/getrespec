@@ -39,7 +39,7 @@ Columns: **Roles** = which roles it fits (`roles.md` ids), **Cost** = free/paid.
 | Resource | What it offers | Roles | Cost |
 |---|---|---|---|
 | [mlabonne/llm-course](https://github.com/mlabonne/llm-course) | Comprehensive LLM curriculum with a Colab notebook per topic | ai-engineer, ml-engineer | Free |
-| [OWASP Top 10 for LLM Applications](https://genai.owasp.org) | Prompt injection, insecure output handling, and other risks | all | Free |
+| [OWASP Top 10 for LLM Applications 2026](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/) | Prompt injection, sensitive information disclosure, excessive agency, improper output handling, and other risks (2026 edition, published 2026-08-04) | all | Free |
 | Chip Huyen – *AI Engineering* (O'Reilly) | Reference book on evals, RAG, agents, fine-tuning, and production decisions | ai-engineer, forward-deployed-engineer | Paid |
 
 ## Interface side

@@ -86,3 +86,65 @@ export function langForFile(path: string): string | undefined {
     } as Record<string, string>
   )[ext];
 }
+
+// Splits a lesson into its `##` sections. A line `<!-- section: scenario -->` before a heading tags
+// the section with a kind the dashboard styles (the marker is language-independent; headings aren't).
+// The lesson's own `#` title and the file-reference note under it are dropped: the page shows both already.
+export type LessonSection = { id: string; kind: string | null; title: string | null; body: string; hasCode: boolean };
+
+const MARKER = /^\s*<!--\s*section:\s*([\w-]+)\s*-->\s*$/;
+const FILE_NOTE = /^>\s*.*(visual\.html|examples\/)/;
+
+export function splitLesson(md: string): LessonSection[] {
+  const out: LessonSection[] = [];
+  let cur: LessonSection = { id: "s-intro", kind: null, title: null, body: "", hasCode: false };
+  let pending: string | null = null;
+  let fence = false;
+  let seenTitle = false;
+  const used = new Set<string>();
+  const lines = md.replace(/\r\n/g, "\n").split("\n");
+  for (const line of lines) {
+    if (/^\s*(```|~~~)/.test(line)) {
+      fence = !fence;
+      cur.hasCode = true;
+      cur.body += line + "\n";
+      continue;
+    }
+    if (!fence) {
+      const m = MARKER.exec(line);
+      if (m) {
+        pending = m[1].toLowerCase();
+        continue;
+      }
+      if (!seenTitle && out.length === 0 && /^#\s/.test(line)) {
+        seenTitle = true;
+        continue;
+      }
+      if (out.length === 0 && cur.title === null && FILE_NOTE.test(line)) continue;
+      const h = /^##\s+(.+?)\s*#*\s*$/.exec(line);
+      if (h) {
+        if (cur.body.trim() || cur.title) out.push(cur);
+        const title = h[1].replace(/[`*_]/g, "");
+        let id = `s-${title.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || out.length}`;
+        while (used.has(id)) id += "-2";
+        used.add(id);
+        cur = { id, kind: pending, title, body: line + "\n", hasCode: false };
+        pending = null;
+        continue;
+      }
+    }
+    cur.body += line + "\n";
+  }
+  if (cur.body.trim()) out.push(cur);
+  return out;
+}
+
+// Where the interactive visual goes: after the concepts, before the code walkthrough.
+export function visualSlot(sections: LessonSection[]): number {
+  const concept = sections.findIndex((s) => s.kind === "concept");
+  if (concept >= 0) return concept + 1;
+  const back = sections.findIndex((s) => s.kind === "back");
+  if (back >= 0) return back;
+  const code = sections.findIndex((s, i) => i > 0 && s.hasCode);
+  return code >= 0 ? code : sections.length;
+}

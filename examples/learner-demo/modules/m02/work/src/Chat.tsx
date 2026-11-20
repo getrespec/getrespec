@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 
 type Status = "idle" | "answering" | "done" | "stopped" | "error";
 
-export function Chat() {
+export function Chat({ orderId }: { orderId: string }) {
   const [answer, setAnswer] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const controller = useRef<AbortController | null>(null);
@@ -15,7 +15,7 @@ export function Chat() {
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
-        body: JSON.stringify({ messages: [{ role: "user", content: question }] }),
+        body: JSON.stringify({ messages: [{ role: "user", content: `Order #${orderId}: ${question}` }] }),
         signal: controller.current.signal,
       });
       if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);

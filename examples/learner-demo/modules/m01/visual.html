@@ -2,24 +2,40 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Context window</title>
+<title>Context window in a support chat</title>
 <style>
-  body { font: 15px/1.5 system-ui, sans-serif; margin: 16px; color: #142033; background: #fff; }
+  body { font: 15px/1.55 system-ui, sans-serif; margin: 16px; color: #142033; background: #fff; max-width: 760px; }
+  h2 { font-size: 17px; margin: 0 0 6px; }
+  .explain { background: #edf1f3; border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }
+  .explain p { margin: 0 0 6px; } .explain p:last-child { margin: 0; }
   .bar { display: flex; height: 36px; border: 1.5px solid #142033; border-radius: 6px; overflow: hidden; margin: 12px 0; }
   .seg { display: grid; place-items: center; font-size: 12px; color: #fff; white-space: nowrap; overflow: hidden; }
   .history { background: #2f45c8; } .prompt { background: #5468e0; } .output { background: #e3a008; color: #142033; }
   .free { background: repeating-linear-gradient(45deg, #fff, #fff 6px, #edf1f3 6px, #edf1f3 12px); color: #4a5a6c; }
-  label { display: block; margin-top: 8px; }
-  @media (prefers-color-scheme: dark) { body { background: #152033; color: #e7edf3; } .bar { border-color: #e7edf3; } .free { background: #0e1624; color: #a5b3c2; } }
+  .caption { font-weight: 600; }
+  .takeaway { border-left: 4px solid #2f45c8; padding: 4px 12px; margin-top: 16px; }
+  code { background: #edf1f3; padding: 1px 4px; border-radius: 4px; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #152033; color: #e7edf3; } .bar { border-color: #e7edf3; }
+    .explain, code { background: #0e1624; } .free { background: #0e1624; color: #a5b3c2; }
+  }
   @media (prefers-reduced-motion: no-preference) { .seg { transition: flex-basis .25s; } }
 </style>
 </head>
 <body>
-  <p>Move the slider to add conversation turns. The window is fixed; history eats into it.</p>
-  <label for="turns">Turns: <output id="out">1</output></label>
+  <section class="explain" aria-labelledby="what">
+    <h2 id="what">What is this?</h2>
+    <p>The <b>context window</b> is how many tokens one request can hold: your instructions, the chat history, the customer's new message, and the room you reserve for the answer. The API is stateless, so the bookstore's support chat sends the whole conversation again on every request.</p>
+    <h2>How to read it</h2>
+    <p>The bar is one request's window (8,000 tokens here). The slider is how many questions the customer has asked so far. Dark blue is the history (earlier questions and answers), light blue is your system prompt with the store's policies, and yellow is <code>max_tokens</code>, the room you reserve for the answer.</p>
+  </section>
+
+  <label for="turns">Questions asked so far: <output id="out">1</output></label><br>
   <input id="turns" type="range" min="1" max="12" value="1">
   <div class="bar" role="img" id="bar" aria-label=""></div>
-  <p id="note"></p>
+  <p class="caption" id="note" aria-live="polite"></p>
+
+  <p class="takeaway"><b>Takeaway:</b> the history grows with every question and eats the window, and you pay for all of it on every request. Long support chats need trimming or a short summary of old turns, or the request is eventually rejected.</p>
 <script>
   const WINDOW = 8000, PROMPT = 600, OUTPUT = 1000, PER_TURN = 700;
   const bar = document.getElementById("bar"), note = document.getElementById("note");
@@ -27,10 +43,14 @@
     const history = Math.min((t - 1) * PER_TURN, WINDOW);
     const used = Math.min(history + PROMPT + OUTPUT, WINDOW);
     const free = WINDOW - used;
-    const segs = [["history", history, "History"], ["prompt", PROMPT, "Prompt"], ["output", OUTPUT, "max_tokens"], ["free", free, "Free"]];
+    const segs = [["history", history, "History"], ["prompt", PROMPT, "System prompt"], ["output", OUTPUT, "max_tokens"], ["free", free, "Free"]];
     bar.innerHTML = segs.filter(s => s[1] > 0).map(([c, v, l]) => `<div class="seg ${c}" style="flex-basis:${v / WINDOW * 100}%">${l}</div>`).join("");
-    bar.setAttribute("aria-label", `History ${history} tokens, prompt ${PROMPT}, output budget ${OUTPUT}, free ${free} of ${WINDOW}`);
-    note.textContent = free === 0 ? "The window is full: old turns must be dropped or summarized." : `${free} tokens left of ${WINDOW}.`;
+    bar.setAttribute("aria-label", `History ${history} tokens, system prompt ${PROMPT}, answer budget ${OUTPUT}, free ${free} of ${WINDOW}`);
+    note.textContent = free === 0
+      ? `After ${t} questions the window is full: this request would be rejected unless old turns are dropped or summarized.`
+      : t === 1
+        ? `First question: no history yet, ${free} of ${WINDOW} tokens are free.`
+        : `After ${t} questions, the history takes ${history} tokens and ${free} of ${WINDOW} are still free.`;
     document.getElementById("out").textContent = t;
   }
   document.getElementById("turns").addEventListener("input", e => draw(+e.target.value));

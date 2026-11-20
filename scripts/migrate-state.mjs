@@ -7,7 +7,7 @@
 //   node scripts/migrate-state.mjs --dry-run  show what would change
 
 import { readFileSync, writeFileSync, existsSync, readdirSync, renameSync, statSync } from "node:fs";
-import { dirname, join, resolve, extname } from "node:path";
+import { dirname, join, resolve, extname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -45,6 +45,7 @@ const FILES = [
   ["degerlendirme.md", "evaluation.md"],
 ];
 const remedial = /^odev-telafi-(\d+)\.md$/;
+const TEXT_EXT = new Set([".md", ".html", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".py", ".json", ".txt", ".sh"]);
 
 // ---- state.json ----
 const map = (table, v) => (v != null && table[v] ? table[v] : v);
@@ -101,17 +102,24 @@ if (existsSync(modulesDir)) {
         if (!dry) renameSync(join(dir, f), join(dir, `assignment-remedial-${m[1]}.md`));
       }
     }
-    // fix path references inside text files at the module root
-    for (const f of dry ? [] : readdirSync(dir)) {
-      const p = join(dir, f);
-      if (!statSync(p).isFile() || ![".md", ".html"].includes(extname(f))) continue;
-      const before = readFileSync(p, "utf8");
-      const after = pathFixes.reduce((s, [re, to]) => s.replace(re, to), before);
-      if (after !== before) {
-        writeFileSync(p, after);
-        log(`${mod}/${f}: file references updated`);
+    // fix path references inside every text file of the module (lessons, visuals, example code, work)
+    const walk = (d) => {
+      for (const f of readdirSync(d)) {
+        const p = join(d, f);
+        if (statSync(p).isDirectory()) {
+          if (f !== "node_modules" && !f.startsWith(".")) walk(p);
+          continue;
+        }
+        if (!TEXT_EXT.has(extname(f).toLowerCase())) continue;
+        const before = readFileSync(p, "utf8");
+        const after = pathFixes.reduce((s, [re, to]) => s.replace(re, to), before);
+        if (after !== before) {
+          if (!dry) writeFileSync(p, after);
+          log(`${relative(modulesDir, p)}: file references updated`);
+        }
       }
-    }
+    };
+    walk(dir);
   }
 }
 if (existsSync(join(learnerDir, "_arsiv")) && !existsSync(join(learnerDir, "_archive"))) {

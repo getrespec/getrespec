@@ -7,9 +7,13 @@ Read `learner/state.json`. If no module is active but a curriculum exists, make 
 Based on the active module's `stage`:
 
 ## stage: `lesson`
-1. Write `learner/modules/<id>/lesson.md` in the lesson format from AGENTS.md. Put runnable code under `examples/`. If the topic describes a flow or process, produce `visual.html`.
+0. Read `state.learner.preferences` and `learner/profile.md`. If `preferences` is missing, run the preference interview from `flows/plan.md` step 2 first (it takes a minute and shapes every lesson).
+1. Write `learner/modules/<id>/lesson.md` in the lesson format from AGENTS.md: a scenario from `example_context` first, then where it shows up in the role, terms, each concept explained (what it is, what problem it solves, what changes when you change it), back to the scenario, then a step-by-step walkthrough of every example. Follow `lesson_order`. Put runnable, commented code under `examples/`, set in the same scenario. If the topic is a flow, a process, or the effect of a parameter, produce `visual.html` with an explanation above each interactive part.
+   For `m00`, use the "Role map lesson" format in AGENTS.md instead, and search for current postings.
+   Verify fast-changing facts against official sources while you write (AGENTS.md → "Checking facts that change"), run the simulation examples, and type-check the rest.
+   Then run the "Before presenting a lesson" check from AGENTS.md (terms, language, facts) and fix every gap.
 2. If `weak_points` contains a concept related to this module, add a short "reminder" box to the lesson.
-3. In chat, give a 5–8 line summary, show the file paths, and explain how to run the example.
+3. In chat, give a 5–8 line summary that starts with the scenario's question, show the file paths, and for each example say in one sentence what it demonstrates and what to look for when it runs.
 4. Say the learner can ask questions after reading and running the example, or move on to the quiz. When they're ready: `stage = "quiz"`.
 
 ## stage: `quiz`
@@ -35,5 +39,12 @@ Based on the active module's `stage`:
 - Make the next `locked` module `active`, `stage = "lesson"`, `started_at` = today.
 - Log it in `history`.
 - Remind the learner in one sentence what they learned in this module and name the next one.
+
+## Checking for gaps
+A curriculum is not set once and left alone. Look for skills it's missing at these moments, and propose changes to the plan (`flows/plan.md` → "Changes later") instead of just answering in chat:
+- **A question outside the plan.** Answer it. If the same topic comes up a second time, or it's a requirement in one of the learner's target postings, offer to add it to the curriculum.
+- **The end of a phase.** When the last module of a phase is completed, compare `curriculum.coverage` with the current role pack and the target postings. Report anything new or anything the learner's results show is missing, in two or three lines.
+- **Before the capstone.** List what the capstone needs that no completed module taught, and offer a short module or a reading list for each gap.
+- **Repeated weak points.** If a weak point stays in `weak_points` after two quizzes, or an evaluation shows the same gap twice, it may need its own module rather than more review; offer one.
 
 After every stage transition, save the state. The dashboard app updates on its own.

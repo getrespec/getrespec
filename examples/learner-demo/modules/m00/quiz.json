@@ -1,0 +1,15 @@
+{
+  "module": "m00",
+  "attempts": [
+    {
+      "kind": "quiz",
+      "date": "2026-11-03",
+      "score": 100,
+      "questions": [
+        { "id": "q1", "type": "scenario", "concept": "Grounding (RAG)", "question": "The support lead says the bot invents a return policy. Which skill does that task need, and what do you deliver?", "answer": "RAG: put the real policy in the prompt and tell the model to say it doesn't know otherwise. Deliver test questions that prove it.", "result": "correct", "explanation": "That's the grounding task from 'A week in the role': m07 teaches it, m09 measures it.", "from_weak_points": false },
+        { "id": "q2", "type": "scenario", "concept": "Reading a posting", "question": "A posting says \"LLM Engineer, TypeScript, RAG, evals\". Which modules prepare you for it?", "answer": "m06 and m07 for RAG, m09 for evals; I already know TypeScript.", "result": "correct", "explanation": "Right. m02 and m03 are the base under both.", "from_weak_points": false },
+        { "id": "q3", "type": "scenario", "concept": "Cost and latency", "question": "The API bill doubled. Who asks, and what do you measure first?", "answer": "The engineering manager. Tokens per request and how long the history gets.", "result": "correct", "explanation": "That's m10; m01 explains why the history drives cost.", "from_weak_points": false }
+      ]
+    }
+  ]
+}

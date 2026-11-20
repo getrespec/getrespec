@@ -8,6 +8,7 @@ export type Module = {
   phase: string;
   type: ModuleType;
   objectives?: string[];
+  skills?: string[];
   why?: string;
   est_hours?: number;
   resources?: { title: string; url: string }[];
@@ -19,6 +20,28 @@ export type Module = {
   completed_at?: string | null;
 };
 
+export type Preferences = {
+  goal?: "new-role" | "current-job" | "own-product";
+  scope?: "job-ready" | "full-role";
+  example_context?: string;
+  capstone_context?: string;
+  lesson_order?: "scenario-first" | "code-first";
+  llm_access?: string;
+  asked_at?: string;
+};
+
+export type CoverageItem = {
+  skill: string;
+  id?: string;
+  priority?: "core" | "important" | "advanced";
+  status: "known" | "covered" | "optional";
+  modules?: string[];
+  postings?: string[];
+  note?: string;
+};
+
+export type TargetPosting = { id: string; company?: string; title?: string; url?: string; read_at?: string; file?: string };
+
 export type State = {
   schema_version: number;
   learner: {
@@ -27,6 +50,8 @@ export type State = {
     weekly_hours?: number;
     target_market?: string;
     language?: string;
+    preferences?: Preferences;
+    target_postings?: TargetPosting[];
   };
   placement?: { date?: string; known?: string[]; partial?: string[]; unknown?: string[] };
   target_role?: { id: string; title: string; chosen_at?: string; reason?: string } | null;
@@ -34,6 +59,7 @@ export type State = {
     created_at?: string | null;
     phases?: { id: string; title: string }[];
     skipped?: { topic: string; reason: string }[];
+    coverage?: CoverageItem[];
     modules?: Module[];
   };
   weak_points?: { concept: string; module: string; added_at?: string; correct_count?: number }[];
@@ -115,4 +141,12 @@ export type Usage = {
     currency: string | null;
   } | null;
   records: UsageRecord[];
+};
+
+export type VersionInfo = {
+  current: string;
+  latest: { version: string; url: string | null } | null;
+  update_available: boolean;
+  checked_at: string | null;
+  disabled?: boolean;
 };
