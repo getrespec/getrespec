@@ -110,6 +110,10 @@ The check asks the GitHub releases API for the latest version, at most once a da
 
 Your CV, progress, assignments, and API keys stay in the `learner/` folder, which is never committed.
 
+## Progress and certification
+
+Your progress in `learner/` is your own learning record: plain files you can read and change, written by the agent on your behalf. That's why it isn't proof of anything, and no certificate is based on it. Certification (coming with the web app) is a separate assessment run on Respec's servers: your capstone's tests and evals, questions about your own design decisions, and a short task you haven't seen before. Each certificate links to a public page where anyone can check what was assessed and when.
+
 ## Requirements
 
 - A coding agent (Claude Code, Codex, Cursor, …)

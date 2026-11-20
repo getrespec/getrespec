@@ -24,3 +24,4 @@ The first public release.
 - `/respec plan` asks for the job postings you're targeting, reads them, and makes sure the plan covers what they ask for.
 - Lessons verify fast-changing facts (SDK details, model names, standard versions) against official sources and say when they did.
 - The curriculum is checked for gaps at the end of each phase, before the capstone, and when the same question comes up twice.
+- The README explains that local progress is a learning record, not a certificate, and how certification will work.
