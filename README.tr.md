@@ -110,6 +110,10 @@ Kontrol, günde en fazla bir kez GitHub'a en son sürümün ne olduğunu sorar; 
 
 CV'n, ilerlemen, ödevlerin ve API anahtarların `learner/` klasöründe kalır. Bu klasör hiçbir zaman git'e eklenmez.
 
+## İlerlemen ve sertifika
+
+`learner/` klasöründeki ilerlemen senin öğrenme kaydın: okuyup değiştirebileceğin düz dosyalar ve onları senin adına agent yazıyor. Bu yüzden bir şeyin kanıtı sayılmaz ve hiçbir sertifika ona dayanmaz. Sertifika (web uygulamasıyla gelecek) Respec'in sunucularında yapılan ayrı bir değerlendirme: bitirme projenin testleri ve eval'leri, kendi tasarım kararlarınla ilgili sorular ve daha önce görmediğin kısa bir görev. Her sertifika, neyin ne zaman değerlendirildiğini herkesin kontrol edebileceği açık bir sayfaya bağlanır.
+
 ## Gereksinimler
 
 - Bir kodlama agent'ı (Claude Code, Codex, Cursor, …)
