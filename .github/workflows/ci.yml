@@ -1,0 +1,27 @@
+# Runs the tests on every push to main and every pull request.
+# The "Tests" badge at the top of README.md shows this workflow's latest result on main.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Run the tests
+        run: node --test test/*.test.mjs
