@@ -200,3 +200,48 @@ test("safeInside: inside, missing, dot segments and symlinks out", () => {
   for (const rel of ["../secret.txt", "a/../../secret.txt", ".env", "a/.hidden", "out.txt", "", "/"])
     assert.deepEqual(safeInside(base, rel), { error: "refused" }, rel);
 });
+
+// WCAG 2.2 AA checks on the output: token contrast (computed from the inlined CSS, light and
+// dark), one h1 and no skipped heading levels, and no reference to anything outside the file.
+const luminance = (hex) => {
+  const v = hex.length === 4 ? [...hex.slice(1)].map((c) => c + c) : hex.slice(1).match(/../g);
+  const [r, g, b] = v.map((c) => parseInt(c, 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+const contrast = (a, b) => {
+  const [x, y] = [luminance(a), luminance(b)].sort((m, n) => n - m);
+  return (x + 0.05) / (y + 0.05);
+};
+const tokens = (block) => Object.fromEntries([...block.matchAll(/--([a-z-]+):(#[0-9a-f]{3,6})/gi)].map((m) => [m[1], m[2]]));
+
+test("text and link colours reach 4.5:1 in light and dark", () => {
+  const html = render({ state: (s) => (s.curriculum.modules.find((m) => m.id === "m02").status = "assisted") });
+  const light = tokens(html.match(/:root\{color-scheme:light;[^}]*\}/)[0]);
+  const dark = { ...light, ...tokens(html.match(/prefers-color-scheme:dark\)\{:root\{[^}]*\}/)[0]) };
+  const pairs = [
+    ["ink", "paper"], ["ink", "surface"], ["ink", "code-bg"], ["ink", "gold-soft"],
+    ["muted", "paper"], ["muted", "surface"], ["ultra", "paper"], ["ultra", "surface"],
+  ];
+  for (const [name, t] of [["light", light], ["dark", dark]])
+    for (const [fg, bg] of pairs) {
+      const ratio = contrast(t[fg], t[bg]);
+      assert.ok(ratio >= 4.5, `${name}: --${fg} on --${bg} is ${ratio.toFixed(2)}:1`);
+    }
+});
+
+test("one h1, no skipped heading levels, no external resources", () => {
+  const html = render();
+  const levels = [...html.matchAll(/<h([1-6])[\s>]/g)].map((m) => Number(m[1]));
+  assert.equal(levels.filter((l) => l === 1).length, 1);
+  assert.equal(levels[0], 1);
+  levels.reduce((prev, l) => (assert.ok(l <= prev + 1, `h${prev} -> h${l}`), l));
+  assert.doesNotMatch(html, /\s(?:src|srcset|action)=|<link|@import|url\(/i);
+  assert.deepEqual([...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]), ["https://getrespec.dev/dossier/"]);
+});
+
+// The gate sample is frozen: a renderer change that alters it must be a deliberate re-render.
+test("committed sample matches what the renderer produces", () => {
+  const demo = join(root, "examples", "learner-demo");
+  const committed = readFileSync(join(demo, "dossier", "m02.html"), "utf8");
+  assert.equal(buildDossier({ learnerDir: demo, id: "m02", footer: false }), committed);
+});
