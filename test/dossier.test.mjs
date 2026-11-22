@@ -238,3 +238,10 @@ test("one h1, no skipped heading levels, no external resources", () => {
   assert.doesNotMatch(html, /\s(?:src|srcset|action)=|<link|@import|url\(/i);
   assert.deepEqual([...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]), ["https://getrespec.dev/dossier/"]);
 });
+
+// The gate sample is frozen: a renderer change that alters it must be a deliberate re-render.
+test("committed sample matches what the renderer produces", () => {
+  const demo = join(root, "examples", "learner-demo");
+  const committed = readFileSync(join(demo, "dossier", "m02.html"), "utf8");
+  assert.equal(buildDossier({ learnerDir: demo, id: "m02", footer: false }), committed);
+});

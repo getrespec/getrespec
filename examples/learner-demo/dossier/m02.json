@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "module": "m02",
+  "summary": "A help box for an online bookstore's order page: a customer asks about their order and the answer streams in word by word, with a Stop button and a status line screen readers announce. The model call and its instructions live on the server, so the browser never sees the API key or the prompt. Worth asking about: the Try again button resends the wrong question, and the candidate wasn't sure how to recover from a dropped connection.",
+  "decisions": [
+    {
+      "title": "The model call and the system prompt stay on the server",
+      "why": "The API key must never reach the browser, and the support instructions (who the assistant is, keep answers short) shouldn't be something a customer can edit in DevTools.",
+      "alternatives": "Call the provider directly from the browser with a restricted key, or send the system prompt from the client with each request.",
+      "tradeoff": "Every answer takes one extra hop through the app's server, and the server now handles streaming connections.",
+      "ref": { "file": "work/src/route.ts", "from": 3, "to": 14 }
+    },
+    {
+      "title": "Pass chunks through as they arrive",
+      "why": "Customers should see the first words in under a second instead of waiting for the whole answer; the proxy log shows a median of 354 ms to the first token.",
+      "alternatives": "Wait for the full completion and return JSON, or use server-sent events with a message format.",
+      "tradeoff": "Plain text streaming is simple, but it carries no structure: the client can't tell a finished answer from a cut-off one without extra signals.",
+      "ref": { "file": "work/src/route.ts", "from": 16, "to": 28 }
+    },
+    {
+      "title": "Stop cancels the upstream request, not only the UI",
+      "why": "When the customer presses Stop, the server aborts the call to the model, so no tokens are generated (and paid for) that nobody will read.",
+      "alternatives": "Hide the rest of the answer in the browser and let the model finish in the background.",
+      "tradeoff": "The partial answer is final; there is no way to resume it.",
+      "ref": { "file": "work/src/route.ts", "from": 29, "to": 32 }
+    },
+    {
+      "title": "\"Stopped\" is a state of its own, not an error",
+      "why": "The customer chose to stop, and the partial answer is still useful, so it stays on screen with a calm \"Stopped\" instead of an error message.",
+      "alternatives": "Treat every aborted request as an error, or clear the answer on Stop.",
+      "tradeoff": "One more state to handle; the retry path was the one that slipped (Try again sends the string \"retry\" instead of the customer's question).",
+      "ref": { "file": "work/src/Chat.tsx", "from": 29, "to": 40 }
+    }
+  ],
+  "questions": [
+    "Try again sends the word \"retry\" instead of the customer's question. Walk me through how you'd fix it.",
+    "Why did you keep the system prompt on the server rather than sending it from the client?",
+    "What does a customer see if the connection drops halfway through an answer, and what should they see?",
+    "How would the client know an answer finished normally rather than being cut off?",
+    "Stop aborts the upstream call. What would you log to confirm that tokens really stop being generated?",
+    "The answer region has no label. How would a screen reader user find the answer after \"Answering…\"?",
+    "How would you add the order's real status (shipped, delayed) so the model doesn't guess?",
+    "What would you change if two questions were sent before the first answer finished?",
+    "How would you test this without calling the real model?"
+  ]
+}

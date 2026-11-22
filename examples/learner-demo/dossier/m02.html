@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Respec dossier, schema 1">
+<title>Interview dossier: First LLM API integration and streaming</title>
+<style>
+:root{color-scheme:light;--paper:#edf1f3;--surface:#fff;--ink:#142033;--muted:#4a5a6c;--rule:#d3dbe2;--ultra:#2f45c8;--ultra-soft:#e7ebfb;--gold-ink:#6b4700;--gold-soft:#fbf1d6;--code-bg:#f6f8fa}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--paper:#0e1624;--surface:#152033;--ink:#e7edf3;--muted:#a5b3c2;--rule:#2a3a50;--ultra:#8c9cff;--ultra-soft:#1c2950;--gold-ink:#f2c14e;--gold-soft:#3a2f12;--code-bg:#0f1a2b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main,body>footer{max-width:46rem;margin:0 auto;padding:0 1rem}
+main{padding-top:2rem}
+h1{font-size:1.9rem;line-height:1.2;margin:.2rem 0}
+h2{font-size:1.3rem;margin:2.2rem 0 .8rem;padding-top:1rem;border-top:1px solid var(--rule)}
+h3{font-size:1.1rem;margin:1.4rem 0 .5rem}
+.eyebrow,.sub,.note,figcaption{color:var(--muted)}
+.eyebrow{margin:0;font-size:.9rem;font-weight:600;letter-spacing:.02em}
+.sub{margin:0}
+a{color:var(--ultra);text-underline-offset:.18em}
+a:focus-visible{outline:3px solid var(--ultra);outline-offset:2px;border-radius:4px}
+.summary{background:var(--surface);border-left:4px solid var(--ultra);border-radius:0 12px 12px 0;padding:.2rem 1.2rem;margin-top:1.5rem}
+.summary h2{border:0;margin-top:.8rem;padding:0}
+.banner{background:var(--gold-soft);color:var(--ink);border:2px solid var(--gold-ink);border-radius:12px;padding:.7rem 1rem}
+article{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:.2rem 1.2rem 1rem;margin:1rem 0}
+dt{font-weight:650;margin-top:.6rem}
+dd{margin:0}
+figure{margin:1rem 0 0}
+figcaption{font-size:.9rem;margin-bottom:.3rem}
+pre{background:var(--code-bg);border:1px solid var(--rule);border-radius:8px;padding:.8rem;overflow-x:auto;margin:0}
+code{font:.85rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;vertical-align:top;padding:.45rem .5rem;border-bottom:1px solid var(--rule)}
+.num{white-space:nowrap}
+body>footer{margin-top:2.5rem;padding-bottom:2rem;border-top:1px solid var(--rule);color:var(--muted)}
+@page{size:A4;margin:16mm}
+@media print{:root{--paper:#fff;--surface:#fff;--ink:#000;--muted:#333;--code-bg:#fff}body{font-size:11pt}main,body>footer{max-width:none;padding:0}article,figure,tr{break-inside:avoid}h2,h3{break-after:avoid}pre{white-space:pre-wrap}a::after{content:" (" attr(href) ")"}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="eyebrow">Interview dossier · m02</p>
+<h1>First LLM API integration and streaming</h1>
+<p class="sub">Applied AI Engineer</p>
+</header>
+<section class="summary" aria-labelledby="h-summary">
+<h2 id="h-summary">In 30 seconds</h2>
+<p>A help box for an online bookstore&#39;s order page: a customer asks about their order and the answer streams in word by word, with a Stop button and a status line screen readers announce. The model call and its instructions live on the server, so the browser never sees the API key or the prompt. Worth asking about: the Try again button resends the wrong question, and the candidate wasn&#39;t sure how to recover from a dropped connection.</p>
+<p><strong>Result:</strong> 86/100, passed</p>
+<p><strong>Best question to ask:</strong> Try again sends the word &quot;retry&quot; instead of the customer&#39;s question. Walk me through how you&#39;d fix it.</p>
+</section>
+<section aria-labelledby="h-decisions">
+<h2 id="h-decisions">Key decisions</h2>
+<article>
+<h3>The model call and the system prompt stay on the server</h3>
+<dl>
+<dt>Why</dt><dd>The API key must never reach the browser, and the support instructions (who the assistant is, keep answers short) shouldn&#39;t be something a customer can edit in DevTools.</dd>
+<dt>Alternatives</dt><dd>Call the provider directly from the browser with a restricted key, or send the system prompt from the client with each request.</dd>
+<dt>Tradeoff</dt><dd>Every answer takes one extra hop through the app&#39;s server, and the server now handles streaming connections.</dd>
+</dl>
+<figure>
+<figcaption>work/src/route.ts, lines 3–14</figcaption>
+<pre><code>const client = new OpenAI(); // key and base URL come from the server environment
+
+const SYSTEM = &quot;You are the support assistant for Inkwell Books. Answer questions about orders in at most three short sentences.&quot;;
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+  const stream = await client.chat.completions.create({
+    model: process.env.RESPEC_MODEL ?? &quot;gpt-6-luna&quot;,
+    messages: [{ role: &quot;system&quot;, content: SYSTEM }, ...messages],
+    stream: true,
+    stream_options: { include_usage: true },
+  });</code></pre>
+</figure>
+</article>
+<article>
+<h3>Pass chunks through as they arrive</h3>
+<dl>
+<dt>Why</dt><dd>Customers should see the first words in under a second instead of waiting for the whole answer; the proxy log shows a median of 354 ms to the first token.</dd>
+<dt>Alternatives</dt><dd>Wait for the full completion and return JSON, or use server-sent events with a message format.</dd>
+<dt>Tradeoff</dt><dd>Plain text streaming is simple, but it carries no structure: the client can&#39;t tell a finished answer from a cut-off one without extra signals.</dd>
+</dl>
+<figure>
+<figcaption>work/src/route.ts, lines 16–28</figcaption>
+<pre><code>  const encoder = new TextEncoder();
+  const body = new ReadableStream({
+    async start(controller) {
+      try {
+        for await (const chunk of stream) {
+          const text = chunk.choices[0]?.delta?.content;
+          if (text) controller.enqueue(encoder.encode(text));
+        }
+        controller.close();
+      } catch (err) {
+        controller.error(err);
+      }
+    },</code></pre>
+</figure>
+</article>
+<article>
+<h3>Stop cancels the upstream request, not only the UI</h3>
+<dl>
+<dt>Why</dt><dd>When the customer presses Stop, the server aborts the call to the model, so no tokens are generated (and paid for) that nobody will read.</dd>
+<dt>Alternatives</dt><dd>Hide the rest of the answer in the browser and let the model finish in the background.</dd>
+<dt>Tradeoff</dt><dd>The partial answer is final; there is no way to resume it.</dd>
+</dl>
+<figure>
+<figcaption>work/src/route.ts, lines 29–32</figcaption>
+<pre><code>    cancel() {
+      stream.controller.abort();
+    },
+  });</code></pre>
+</figure>
+</article>
+<article>
+<h3>&quot;Stopped&quot; is a state of its own, not an error</h3>
+<dl>
+<dt>Why</dt><dd>The customer chose to stop, and the partial answer is still useful, so it stays on screen with a calm &quot;Stopped&quot; instead of an error message.</dd>
+<dt>Alternatives</dt><dd>Treat every aborted request as an error, or clear the answer on Stop.</dd>
+<dt>Tradeoff</dt><dd>One more state to handle; the retry path was the one that slipped (Try again sends the string &quot;retry&quot; instead of the customer&#39;s question).</dd>
+</dl>
+<figure>
+<figcaption>work/src/Chat.tsx, lines 29–40</figcaption>
+<pre><code>      setStatus(&quot;done&quot;);
+    } catch (err) {
+      setStatus((err as Error).name === &quot;AbortError&quot; ? &quot;stopped&quot; : &quot;error&quot;);
+    }
+  }
+
+  return (
+    &lt;section&gt;
+      &lt;p aria-live=&quot;polite&quot;&gt;{status === &quot;answering&quot; ? &quot;Answering…&quot; : status === &quot;stopped&quot; ? &quot;Stopped&quot; : status === &quot;error&quot; ? &quot;Something went wrong&quot; : &quot;&quot;}&lt;/p&gt;
+      &lt;div&gt;{answer}&lt;/div&gt;
+      {status === &quot;answering&quot; &amp;&amp; &lt;button onClick={() =&gt; controller.current?.abort()}&gt;Stop&lt;/button&gt;}
+      {status === &quot;error&quot; &amp;&amp; &lt;button onClick={() =&gt; ask(&quot;retry&quot;)}&gt;Try again&lt;/button&gt;}</code></pre>
+</figure>
+</article>
+<p class="note">Graded 2026-11-08; code shown from the current work/ folder.</p>
+</section>
+<section aria-labelledby="h-questions">
+<h2 id="h-questions">Questions to ask</h2>
+<ol>
+<li>Try again sends the word &quot;retry&quot; instead of the customer&#39;s question. Walk me through how you&#39;d fix it.</li>
+<li>Why did you keep the system prompt on the server rather than sending it from the client?</li>
+<li>What does a customer see if the connection drops halfway through an answer, and what should they see?</li>
+<li>How would the client know an answer finished normally rather than being cut off?</li>
+<li>Stop aborts the upstream call. What would you log to confirm that tokens really stop being generated?</li>
+<li>The answer region has no label. How would a screen reader user find the answer after &quot;Answering…&quot;?</li>
+<li>How would you add the order&#39;s real status (shipped, delayed) so the model doesn&#39;t guess?</li>
+<li>What would you change if two questions were sent before the first answer finished?</li>
+<li>How would you test this without calling the real model?</li>
+</ol>
+</section>
+<section aria-labelledby="h-defense">
+<h2 id="h-defense">Defence answers</h2>
+<dl>
+<dt>Why isn&#39;t &#39;stopped&#39; an error?</dt><dd>Because the customer chose it, and the partial answer is still useful.</dd>
+<dt>What would you do if the connection dropped mid-answer?</dt><dd>Show an error and let them try again; I wasn&#39;t sure if I could resume.</dd>
+</dl>
+</section>
+<section aria-labelledby="h-evaluation">
+<h2 id="h-evaluation">Evaluation</h2>
+<p><strong>Result:</strong> 86/100, passed</p>
+<table>
+<thead><tr><th scope="col">Criterion</th><th scope="col">Score</th><th scope="col">Comment</th></tr></thead>
+<tbody>
+<tr><td>Key stays on the server</td><td class="num">20/20</td><td>The help box only talks to /api/chat; the key and the system prompt both live on the server.</td></tr>
+<tr><td>Streaming works; first token shows quickly</td><td class="num">23/25</td><td>Median time to first token 354 ms in the proxy log.</td></tr>
+<tr><td>Stop and retry behave correctly</td><td class="num">14/20</td><td>Stop works and aborts the upstream request; Try again sends the wrong question.</td></tr>
+<tr><td>Accessible status updates</td><td class="num">13/15</td><td>Polite live region for the status; the answer region has no label.</td></tr>
+<tr><td>Reasoning and understanding</td><td class="num">16/20</td><td>Explained why stopped isn&#39;t an error; unsure how to recover after a dropped connection.</td></tr>
+</tbody>
+</table>
+<h3>Strengths</h3>
+<ul>
+<li>Clean server/client split, including the system prompt</li>
+<li>cancel() aborts the upstream call</li>
+<li>Status changes are announced politely</li>
+</ul>
+<h3>Gaps</h3>
+<ul>
+<li>Try again doesn&#39;t resend the customer&#39;s last question</li>
+<li>The answer region isn&#39;t labelled</li>
+</ul>
+</section>
+<section aria-labelledby="h-usage">
+<h2 id="h-usage">Model usage</h2>
+<p>18 requests, 14,033 input tokens, 4,414 output tokens, median latency 1,417 ms</p>
+</section>
+</main>
+<footer>
+<p>Self-reported. Generated by the learner&#39;s own agent; verify in the interview.</p>
+</footer>
+</body>
+</html>
