@@ -49,6 +49,7 @@ Optionally drop your CV into `learner/cv/` first (PDF or Markdown).
 | `/respec plan` | Asks a few questions and builds a curriculum for your chosen role (or refines the one you have) |
 | `/respec next` | Runs the next step (lesson, quiz, review, assignment) |
 | `/respec submit` | Evaluates your assignment |
+| `/respec dossier` | Turns a passed assignment into an interview dossier for job applications |
 | `/respec dashboard` | Opens the dashboard app in your browser |
 | `/respec update-trends` | Refreshes role and job-market data from the web |
 | `/respec update` | Updates Respec itself to the latest release |
@@ -113,6 +114,15 @@ Your CV, progress, assignments, and API keys stay in the `learner/` folder, whic
 ## Progress and certification
 
 Your progress in `learner/` is your own learning record: plain files you can read and change, written by the agent on your behalf. That's why it isn't proof of anything, and no certificate is based on it. Certification (coming with the web app) is a separate assessment run on Respec's servers: your capstone's tests and evals, questions about your own design decisions, and a short task you haven't seen before. Each certificate links to a public page where anyone can check what was assessed and when.
+
+## Interview dossier
+
+After you pass an assignment, `/respec dossier` turns it into one HTML file you can send with a job application: what you built, 3–5 decisions with excerpts of your own code, your defence answers, the evaluation with its gaps, and questions an interviewer can ask you. The agent writes the story; scores and code come straight from your evaluation and your `work/` folder, so the two can't drift apart.
+
+- **It's self-reported.** It shows your own agent's evaluation, not a certificate, and the page says so. Interviewers can read how to use one at [getrespec.dev/dossier](https://getrespec.dev/dossier/).
+- **Sharing it is your choice.** The file is written to `learner/dossier/` and goes nowhere on its own. Before it's rendered you see every code excerpt that will be in it. Your CV, `.env`, and profile are never used, and the renderer refuses to write a file that contains anything shaped like an API key.
+- It has no scripts or tracking, opens offline as an email attachment, and prints to A4. The "Made with Respec" link at the bottom is optional.
+- The sample in `examples/learner-demo/dossier/` shows what one looks like.
 
 ## Requirements
 
