@@ -16,6 +16,7 @@ import { dirname, join, resolve, relative, extname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { loadUsage, loadPricing, summarize } from "./lib/usage.mjs";
+import { safeInside } from "./lib/paths.mjs";
 import { compareVersions, currentVersion, fetchLatestRelease, readCache, status as versionStatus, updatesDisabled } from "./lib/version.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -63,21 +64,20 @@ function readJson(p) {
   return JSON.parse(readFileSync(p, "utf8"));
 }
 
-// Resolves a path inside modules/, or returns null if it escapes or touches a hidden segment.
+// Resolves a "modules/..." path via safeInside: { path } inside modules/ (symlinks followed),
+// { error: "refused" } for escapes, hidden segments or bad encoding, { error: "missing" } otherwise.
 function safeModulePath(rel) {
-  if (typeof rel !== "string" || !rel) return null;
+  if (typeof rel !== "string" || !rel) return { error: "refused" };
   let decoded;
   try {
     decoded = decodeURIComponent(rel);
   } catch {
-    return null;
+    return { error: "refused" };
   }
-  if (decoded.includes("\0")) return null;
+  if (decoded.includes("\0")) return { error: "refused" };
   const parts = decoded.split(/[\\/]+/).filter(Boolean);
-  if (parts[0] !== "modules" || parts.some((p) => p === ".." || p.startsWith("."))) return null;
-  const abs = resolve(learnerDir, ...parts);
-  if (abs !== modulesDir && !abs.startsWith(modulesDir + sep)) return null;
-  return abs;
+  if (parts[0] !== "modules") return { error: "refused" };
+  return safeInside(modulesDir, parts.slice(1).join("/"));
 }
 
 function isBinary(buf) {
@@ -189,9 +189,9 @@ function api(req, res, url) {
 
   if (p === "/api/file") {
     const rel = url.searchParams.get("path");
-    const abs = safeModulePath(rel);
-    if (!abs) return send(res, 403, { error: "forbidden" });
-    if (!existsSync(abs) || !statSync(abs).isFile()) return send(res, 404, { error: "not_found" });
+    const { path: abs, error } = safeModulePath(rel);
+    if (error === "refused") return send(res, 403, { error: "forbidden" });
+    if (!abs || !statSync(abs).isFile()) return send(res, 404, { error: "not_found" });
     const st = statSync(abs);
     const buf = readFileSync(abs);
     if (isBinary(buf)) return send(res, 200, { path: rel, size: st.size, binary: true, content: null });
@@ -212,8 +212,8 @@ function api(req, res, url) {
 
 // Raw module files (e.g. visual.html in an iframe). Always sandboxed.
 function rawFile(res, url) {
-  const abs = safeModulePath(url.pathname.slice("/files/".length));
-  if (!abs || !existsSync(abs) || !statSync(abs).isFile()) return send(res, 404, "Not found");
+  const { path: abs } = safeModulePath(url.pathname.slice("/files/".length));
+  if (!abs || !statSync(abs).isFile()) return send(res, 404, "Not found");
   res.writeHead(200, {
     "content-type": TYPES[extname(abs).toLowerCase()] ?? "text/plain; charset=utf-8",
     "content-security-policy": "sandbox allow-scripts; default-src 'self' 'unsafe-inline' data:",
