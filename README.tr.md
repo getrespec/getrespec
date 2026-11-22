@@ -49,6 +49,7 @@ Sonra:
 | `/respec plan` | Birkaç soru sorar ve seçtiğin rol için müfredat hazırlar (ya da mevcut müfredatını günceller) |
 | `/respec next` | Sıradaki adımı başlatır (ders, quiz, tekrar, ödev) |
 | `/respec submit` | Ödevini değerlendirir |
+| `/respec dossier` | Geçtiğin bir ödevden iş başvurusu için mülakat dosyası hazırlar |
 | `/respec dashboard` | Dashboard'u tarayıcıda açar |
 | `/respec update-trends` | Rol ve iş ilanı verilerini internetten günceller |
 | `/respec update` | Respec'i en son sürüme günceller |
@@ -113,6 +114,15 @@ CV'n, ilerlemen, ödevlerin ve API anahtarların `learner/` klasöründe kalır.
 ## İlerlemen ve sertifika
 
 `learner/` klasöründeki ilerlemen senin öğrenme kaydın: okuyup değiştirebileceğin düz dosyalar ve onları senin adına agent yazıyor. Bu yüzden bir şeyin kanıtı sayılmaz ve hiçbir sertifika ona dayanmaz. Sertifika (web uygulamasıyla gelecek) Respec'in sunucularında yapılan ayrı bir değerlendirme: bitirme projenin testleri ve eval'leri, kendi tasarım kararlarınla ilgili sorular ve daha önce görmediğin kısa bir görev. Her sertifika, neyin ne zaman değerlendirildiğini herkesin kontrol edebileceği açık bir sayfaya bağlanır.
+
+## Mülakat dosyası
+
+Bir ödevi geçtikten sonra `/respec dossier` onu iş başvurusuna ekleyebileceğin tek bir HTML dosyasına çevirir: ne yaptığın, kendi kodundan alıntılarla 3–5 kararın, savunma cevapların, eksikleriyle birlikte değerlendirme ve mülakatçının sana sorabileceği sorular. Hikâyeyi agent yazar; puanlar ve kod doğrudan değerlendirmenden ve `work/` klasöründen gelir, bu yüzden ikisi birbirinden farklı olamaz.
+
+- **Beyana dayalıdır.** Sertifika değil, kendi agent'ının değerlendirmesini gösterir ve sayfa bunu açıkça söyler. Mülakatçılar dosyanın nasıl okunacağını [getrespec.dev/tr/dossier](https://getrespec.dev/tr/dossier/) adresinde bulabilir.
+- **Paylaşıp paylaşmamak sana kalmış.** Dosya `learner/dossier/` klasörüne yazılır ve kendi başına hiçbir yere gitmez. Oluşturulmadan önce içine girecek her kod alıntısını görürsün. CV'n, `.env` dosyan ve profilin asla kullanılmaz; API anahtarına benzeyen bir şey bulursa renderer dosyayı yazmayı reddeder.
+- Script ya da takip içermez, e-posta eki olarak çevrimdışı açılır ve A4'e yazdırılabilir. En alttaki "Respec ile hazırlandı" linki isteğe bağlıdır.
+- Nasıl göründüğünü `examples/learner-demo/dossier/` klasöründeki örnekte görebilirsin.
 
 ## Gereksinimler
 
