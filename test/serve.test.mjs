@@ -3,7 +3,7 @@ import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import http from "node:http";
 import { spawn } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, cpSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, cpSync, readFileSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,6 +15,7 @@ writeFileSync(join(learner, ".env"), "OPENAI_API_KEY=sk-SECRET\n");
 mkdirSync(join(learner, "cv"), { recursive: true });
 writeFileSync(join(learner, "cv", "cv.md"), "PRIVATE CV");
 writeFileSync(join(learner, "modules", "m02", "work", ".env"), "LEAK=1\n");
+symlinkSync(join(learner, "cv", "cv.md"), join(learner, "modules", "m02", "work", "cv-link.md"));
 const dist = mkdtempSync(join(tmpdir(), "respec-dist-"));
 writeFileSync(join(dist, "index.html"), "<!doctype html><title>app</title>");
 
@@ -77,16 +78,22 @@ test("refuses anything outside modules/ and any dotfile", async () => {
     "modules/m02/work/.env",
     "modules/m02/../../cv/cv.md",
     "/etc/passwd",
+    "modules/m02/work/cv-link.md",
   ]) {
     const r = await get("/api/file?path=" + encodeURIComponent(p));
     assert.equal(r.status, 403, p);
     assert.ok(!r.body.includes("SECRET") && !r.body.includes("PRIVATE") && !r.body.includes("LEAK"), p);
   }
-  for (const p of ["/files/modules/../.env", "/files/modules/%2e%2e/cv/cv.md", "/files/cv/cv.md", "/files/modules/m02/work/.env"]) {
+  for (const p of ["/files/modules/m02/work/cv-link.md", "/files/modules/../.env", "/files/modules/%2e%2e/cv/cv.md", "/files/cv/cv.md", "/files/modules/m02/work/.env"]) {
     const r = await get(p);
     assert.equal(r.status, 404, p);
     assert.ok(!r.body.includes("SECRET") && !r.body.includes("PRIVATE") && !r.body.includes("LEAK"), p);
   }
+});
+
+test("a missing module file is 404, not 403", async () => {
+  assert.equal((await get("/api/file?path=" + encodeURIComponent("modules/m02/work/nope.ts"))).status, 404);
+  assert.equal((await get("/files/modules/m02/work/nope.ts")).status, 404);
 });
 
 test("raw module files are sandboxed", async () => {
