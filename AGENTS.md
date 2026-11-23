@@ -167,7 +167,7 @@ With `lesson_order: "code-first"`, move **Code, step by step** to right after **
 
 Its section markers are `what`, `week`, `postings`, `skills`, `carryover`, `path`, and `check`.
 
-The m00 quiz is scenario-based: describe a task from the role and ask which skills and modules it needs, or what to deliver. Add one ungraded question at the end: "Which of these tasks interests you most?". Record the answer in `history`; if it suggests a different module order, offer the change and apply it only if the learner agrees. A `visual.html` is optional here (e.g. a clickable skill map).
+The m00 quiz checks orientation, not skills the curriculum hasn't taught yet. Each question is a scenario: a task from the role (the lesson's `week` section) and which skills and modules it needs, what gets delivered, and how it's judged. Grade only against what the m00 lesson says. An answer that names the right modules and deliverable is `correct` even without the method; never mark it down for a procedure, order, or tool that a later module teaches. Point to that module in the explanation instead ("you'll see how in m12"). Review rounds for m00 go back over the lesson; they don't teach later modules. Add one ungraded question at the end: "Which of these tasks interests you most?". Record the answer in `history`; if it suggests a different module order, offer the change and apply it only if the learner agrees. A `visual.html` is optional here (e.g. a clickable skill map).
 
 ### Example code (`examples/`)
 
