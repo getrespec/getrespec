@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/getrespec/getrespec.git"
   },
-  "homepage": "https://getrespec.dev",
+  "homepage": "https://www.getrespec.dev",
   "engines": {
     "node": ">=20"
   },

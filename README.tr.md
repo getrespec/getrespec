@@ -119,7 +119,7 @@ CV'n, ilerlemen, ödevlerin ve API anahtarların `learner/` klasöründe kalır.
 
 Bir ödevi geçtikten sonra `/respec dossier` onu iş başvurusuna ekleyebileceğin tek bir HTML dosyasına çevirir: ne yaptığın, kendi kodundan alıntılarla 3–5 kararın, savunma cevapların, eksikleriyle birlikte değerlendirme ve mülakatçının sana sorabileceği sorular. Hikâyeyi agent yazar; puanlar ve kod doğrudan değerlendirmenden ve `work/` klasöründen gelir, bu yüzden ikisi birbirinden farklı olamaz.
 
-- **Beyana dayalıdır.** Sertifika değil, kendi agent'ının değerlendirmesini gösterir ve sayfa bunu açıkça söyler. Mülakatçılar dosyanın nasıl okunacağını [getrespec.dev/tr/dossier](https://getrespec.dev/tr/dossier/) adresinde bulabilir.
+- **Beyana dayalıdır.** Sertifika değil, kendi agent'ının değerlendirmesini gösterir ve sayfa bunu açıkça söyler. Mülakatçılar dosyanın nasıl okunacağını [getrespec.dev/tr/dossier](https://www.getrespec.dev/tr/dossier/) adresinde bulabilir.
 - **Paylaşıp paylaşmamak sana kalmış.** Dosya `learner/dossier/` klasörüne yazılır ve kendi başına hiçbir yere gitmez. Oluşturulmadan önce içine girecek her kod alıntısını görürsün. CV'n, `.env` dosyan ve profilin asla kullanılmaz; API anahtarına benzeyen bir şey bulursa renderer dosyayı yazmayı reddeder.
 - Script ya da takip içermez, e-posta eki olarak çevrimdışı açılır ve A4'e yazdırılabilir. En alttaki "Respec ile hazırlandı" linki isteğe bağlıdır.
 - Nasıl göründüğünü `examples/learner-demo/dossier/` klasöründeki örnekte görebilirsin.
