@@ -73,7 +73,7 @@ test("no script, CSP meta, print stylesheet, footer link with trailing slash", (
   assert.doesNotMatch(html, /<script/i);
   assert.match(html, /content="default-src 'none'; style-src 'unsafe-inline'; img-src data:"/);
   assert.match(html, /@page\{size:A4/);
-  assert.match(html, /<a href="https:\/\/getrespec\.dev\/dossier\/">Made with Respec<\/a>/);
+  assert.match(html, /<a href="https:\/\/www\.getrespec\.dev\/dossier\/">Made with Respec<\/a>/);
 });
 
 test("--no-footer drops the link but keeps the limitations line", () => {
@@ -87,7 +87,7 @@ test("Turkish learner: lang, labels, number format and /tr/dossier/ link", () =>
   assert.match(html, /<html lang="tr">/);
   assert.match(html, /86\/100, geçti/);
   assert.match(html, /14\.033 girdi token&#39;ı/);
-  assert.match(html, /href="https:\/\/getrespec\.dev\/tr\/dossier\/"/);
+  assert.match(html, /href="https:\/\/www\.getrespec\.dev\/tr\/dossier\/"/);
 });
 
 test("same input gives the same bytes", () => {
@@ -236,7 +236,7 @@ test("one h1, no skipped heading levels, no external resources", () => {
   assert.equal(levels[0], 1);
   levels.reduce((prev, l) => (assert.ok(l <= prev + 1, `h${prev} -> h${l}`), l));
   assert.doesNotMatch(html, /\s(?:src|srcset|action)=|<link|@import|url\(/i);
-  assert.deepEqual([...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]), ["https://getrespec.dev/dossier/"]);
+  assert.deepEqual([...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]), ["https://www.getrespec.dev/dossier/"]);
 });
 
 // The gate sample is frozen: a renderer change that alters it must be a deliberate re-render.

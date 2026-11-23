@@ -119,7 +119,7 @@ Your progress in `learner/` is your own learning record: plain files you can rea
 
 After you pass an assignment, `/respec dossier` turns it into one HTML file you can send with a job application: what you built, 3–5 decisions with excerpts of your own code, your defence answers, the evaluation with its gaps, and questions an interviewer can ask you. The agent writes the story; scores and code come straight from your evaluation and your `work/` folder, so the two can't drift apart.
 
-- **It's self-reported.** It shows your own agent's evaluation, not a certificate, and the page says so. Interviewers can read how to use one at [getrespec.dev/dossier](https://getrespec.dev/dossier/).
+- **It's self-reported.** It shows your own agent's evaluation, not a certificate, and the page says so. Interviewers can read how to use one at [getrespec.dev/dossier](https://www.getrespec.dev/dossier/).
 - **Sharing it is your choice.** The file is written to `learner/dossier/` and goes nowhere on its own. Before it's rendered you see every code excerpt that will be in it. Your CV, `.env`, and profile are never used, and the renderer refuses to write a file that contains anything shaped like an API key.
 - It has no scripts or tracking, opens offline as an email attachment, and prints to A4. The "Made with Respec" link at the bottom is optional.
 - The sample in `examples/learner-demo/dossier/` shows what one looks like.
