@@ -13,6 +13,7 @@ The first public release.
 - `/respec role`: 2–3 recommended AI-era roles based on sourced job-market data (`data/market/roles.md`).
 - `/respec plan`: a preference interview (goal, scope, the project or domain lesson examples come from), a skill map of the whole role, and a personal curriculum that starts with a role map (`m00`).
 - `/respec next` and `/respec submit`: lesson → quiz → review → assignment → evaluation, with spaced repetition of weak points.
+- `/respec dossier`: turns a passed assignment into an interview dossier (HTML, plus a PDF printed with your Chrome or Edge). The first page explains it in plain words for recruiters; the technical part has your decisions, evaluation and code excerpts. Offered after each passed assignment.
 - Lessons that open with a real scenario from your chosen context, explain every term before using it, and walk through runnable examples line by line.
 - Writing guides per language (`data/language/`) so lessons read like they were written in your language, not translated.
 - A local, read-only dashboard (`/respec dashboard`): progress, skill map, lessons with a table of contents, quiz history, assignments, your code, and evaluations.

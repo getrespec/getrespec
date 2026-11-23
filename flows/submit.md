@@ -22,7 +22,7 @@ Ask the learner 1–2 questions: "Why did you choose this approach?", "What woul
 Write `evaluation.md` in the learner's language: total score, per-item scores, strengths, gaps, next step, and (if any) a short usage summary: requests, tokens, median latency. Append the same evaluation as a new attempt to `evaluation.json` (AGENTS.md → Structured files), with evidence pointing to files and lines in `work/`. Save the total to `score.assignment` and increment `attempts`.
 
 ## 7. Outcome
-- **70 or above:** complete the module (`flows/next.md` → Completing a module).
+- **70 or above:** complete the module (`flows/next.md` → Completing a module). Then offer the interview dossier in one sentence ("Shall I turn this assignment into an interview dossier you can send with job applications?"). If they say yes, follow `flows/dossier.md`; if not, mention they can ask for it later with `/respec dossier`.
 - **Below 70:** show the gaps with evidence and write a small remedial task targeting only those gaps to `assignment-remedial-<n>.md`. `stage` stays `assignment`. Add the missing concepts to `weak_points`.
 - If you wrote a significant part of the solution at the learner's request, the module closes as `assisted`; tell the learner.
 

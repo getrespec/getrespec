@@ -21,9 +21,24 @@ const decision = (n, ref = { file: "work/src/route.ts", from: 3, to: 5 }) => ({
   tradeoff: "One more hop.",
   ref,
 });
+const plain = (patch = {}) => ({
+  built: "A support chat for a bookstore.",
+  skills: [
+    { title: "Safe.", detail: "The key stays on the server." },
+    { title: "Fast.", detail: "First words in a third of a second." },
+  ],
+  missing: "Try again sends the wrong text.",
+  questions: [
+    { question: "Where does the key live?", good_answer: "On the server." },
+    { question: "What does Stop do?", good_answer: "Stops the AI too." },
+  ],
+  terms: [{ term: "API key", meaning: "A password for a paid AI service." }],
+  ...patch,
+});
 const sample = (patch = {}) => ({
-  schema_version: 1,
+  schema_version: 2,
   module: "m02",
+  plain: plain(),
   summary: "A streaming support chat for a bookstore.",
   decisions: [decision(1), decision(2, { file: "work/src/route.ts", from: 29, to: 31 }), decision(3, { file: "work/src/Chat.tsx", from: 37, to: 40 })],
   questions: ["What happens when the stream drops?", "Why abort upstream in cancel()?"],
@@ -64,7 +79,14 @@ test("renders graded facts from evaluation.json and code from work/", () => {
   assert.match(html, /14,033 input tokens/);
   assert.match(html, /Graded 2026-11-08; code shown from the current work\/ folder\./);
   assert.match(html, /Self-reported\./);
-  assert.ok(html.indexOf('id="h-summary"') < html.indexOf('id="h-decisions"'), "summary comes first");
+  const at = (id) => html.indexOf(`id="h-${id}"`);
+  assert.ok(at("plain") < at("ask") && at("ask") < at("terms") && at("terms") < at("summary"), "plain first page comes first");
+  assert.ok(at("summary") < at("decisions") && at("usage") < at("code"), "technical part, then code at the end");
+  assert.match(html, /<strong>Safe\.<\/strong> The key stays on the server\./);
+  assert.match(html, /<strong>Where does the key live\?<\/strong><br>A good answer: On the server\./);
+  assert.match(html, /<dt>API key<\/dt><dd>A password for a paid AI service\.<\/dd>/);
+  assert.match(html, /Still missing:<\/strong> Try again sends the wrong text\./);
+  assert.match(html, /Code 1 at the end: work\/src\/route\.ts, lines 3–5/);
   assert.match(html, /Best question to ask:<\/strong> What happens when the stream drops\?/);
 });
 
@@ -87,6 +109,7 @@ test("Turkish learner: lang, labels, number format and /tr/dossier/ link", () =>
   assert.match(html, /<html lang="tr">/);
   assert.match(html, /86\/100, geçti/);
   assert.match(html, /14\.033 girdi token&#39;ı/);
+  assert.match(html, /Sade bir dille.*Herkesin sorabileceği sorular.*30 saniyede \(teknik\).*Kod alıntıları/s);
   assert.match(html, /href="https:\/\/www\.getrespec\.dev\/tr\/dossier\/"/);
 });
 
@@ -117,9 +140,12 @@ test("assisted module gets the banner; latest passed attempt is used (remedial)"
 });
 
 test("minimal attempt (passed, total, rubric only) renders without optional sections", () => {
-  const html = render({ evaluation: (e) => (e.attempts = [{ passed: true, total: 80, rubric: [] }]) });
+  const html = render({
+    dossier: sample({ plain: plain({ missing: undefined, terms: undefined }) }),
+    evaluation: (e) => (e.attempts = [{ passed: true, total: 80, rubric: [] }]),
+  });
   assert.match(html, /80\/100, passed/);
-  assert.doesNotMatch(html, /h-defense|h-usage|Graded /);
+  assert.doesNotMatch(html, /h-defense|h-usage|h-terms|Still missing|Graded /);
 });
 
 test("placeholders render; real key formats are refused without echoing the value", () => {
@@ -127,6 +153,8 @@ test("placeholders render; real key formats are refused without echoing the valu
   const key = "sk-proj-" + "a1B2c3D4e5F6g7H8i9J0k1L2m3N4";
   for (const [opts, field] of [
     [{ dossier: sample({ summary: `key ${key}` }) }, /^summary: looks like a OpenAI project key/],
+    [{ dossier: sample({ plain: plain({ built: key }) }) }, /^plain\.built: looks like/],
+    [{ dossier: sample({ plain: plain({ questions: [plain().questions[0], { question: "q", good_answer: key }] }) }) }, /^plain\.questions\[1\]\.good_answer:/],
     [{ evaluation: (e) => (e.attempts[0].defense[0].answer = key) }, /^evaluation\.attempts\[0\]\.defense\[0\]\.answer:/],
   ]) {
     assert.throws(() => render(opts), (e) => e instanceof Refusal && field.test(e.message) && !e.message.includes(key));
@@ -164,7 +192,14 @@ test("refuses long excerpts, files over 512 KB and binary files", () => {
 });
 
 test("refuses bad input with the field name", () => {
-  refused({ dossier: sample({ schema_version: 2 }) }, /^schema_version: expected 1/);
+  refused({ dossier: sample({ schema_version: 1 }) }, /^schema_version: 1 has no plain section/);
+  refused({ dossier: sample({ schema_version: 3 }) }, /^schema_version: expected 2/);
+  refused({ dossier: sample({ plain: undefined }) }, /^plain: expected an object/);
+  refused({ dossier: sample({ plain: plain({ built: "" }) }) }, /^plain\.built: required/);
+  refused({ dossier: sample({ plain: plain({ skills: [plain().skills[0]] }) }) }, /^plain\.skills: expected 2 to 5/);
+  refused({ dossier: sample({ plain: plain({ questions: [{ question: "q" }, { question: "r", good_answer: "a" }] }) }) }, /^plain\.questions\[0\]\.good_answer: required/);
+  refused({ dossier: sample({ plain: plain({ terms: Array(9).fill({ term: "t", meaning: "m" }) }) }) }, /^plain\.terms: expected 0 to 8/);
+  refused({ dossier: sample({ plain: plain({ missing: "" }) }) }, /^plain\.missing: text or leave it out/);
   refused({ dossier: "{nope" }, /dossier\/m02\.json: not valid JSON/);
   refused({ dossier: sample({ module: "m03" }) }, /^module: expected "m02"/);
   refused({ dossier: sample({ summary: "" }) }, /^summary: required/);
@@ -184,6 +219,17 @@ test("CLI writes the HTML, refuses with exit 1 and one line", () => {
   assert.equal(bad.status, 1);
   assert.equal(bad.stderr.trim().split("\n").length, 1);
   assert.match(bad.stderr, /^dossier: refused: module id/);
+});
+
+test("--pdf without a usable browser keeps the HTML and says how to print it", () => {
+  const dir = setup();
+  writeFileSync(join(dir, "dossier", "m02.pdf"), "stale");
+  const env = { ...process.env, RESPEC_BROWSER: join(dir, "no-such-browser") };
+  const r = spawnSync(process.execPath, ["scripts/dossier.mjs", "m02", "--learner", dir, "--pdf"], { cwd: root, encoding: "utf8", env });
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /no Chrome or Edge found for the PDF; open .*m02\.html in a browser and print it to PDF/);
+  assert.ok(readFileSync(join(dir, "dossier", "m02.html"), "utf8").startsWith("<!doctype html>"));
+  assert.throws(() => readFileSync(join(dir, "dossier", "m02.pdf")), /ENOENT/, "stale PDF removed");
 });
 
 test("safeInside: inside, missing, dot segments and symlinks out", () => {
@@ -243,5 +289,5 @@ test("one h1, no skipped heading levels, no external resources", () => {
 test("committed sample matches what the renderer produces", () => {
   const demo = join(root, "examples", "learner-demo");
   const committed = readFileSync(join(demo, "dossier", "m02.html"), "utf8");
-  assert.equal(buildDossier({ learnerDir: demo, id: "m02", footer: false }), committed);
+  assert.equal(buildDossier({ learnerDir: demo, id: "m02" }), committed);
 });
