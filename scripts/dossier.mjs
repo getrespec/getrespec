@@ -4,9 +4,13 @@
 //   node scripts/dossier.mjs m02                              learner/dossier/m02.json -> learner/dossier/m02.html
 //   node scripts/dossier.mjs m02 --learner examples/learner-demo
 //   node scripts/dossier.mjs m02 --no-footer                  drop the "Made with Respec" link
+//   node scripts/dossier.mjs m02 --pdf                        also print learner/dossier/m02.pdf with Chrome or Edge
 //
 // The agent writes only the narrative (learner/dossier/<id>.json):
-//   { schema_version: 1, module, summary,
+//   { schema_version: 2, module,
+//     plain: { built, skills: [2-5 × { title, detail }], missing?,          first page, for readers who don't code
+//              questions: [2-3 × { question, good_answer }], terms?: [0-8 × { term, meaning }] },
+//     summary,                                                              technical part from here on
 //     decisions: [3-5 × { title, why, alternatives, tradeoff, ref: { file: "work/...", from, to } }],
 //     questions: [1-10 strings, the first one is shown in the summary] }
 // Graded facts come from the files the agent can't restate by mistake: scores, rubric, gaps,
@@ -15,7 +19,8 @@
 // Every refusal exits 1 with one line naming the field. It never prints file contents or a
 // matched key, because this output is read by the agent and sent to its model provider.
 
-import { readFileSync, writeFileSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, statSync, existsSync, rmSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { dirname, join, resolve, relative } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { safeInside } from "./lib/paths.mjs";
@@ -42,7 +47,16 @@ const TEXT = {
   en: {
     kind: "Interview dossier",
     assisted: "Assisted: part of the solution was written by the tutor agent.",
-    summary: "In 30 seconds",
+    plain: "In plain words",
+    built: "What they built",
+    skills: "What it shows they can do",
+    missing: "Still missing",
+    ask: "Questions anyone can ask",
+    askLead: "You don't need to read code for these. Listen for the points under each question.",
+    good: "A good answer",
+    terms: "Words you'll see below",
+    part: "For the technical interviewer: the decisions, code and scoring below are what a developer will want to discuss.",
+    summary: "In 30 seconds (technical)",
     result: "Result",
     passed: "passed",
     best: "Best question to ask",
@@ -51,6 +65,8 @@ const TEXT = {
     alternatives: "Alternatives",
     tradeoff: "Tradeoff",
     lines: (f, a, b) => `${f}, lines ${a}–${b}`,
+    codeRef: (n, f, a, b) => `Code ${n} at the end: ${f}, lines ${a}–${b}`,
+    code: "Code excerpts",
     graded: (d) => `Graded ${d}; code shown from the current work/ folder.`,
     questions: "Questions to ask",
     defense: "Defence answers",
@@ -74,7 +90,16 @@ const TEXT = {
   tr: {
     kind: "Mülakat dosyası",
     assisted: "Destekli: çözümün bir kısmını öğretmen agent yazdı.",
-    summary: "30 saniyede",
+    plain: "Sade bir dille",
+    built: "Ne yaptı",
+    skills: "Neleri yapabildiğini gösteriyor",
+    missing: "Eksik kalan",
+    ask: "Herkesin sorabileceği sorular",
+    askLead: "Bunlar için kod okumanız gerekmez. Her sorunun altındaki noktalara kulak verin.",
+    good: "İyi bir cevap",
+    terms: "Aşağıda geçen terimler",
+    part: "Teknik mülakatçı için: aşağıdaki kararlar, kod ve puanlama bir geliştiricinin konuşmak isteyeceği kısımlar.",
+    summary: "30 saniyede (teknik)",
     result: "Sonuç",
     passed: "geçti",
     best: "Sorulacak en iyi soru",
@@ -83,6 +108,8 @@ const TEXT = {
     alternatives: "Alternatifler",
     tradeoff: "Ödünleşim",
     lines: (f, a, b) => `${f}, ${a}–${b}. satırlar`,
+    codeRef: (n, f, a, b) => `Kod ${n}, sonda: ${f}, ${a}–${b}. satırlar`,
+    code: "Kod alıntıları",
     graded: (d) => `${d} tarihinde değerlendirildi; kod, work/ klasörünün şu anki halinden.`,
     questions: "Sorulabilecek sorular",
     defense: "Savunma cevapları",
@@ -132,8 +159,21 @@ function readJson(path, label) {
 
 function validate(d, id) {
   if (!d || typeof d !== "object" || Array.isArray(d)) refuse("dossier: must be a JSON object");
-  if (d.schema_version !== 1) refuse(`schema_version: expected 1, got ${JSON.stringify(d.schema_version)}`);
+  if (d.schema_version === 1) refuse("schema_version: 1 has no plain section; add plain (flows/dossier.md) and set schema_version to 2");
+  if (d.schema_version !== 2) refuse(`schema_version: expected 2, got ${JSON.stringify(d.schema_version)}`);
   if (d.module !== id) refuse(`module: expected "${id}"`);
+  const p = d.plain;
+  if (!p || typeof p !== "object" || Array.isArray(p)) refuse("plain: expected an object");
+  if (!isText(p.built)) refuse("plain.built: required text");
+  if (p.missing !== undefined && !isText(p.missing)) refuse("plain.missing: text or leave it out");
+  const items = (key, min, max, fields) => {
+    const v = p[key] ?? (min ? undefined : []);
+    if (!Array.isArray(v) || v.length < min || v.length > max) refuse(`plain.${key}: expected ${min} to ${max} entries`);
+    v.forEach((x, i) => fields.forEach((k) => isText(x?.[k]) || refuse(`plain.${key}[${i}].${k}: required text`)));
+  };
+  items("skills", 2, 5, ["title", "detail"]);
+  items("questions", 2, 3, ["question", "good_answer"]);
+  items("terms", 0, 8, ["term", "meaning"]);
   if (!isText(d.summary)) refuse("summary: required text");
   if (!Array.isArray(d.decisions) || d.decisions.length < 3 || d.decisions.length > 5)
     refuse("decisions: expected 3 to 5 entries");
@@ -206,6 +246,11 @@ export function buildDossier({ learnerDir, id, footer = true }) {
   keyCheck([
     ["state.json module title", mod.title],
     ["state.json target_role.title", state.target_role?.title],
+    ["plain.built", d.plain.built],
+    ["plain.missing", d.plain.missing],
+    ...d.plain.skills.flatMap((x, i) => ["title", "detail"].map((k) => [`plain.skills[${i}].${k}`, x[k]])),
+    ...d.plain.questions.flatMap((x, i) => ["question", "good_answer"].map((k) => [`plain.questions[${i}].${k}`, x[k]])),
+    ...(d.plain.terms ?? []).flatMap((x, i) => ["term", "meaning"].map((k) => [`plain.terms[${i}].${k}`, x[k]])),
     ["summary", d.summary],
     ...d.decisions.flatMap((x, i) => [
       ...["title", "why", "alternatives", "tradeoff", "ref"].map((k) => [`decisions[${i}].${k}`, k === "ref" ? x.ref.file : x[k]]),
@@ -226,6 +271,28 @@ export function buildDossier({ learnerDir, id, footer = true }) {
 
   const parts = [];
   if (mod.status === "assisted") parts.push(`<p class="banner" role="note"><strong>${esc(t.assisted)}</strong></p>`);
+  // First page: for a recruiter or anyone who doesn't read code. The technical part follows unchanged.
+  const pl = d.plain;
+  parts.push(
+    `<section class="summary" aria-labelledby="h-plain">\n<h2 id="h-plain">${esc(t.plain)}</h2>\n` +
+      `<p><strong>${esc(t.built)}:</strong> ${esc(pl.built)}</p>\n<h3>${esc(t.skills)}</h3>\n<ul>\n` +
+      pl.skills.map((x) => `<li><strong>${esc(x.title)}</strong> ${esc(x.detail)}</li>`).join("\n") +
+      `\n</ul>\n<p><strong>${esc(t.result)}:</strong> ${esc(a.total)}/100, ${esc(t.passed)}</p>\n` +
+      (isText(pl.missing) ? `<p><strong>${esc(t.missing)}:</strong> ${esc(pl.missing)}</p>\n` : "") +
+      `<p class="note">${esc(t.limits)}</p>\n</section>`,
+  );
+  parts.push(
+    section(
+      "ask",
+      t.ask,
+      `<p>${esc(t.askLead)}</p>\n<ol class="ask">\n` +
+        pl.questions.map((x) => `<li><strong>${esc(x.question)}</strong><br>${esc(t.good)}: ${esc(x.good_answer)}</li>`).join("\n") +
+        "\n</ol>",
+    ),
+  );
+  if (pl.terms?.length)
+    parts.push(section("terms", t.terms, `<dl>\n${pl.terms.map((x) => `<dt>${esc(x.term)}</dt><dd>${esc(x.meaning)}</dd>`).join("\n")}\n</dl>`));
+  parts.push(`<p class="part" role="note">${esc(t.part)}</p>`);
   parts.push(
     `<section class="summary" aria-labelledby="h-summary">\n<h2 id="h-summary">${esc(t.summary)}</h2>\n<p>${esc(d.summary)}</p>\n` +
       `<p><strong>${esc(t.result)}:</strong> ${esc(a.total)}/100, ${esc(t.passed)}</p>\n` +
@@ -242,10 +309,9 @@ export function buildDossier({ learnerDir, id, footer = true }) {
             [["why", t.why], ["alternatives", t.alternatives], ["tradeoff", t.tradeoff]]
               .map(([k, label]) => `<dt>${esc(label)}</dt><dd>${esc(x[k])}</dd>`)
               .join("\n") +
-            `\n</dl>\n<figure>\n<figcaption>${esc(t.lines(x.ref.file, x.ref.from, x.ref.to))}</figcaption>\n` +
-            `<pre><code>${esc(codes[i])}</code></pre>\n</figure>\n</article>`,
+            `\n</dl>\n<p class="note">${esc(t.codeRef(i + 1, x.ref.file, x.ref.from, x.ref.to))}</p>\n</article>`,
         )
-        .join("\n") + (isText(a.date) ? `\n<p class="note">${esc(t.graded(a.date))}</p>` : ""),
+        .join("\n"),
     ),
   );
   parts.push(section("questions", t.questions, `<ol>\n${d.questions.map((q) => `<li>${esc(q)}</li>`).join("\n")}\n</ol>`));
@@ -266,6 +332,19 @@ export function buildDossier({ learnerDir, id, footer = true }) {
   if (gaps.length) evalBody += `\n<h3>${esc(t.gaps)}</h3>\n${ul(gaps)}`;
   parts.push(section("evaluation", t.evaluation, evalBody));
   if (usage.length) parts.push(section("usage", t.usage, `<p>${esc(usage.join(", "))}</p>`));
+  parts.push(
+    section(
+      "code",
+      t.code,
+      d.decisions
+        .map(
+          (x, i) =>
+            `<figure>\n<figcaption><strong>${i + 1}. ${esc(x.title)}</strong><br>${esc(t.lines(x.ref.file, x.ref.from, x.ref.to))}</figcaption>\n` +
+            `<pre><code>${esc(codes[i])}</code></pre>\n</figure>`,
+        )
+        .join("\n") + (isText(a.date) ? `\n<p class="note">${esc(t.graded(a.date))}</p>` : ""),
+    ),
+  );
 
   const foot = `<p>${esc(t.limits)}</p>` + (footer ? `\n<p><a href="${t.link}">${esc(t.made)}</a></p>` : "");
   const role = isText(state.target_role?.title) ? `\n<p class="sub">${esc(state.target_role.title)}</p>` : "";
@@ -276,7 +355,7 @@ export function buildDossier({ learnerDir, id, footer = true }) {
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="generator" content="Respec dossier, schema 1">
+<meta name="generator" content="Respec dossier, schema 2">
 <title>${esc(`${t.kind}: ${title}`)}</title>
 <style>${CSS}</style>
 </head>
@@ -314,11 +393,13 @@ a{color:var(--ultra);text-underline-offset:.18em}
 a:focus-visible{outline:3px solid var(--ultra);outline-offset:2px;border-radius:4px}
 .summary{background:var(--surface);border-left:4px solid var(--ultra);border-radius:0 12px 12px 0;padding:.2rem 1.2rem;margin-top:1.5rem}
 .summary h2{border:0;margin-top:.8rem;padding:0}
+.ask li{margin:.7rem 0}
+.part{margin:2.5rem 0 0;padding:.7rem 1rem;border-radius:12px;background:var(--ultra-soft);font-weight:650}
 .banner{background:var(--gold-soft);color:var(--ink);border:2px solid var(--gold-ink);border-radius:12px;padding:.7rem 1rem}
 article{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:.2rem 1.2rem 1rem;margin:1rem 0}
 dt{font-weight:650;margin-top:.6rem}
 dd{margin:0}
-figure{margin:1rem 0 0}
+figure{margin:1.4rem 0 0}
 figcaption{font-size:.9rem;margin-bottom:.3rem}
 pre{background:var(--code-bg);border:1px solid var(--rule);border-radius:8px;padding:.8rem;overflow-x:auto;margin:0}
 code{font:.85rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
@@ -327,14 +408,45 @@ th,td{text-align:left;vertical-align:top;padding:.45rem .5rem;border-bottom:1px 
 .num{white-space:nowrap}
 body>footer{margin-top:2.5rem;padding-bottom:2rem;border-top:1px solid var(--rule);color:var(--muted)}
 @page{size:A4;margin:16mm}
-@media print{:root{--paper:#fff;--surface:#fff;--ink:#000;--muted:#333;--code-bg:#fff}body{font-size:11pt}main,body>footer{max-width:none;padding:0}article,figure,tr{break-inside:avoid}h2,h3{break-after:avoid}pre{white-space:pre-wrap}a::after{content:" (" attr(href) ")"}}
+@media print{:root{--paper:#fff;--surface:#fff;--ink:#000;--muted:#333;--code-bg:#fff}body{font-size:11pt}main,body>footer{max-width:none;padding:0}article,figure,tr,.ask li,dt,dd{break-inside:avoid}h2,h3{break-after:avoid}pre{white-space:pre-wrap}a::after{content:" (" attr(href) ")"}}
 `;
+
+// Chromium-based browsers print to PDF headless, so the PDF needs no dependency. RESPEC_BROWSER overrides the search.
+function browsers() {
+  const e = process.env;
+  if (e.RESPEC_BROWSER) return [e.RESPEC_BROWSER];
+  if (process.platform === "darwin")
+    return ["Google Chrome", "Microsoft Edge", "Chromium", "Brave Browser"].map((n) => `/Applications/${n}.app/Contents/MacOS/${n}`);
+  if (process.platform === "win32")
+    return [
+      [e.ProgramFiles, "Google/Chrome/Application/chrome.exe"],
+      [e["ProgramFiles(x86)"], "Google/Chrome/Application/chrome.exe"],
+      [e.LOCALAPPDATA, "Google/Chrome/Application/chrome.exe"],
+      [e["ProgramFiles(x86)"], "Microsoft/Edge/Application/msedge.exe"],
+      [e.ProgramFiles, "Microsoft/Edge/Application/msedge.exe"],
+    ]
+      .filter(([base]) => base)
+      .map(([base, p]) => join(base, p));
+  return ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "microsoft-edge"];
+}
+
+function printPdf(html, pdf) {
+  rmSync(pdf, { force: true }); // never leave an old PDF next to a new HTML
+  for (const bin of browsers()) {
+    const r = spawnSync(bin, ["--headless", "--disable-gpu", "--no-pdf-header-footer", `--print-to-pdf=${pdf}`, pathToFileURL(html).href], {
+      stdio: "ignore",
+      timeout: 60_000,
+    });
+    if (r.status === 0 && existsSync(pdf)) return true;
+  }
+  return false;
+}
 
 function main(argv) {
   const learnerAt = argv.indexOf("--learner");
   const id = argv.find((x, i) => !x.startsWith("--") && i !== learnerAt + 1);
   if (!id || (learnerAt >= 0 && !argv[learnerAt + 1])) {
-    console.error("usage: node scripts/dossier.mjs <module-id> [--learner <dir>] [--no-footer]");
+    console.error("usage: node scripts/dossier.mjs <module-id> [--learner <dir>] [--no-footer] [--pdf]");
     return 2;
   }
   const learnerDir = resolve(root, learnerAt >= 0 ? argv[learnerAt + 1] : "learner");
@@ -343,6 +455,11 @@ function main(argv) {
     const out = join(learnerDir, "dossier", `${id}.html`);
     writeFileSync(out, html);
     console.log(`dossier: wrote ${relative(process.cwd(), out)}`);
+    if (argv.includes("--pdf")) {
+      const pdf = out.replace(/\.html$/, ".pdf");
+      if (printPdf(out, pdf)) console.log(`dossier: wrote ${relative(process.cwd(), pdf)}`);
+      else console.log(`dossier: no Chrome or Edge found for the PDF; open ${relative(process.cwd(), out)} in a browser and print it to PDF`);
+    }
     return 0;
   } catch (e) {
     if (!(e instanceof Refusal)) throw e;

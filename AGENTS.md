@@ -58,7 +58,7 @@ In Claude Code these run as `/respec <command>`. In other agents (Codex, Cursor,
 | `plan` | Preference interview, coverage map, and personal curriculum (or refine an existing one) | `flows/plan.md` |
 | `next` | Next step (lesson, quiz, review, assignment) | `flows/next.md` |
 | `submit` | Assignment evaluation | `flows/submit.md` |
-| `dossier [<module-id>]` | Interview dossier for a passed assignment: one HTML file to send with job applications | `flows/dossier.md` |
+| `dossier [<module-id>]` | Interview dossier for a passed assignment: one HTML file and a PDF copy to send with job applications | `flows/dossier.md` |
 | `dashboard` | Open the local dashboard app | `flows/dashboard.md` |
 | `update-trends` | Refresh role and job-market data from the web | `flows/update-trends.md` |
 | `update` | Update Respec itself to the latest release | `flows/update.md` |
@@ -77,7 +77,7 @@ scripts/serve.mjs             Local dashboard server (read-only)
 dashboard/                    Dashboard app source (React); dashboard/dist is the built app
 scripts/migrate-state.mjs     Upgrades older state files
 scripts/check-update.mjs      Checks GitHub for a newer Respec release (cached once a day)
-scripts/dossier.mjs           Renders learner/dossier/<id>.json into a self-contained HTML file
+scripts/dossier.mjs           Renders learner/dossier/<id>.json into a self-contained HTML file (--pdf: also a PDF)
 package.json, CHANGELOG.md    The installed Respec version and what changed in each release
 learner/                      Learner-specific; never committed
   cv/                         The learner's CV
@@ -88,6 +88,7 @@ learner/                      Learner-specific; never committed
   .update-check.json          Result of the last update check (written by check-update.mjs)
   dossier/<module-id>.json    Dossier narrative written by the agent (flows/dossier.md)
   dossier/<module-id>.html    Rendered dossier the learner shares (scripts/dossier.mjs)
+  dossier/<module-id>.pdf     PDF copy, printed with the learner's Chrome or Edge
   modules/<module-id>/
     lesson.md                 Lesson
     visual.html               (optional) interactive diagram

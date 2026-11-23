@@ -117,11 +117,11 @@ CV'n, ilerlemen, ödevlerin ve API anahtarların `learner/` klasöründe kalır.
 
 ## Mülakat dosyası
 
-Bir ödevi geçtikten sonra `/respec dossier` onu iş başvurusuna ekleyebileceğin tek bir HTML dosyasına çevirir: ne yaptığın, kendi kodundan alıntılarla 3–5 kararın, savunma cevapların, eksikleriyle birlikte değerlendirme ve mülakatçının sana sorabileceği sorular. Hikâyeyi agent yazar; puanlar ve kod doğrudan değerlendirmenden ve `work/` klasöründen gelir, bu yüzden ikisi birbirinden farklı olamaz.
+Bir ödevi geçtiğinde agent onu bir mülakat dosyasına çevirmeyi önerir; istersen sonra `/respec dossier` ile de isteyebilirsin. İş başvurusuna ekleyebileceğin bir HTML dosyası ve PDF kopyası çıkar. İlk sayfa ne yaptığını sade bir dille anlatır ve kod okumayan bir İK uzmanının sorabileceği soruları verir. Gerisi teknik mülakatçı için: 3–5 kararın, savunma cevapların, eksikleriyle birlikte değerlendirme, sana sorulabilecek sorular ve en sonda kendi kodundan alıntılar. Hikâyeyi agent yazar; puanlar ve kod doğrudan değerlendirmenden ve `work/` klasöründen gelir, bu yüzden ikisi birbirinden farklı olamaz.
 
 - **Beyana dayalıdır.** Sertifika değil, kendi agent'ının değerlendirmesini gösterir ve sayfa bunu açıkça söyler. Mülakatçılar dosyanın nasıl okunacağını [getrespec.dev/tr/dossier](https://www.getrespec.dev/tr/dossier/) adresinde bulabilir.
 - **Paylaşıp paylaşmamak sana kalmış.** Dosya `learner/dossier/` klasörüne yazılır ve kendi başına hiçbir yere gitmez. Oluşturulmadan önce içine girecek her kod alıntısını görürsün. CV'n, `.env` dosyan ve profilin asla kullanılmaz; API anahtarına benzeyen bir şey bulursa renderer dosyayı yazmayı reddeder.
-- Script ya da takip içermez, e-posta eki olarak çevrimdışı açılır ve A4'e yazdırılabilir. En alttaki "Respec ile hazırlandı" linki isteğe bağlıdır.
+- Script ya da takip içermez ve çevrimdışı açılır. PDF, kendi Chrome ya da Edge tarayıcınla oluşturulur; ikisi de yoksa HTML'i açıp PDF olarak yazdırabilirsin. En alttaki "Respec ile hazırlandı" linki isteğe bağlıdır.
 - Nasıl göründüğünü `examples/learner-demo/dossier/` klasöründeki örnekte görebilirsin.
 
 ## Gereksinimler

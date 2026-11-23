@@ -1,6 +1,64 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "module": "m02",
+  "plain": {
+    "built": "a help box on an online bookstore's order page. A customer types a question about their order, and the AI's answer appears on screen as it is being written. The customer can stop it halfway.",
+    "skills": [
+      {
+        "title": "Connect an AI service safely.",
+        "detail": "The secret key and the AI's instructions stay on the company's server, so customers can't see, copy or change them."
+      },
+      {
+        "title": "Keep it fast.",
+        "detail": "The first words of an answer appear in about a third of a second."
+      },
+      {
+        "title": "Watch the cost.",
+        "detail": "When a customer presses Stop, the AI stops writing too, so the company doesn't pay for text nobody reads."
+      },
+      {
+        "title": "Build for everyone.",
+        "detail": "People who use screen readers hear when an answer starts and stops."
+      }
+    ],
+    "missing": "the \"Try again\" button sends the wrong text instead of the customer's question, and they weren't sure how to recover when the connection drops.",
+    "questions": [
+      {
+        "question": "Where does the AI's secret key live in your project, and why there?",
+        "good_answer": "on the server, never in the customer's browser. Anything in the browser can be copied, and a copied key lets strangers use the service on the company's bill."
+      },
+      {
+        "question": "What happens when a customer presses Stop?",
+        "good_answer": "the answer stops on screen and the AI stops writing on the server, so there's no cost for unread text. What was already written stays visible, and it isn't shown as an error."
+      },
+      {
+        "question": "What would you fix first, and how?",
+        "good_answer": "names the \"Try again\" problem without being prompted: it should resend the customer's last question. Knowing your own gaps is a good sign."
+      }
+    ],
+    "terms": [
+      {
+        "term": "API key",
+        "meaning": "A password that lets an app use a paid AI service. Whoever has it can spend the owner's money."
+      },
+      {
+        "term": "Server and browser",
+        "meaning": "The server is the company's computer that runs the app; the browser is what the customer sees. Customers can read anything that reaches their browser."
+      },
+      {
+        "term": "Streaming",
+        "meaning": "Showing the answer piece by piece while it is written, instead of waiting for all of it."
+      },
+      {
+        "term": "System prompt",
+        "meaning": "Hidden instructions that tell the AI how to behave, such as \"answer in at most three short sentences\"."
+      },
+      {
+        "term": "Token",
+        "meaning": "The unit AI services count and charge by; roughly three quarters of a word."
+      }
+    ]
+  },
   "summary": "A help box for an online bookstore's order page: a customer asks about their order and the answer streams in word by word, with a Stop button and a status line screen readers announce. The model call and its instructions live on the server, so the browser never sees the API key or the prompt. Worth asking about: the Try again button resends the wrong question, and the candidate wasn't sure how to recover from a dropped connection.",
   "decisions": [
     {
