@@ -1,5 +1,9 @@
-# Learner-specific data (CV, progress, assignments, API keys)
-learner/
+# Learner-specific data (CV, progress, assignments, API keys).
+# Only the empty learner/cv/ folder is tracked, so a fresh clone has somewhere to put the CV.
+learner/*
+!learner/cv/
+learner/cv/*
+!learner/cv/.gitkeep
 .env
 node_modules/
 .DS_Store
