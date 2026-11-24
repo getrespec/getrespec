@@ -7,6 +7,11 @@ A role pack is the detailed, sourced skill map for one target role: what the rol
 | Pack | Status | Last researched |
 |---|---|---|
 | [ai-product-engineer](ai-product-engineer.md) | researched | 2026-11-20 |
+| [ai-engineer](ai-engineer.md) | researched | 2026-11-24 |
+| [ai-fluent-developer](ai-fluent-developer.md) | researched | 2026-11-24 |
+| [ai-security-engineer](ai-security-engineer.md) | researched | 2026-11-24 |
+| [forward-deployed-engineer](forward-deployed-engineer.md) | researched | 2026-11-24 |
+| [ml-engineer](ml-engineer.md) | researched | 2026-11-24 |
 
 Packs exist only for roles where the main work is writing software (decided 2026-11-24); advisory roles such as `ai-consultant` stay in `roles.md` without one. Roles in `roles.md` without a pack fall back to their "Typical skills" line and a search of current postings; the agent should say so when it plans.
 

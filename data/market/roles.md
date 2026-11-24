@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-11-18
+last_updated: 2026-11-24
 ---
 
 # AI-Era Roles: Demand and Transition Map
@@ -202,6 +202,7 @@ Roles not yet confirmed by two independent sources, or with unclear volume:
 
 ## Changelog
 
+- **2026-11-24** – Role packs for `ai-engineer` (22 postings), `forward-deployed-engineer` (18), `ai-fluent-developer` (28), and `ml-engineer` (23); their sections updated from the packs. New role `ai-security-engineer` (CyberSN and SANS) with a pack (13 postings). FDE demand figures updated to Lightcast via CNBC (2026-10). Role packs now cover only roles where the main work is writing software; `ai-consultant` stays without one.
 - **2026-11-20** – `ai-product-engineer`: definition and typical skills updated from 9 current postings (the role is now full-stack, not frontend-only); links to the new role pack `data/roles/ai-product-engineer.md`. OWASP references updated to the 2026 edition.
 - **2026-11-18** – Translated to English; Turkey data moved into per-role "Market notes". Role id `ai-yetkin-gelistirici` renamed to `ai-fluent-developer`.
 - **2026-11-18** – First version. Sources: LinkedIn Jobs on the Rise 2026, Dice, Ceipal, Indeed Hiring Lab, Lightcast, Veritone, GreatFrontEnd, Kariyer.net.
