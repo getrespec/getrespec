@@ -8,7 +8,7 @@ A role pack is the detailed, sourced skill map for one target role: what the rol
 |---|---|---|
 | [ai-product-engineer](ai-product-engineer.md) | researched | 2026-11-20 |
 
-Roles in `roles.md` without a pack fall back to their "Typical skills" line and a search of current postings; the agent should say so when it plans.
+Packs exist only for roles where the main work is writing software (decided 2026-11-24); advisory roles such as `ai-consultant` stay in `roles.md` without one. Roles in `roles.md` without a pack fall back to their "Typical skills" line and a search of current postings; the agent should say so when it plans.
 
 ## Format
 
@@ -16,7 +16,7 @@ Start from [`_template.md`](_template.md). A pack has:
 
 - **Front matter:** `role` (the id from `roles.md`), `title`, `status` (`draft` or `researched`), `last_researched`, `postings_reviewed`.
 - **The role today:** what the work is, other titles it's posted under, and anything that contradicts the short definition in `roles.md`.
-- **Postings reviewed:** every posting the skill counts come from, with link, date, and where it was read. At least 8 postings, from more than one market when possible.
+- **Postings reviewed:** every posting the skill counts come from, with link, date, and where it was read. At least 10 postings (8 if the role is rare, and say so), from more than one market when possible.
 - **Skill tree:** skills grouped by area. Each skill has a stable ID (`A1`, `B2`…), a priority, how many reviewed postings ask for it, its prerequisites (IDs), measurable "can do" outcomes, and how to check it.
 - **Learning order:** a typical path through the prerequisites, with any reason to deviate.
 - **Market notes:** how the role shows up in specific countries.
