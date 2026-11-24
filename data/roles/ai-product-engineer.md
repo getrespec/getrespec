@@ -42,7 +42,7 @@ All read on 2026-11-20 through Firecrawl job search. "Board" means read on the e
 
 | ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
 |---|---|---|---|---|---|---|
-| A1 | How LLMs behave: tokens, context window, sampling, statelessness, cost per token | core | definition | – | Estimate a request's tokens and cost; predict what temperature and history length change | Scenario quiz with numbers |
+| A1 | How LLMs behave in an API call: tokens, context window, output limits, statelessness, cost per token, and which settings the current models accept | core | definition | – | Estimate a request's tokens and cost; predict what history length and output limits change; check the provider docs before relying on a setting | Scenario quiz with numbers |
 | A2 | Calling LLM APIs from a server: keys, errors, retries, timeouts | core | 9/9 | A1 | Call a model safely from a backend; handle rate limits and failures | Assignment: endpoint with failure handling |
 | A3 | Prompt and context design: system prompts, examples, delimiters, grounding | core | 9/9 | A1 | Write a prompt that holds its format and declines outside its source | Test cases including out-of-scope questions |
 | A4 | Structured output and validation (schemas, retry with feedback) | important | 2/9 + implied by agents | A2 | Get schema-valid data and handle invalid output | Assignment with a validator |
@@ -114,4 +114,5 @@ Evals (C1) come early on purpose: postings treat measuring quality as part of bu
 
 ## Changelog
 
+- 2026-11-24: A1 reworded to follow current provider docs (sampling settings are restricted on many current models); same ID and priority.
 - 2026-11-20: first version, from 9 postings.
