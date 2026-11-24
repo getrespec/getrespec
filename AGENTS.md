@@ -280,6 +280,11 @@ The dashboard app renders `quiz.json` and `evaluation.json`. Write them **togeth
 
 3–5 questions, mostly scenario-based ("In this situation, which would you choose and why?"), set in `example_context`; at most one recall question. Use only terms the lesson has explained. Ask in chat, collect the answers, then write the questions, answers, right/wrong, and a short explanation to `quiz.md` and append the attempt to `quiz.json`. Never write the answer key to a file before the learner has answered.
 
+Ask plainly, the way a senior colleague would in a code review. This applies to review mini quizzes too.
+- One question per item, asking for one thing. Say exactly what the answer should contain: "What two checks show the stop button works?", not "With which observable criteria would you show you're done?".
+- No abstract wording ("observable criteria", "deliverable", "acceptance", "dimensions") unless the lesson defined it; name the concrete thing instead.
+- If a question refers to the lesson, quote the part it means ("the 'how it's judged' column of the table in section 2").
+
 ## Assignment format (`assignment.md`)
 
 Scenario (set in `example_context`; the capstone in `capstone_context`), constraints, deliverables, success criteria, and a rubric (weighted items totaling 100; every rubric includes a "Reasoning and understanding" item). The learner works in `work/`. Assignments must be runnable; provide acceptance tests or a run command when possible.
