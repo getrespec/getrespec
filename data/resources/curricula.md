@@ -8,6 +8,17 @@ Used for topic order and "further reading" links when building a curriculum. **C
 
 Columns: **Roles** = which roles it fits (`roles.md` ids), **Cost** = free/paid.
 
+## Official provider docs (source of truth for lessons)
+
+Lessons take API behavior, parameters, model names, limits, and prices from these pages (AGENTS.md → Checking facts that change). Check them each time; they change often.
+
+| Provider | Docs | Models and what they support |
+|---|---|---|
+| Anthropic (Claude) | [platform.claude.com/docs](https://platform.claude.com/docs/en/home) | [Models overview](https://platform.claude.com/docs/en/models/overview) |
+| OpenAI | [developers.openai.com/api/docs](https://developers.openai.com/api/docs) | [Models](https://developers.openai.com/api/docs/models) |
+| Google (Gemini) | [ai.google.dev/gemini-api/docs](https://ai.google.dev/gemini-api/docs) | [Models](https://ai.google.dev/gemini-api/docs/models) |
+| Ollama (local models) | [docs.ollama.com](https://docs.ollama.com/api/introduction) | [Model library](https://ollama.com/library) |
+
 ## Roadmaps (skeleton for topic order)
 
 | Resource | What it offers | Roles | Cost |

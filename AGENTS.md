@@ -189,7 +189,16 @@ Make it accessible: keyboard operable, respects `prefers-reduced-motion`, color 
 
 ### Checking facts that change
 
-This field moves fast, and your own knowledge has a cutoff. Before writing a lesson, verify every fact that may have changed against the current official source (web search or fetch), not memory:
+This field moves fast, and your own knowledge has a cutoff. Before writing a lesson, verify every fact that may have changed against the current official source (web search or fetch), not memory.
+
+**The source of truth is the frontier providers' own documentation**, listed under "Official provider docs" in `data/resources/curricula.md`. Start from the docs of the provider the learner uses (`preferences.llm_access`) and mention how the others differ only when it matters. Blogs, courses, and community posts can help explain an idea, but they never decide what an API does or what a lesson covers.
+
+**Teach what today's models actually expose.** Before building a section around a concept or parameter, check that current frontier models use it:
+- If current models ignore, restrict, or reject it (for example, sampling settings on reasoning models), say so at the start and keep it to a short note. Teach what replaces it instead.
+- Leave out model internals and theory (logits, softmax, attention, training details) unless they explain something the learner will see in a real API response. A Respec learner builds on models; they don't build models (except in `ml-engineer` curricula).
+- If the learner wouldn't meet it in the provider docs or in the role's postings, it doesn't belong in the lesson.
+
+Verify these against those docs:
 - SDK and API details: method and parameter names, response fields, default values, limits;
 - model names and IDs, and what a provider currently recommends;
 - prices, quotas, and context sizes;
