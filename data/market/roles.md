@@ -167,16 +167,21 @@ Postings for "Yapay Zeka Mühendisi" appear on kariyer.net and techcareer.net in
 
 ## ml-engineer — Machine Learning Engineer
 
-**Definition:** Trains, fine-tunes, and ships models to production. Requires a math and deep learning foundation.
+**Definition:** Trains, evaluates, and ships models to production and keeps them healthy: serving, pipelines, monitoring, retraining. In late-2026 postings the production side (deployment 18/23, monitoring 15/23) is asked for more often than modelling theory. The title covers three jobs: production/applied ML (most common), MLOps/ML platform (open to backend and SRE backgrounds), and model training/LLM adaptation (fine-tuning, post-training, GPU clusters). The modelling side requires a math and deep learning foundation ([role pack](../roles/ml-engineer.md), 23 postings, 2026-11).
+
+**Variant titles:** MLOps Engineer, ML Platform Engineer, Applied ML Engineer, AI/ML Engineer, Makine Öğrenmesi Mühendisi (TR).
 
 **Demand signals**
 | Signal | Value | Scope | Type | Source | Date |
 |---|---|---|---|---|---|
 | ML Engineer median total comp | $282,750 | US, self-reported | salary | [Levels.fyi via GreatFrontEnd](https://www.greatfrontend.com/blog/frontend-developer-to-ai-engineer) | 2026-10 |
+| Published base-pay ranges in reviewed postings | USD 161,300–301,000 (senior and staff) | US, 5 postings | salary | [role pack](../roles/ml-engineer.md), P1–P3, P11, P12 | 2026-11 |
 
-**Typical skills:** Python, PyTorch, linear algebra, probability, training and evaluation loops, MLOps.
+**Market notes — Turkey:** 7 of the 23 reviewed postings (2026-10/11), in Istanbul, Ankara, and remote. Classical ML and Spark are common (Oredata, Datazza); on-prem deployment stands out (OpenShift in 2 postings; Orbina runs on-prem GPU inference with vLLM). Sectors: aviation, defence R&D (RockSoft, posted in Turkish, asks for linear algebra and probability explicitly), drones and computer vision, GenAI platforms.
 
-**For whom:** The longest path for application developers; shorter for data engineers.
+**Typical skills:** Python, SQL, and Spark; classical ML (scikit-learn, gradient-boosted trees) and evaluation; PyTorch and one domain (recommendations, forecasting, computer vision, NLP); serving, Docker and Kubernetes, CI/CD, MLflow, drift monitoring and retraining; one cloud ML platform. Fine-tuning and LLMs appear in a minority of postings (fine-tuning 4/23, LoRA 0/23). Full skill tree in the [role pack](../roles/ml-engineer.md).
+
+**For whom:** The longest path for application developers. Backend and platform developers have a shorter way in through MLOps-leaning roles; data engineers have a shorter path overall.
 
 ---
 
