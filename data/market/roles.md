@@ -44,7 +44,7 @@ last_updated: 2026-11-18
 
 ## ai-engineer — AI Engineer / Applied AI Engineer
 
-**Definition:** An engineer who integrates existing models (especially LLMs) into products. The title doesn't describe a single job: the range runs from customer-facing advisory roles to ML roles requiring PyTorch, with product engineering on LLM APIs in between ([GreatFrontEnd](https://www.greatfrontend.com/blog/frontend-developer-to-ai-engineer), 2026-10). The 2026 expectation: agent design, RAG architecture, fine-tuning when it makes sense, eval pipelines, observability, and deployment ([ODSC](https://opendatascience.com/your-company-promised-to-reskill-you-for-ai-most-wont/)).
+**Definition:** An engineer who integrates existing models (especially LLMs) into products. In 22 postings read on 2026-11-24, 17 were LLM-application work (APIs, RAG, tool use and agents, evals, guardrails, production), 3 mixed it with model training, 1 was classic deep learning, and 1 AI enablement; a growing share builds internal agents for sales, support, and operations teams ([role pack](../roles/ai-engineer.md)). The title doesn't describe a single job: the range runs from customer-facing advisory roles to ML roles requiring PyTorch, with product engineering on LLM APIs in between ([GreatFrontEnd](https://www.greatfrontend.com/blog/frontend-developer-to-ai-engineer), 2026-10). The 2026 expectation: agent design, RAG architecture, fine-tuning when it makes sense, eval pipelines, observability, and deployment ([ODSC](https://opendatascience.com/your-company-promised-to-reskill-you-for-ai-most-wont/)).
 
 **Variant titles:** Applied AI Engineer, AI Software Engineer, GenAI Engineer, LLM Engineer, Yapay Zeka Mühendisi (TR).
 
@@ -56,15 +56,16 @@ last_updated: 2026-11-18
 | Entry-level AI engineer hiring | UK +97%, US +62%, India +55% (YoY) | Global | growth | [LinkedIn via Dünya](https://www.dunya.com/foto-galeri/gundem/yapay-zeka-ile-gerileyen-ve-yukselen-meslekler-galeri-840229) | 2026-08 |
 | AI Engineer vs ML Engineer posting ratio | ~5:1 | US remote, LinkedIn | qualitative | [aiagentrank](https://aiagentrank.io/blog/how-to-become-ai-engineer-2026) — evidence: weak | mid-2026 |
 | AI Engineer median total comp | $155,000 | US, self-reported | salary | [Levels.fyi via GreatFrontEnd](https://www.greatfrontend.com/blog/frontend-developer-to-ai-engineer) | 2026-10 |
+| Reviewed postings that ask for agents | 19/22 (6 name multi-agent, 4 name MCP) | 11 markets, employer boards | qualitative | [role pack](../roles/ai-engineer.md) | 2026-11 |
 
 **Market notes — Turkey**
 | Signal | Value | Type | Source | Date |
 |---|---|---|---|---|
 | "Yapay Zeka Mühendisi" average monthly salary | 71,022 TRY (2025: 59,750 TRY); expectations + survey data from 2,712 people | salary | [Kariyer.net](https://www.kariyer.net/pozisyonlar/yapay+zeka+muhendisi/maas) | 2026 |
 
-Postings for "Yapay Zeka Mühendisi" appear on kariyer.net and techcareer.net in Istanbul, Ankara, and Izmir; 2–4 years of experience is common. EPAM Turkey posted "Senior AI Engineer with ReactJS", "Lead AI Engineer", and "Senior AI Engineer with Databricks" roles (2026). Some Turkish postings use the classic ML definition (model development, computer vision, production data); others mean LLM integration and automation (agents, webhooks). Check which one a posting means.
+Postings for "Yapay Zeka Mühendisi" appear on kariyer.net and techcareer.net in Istanbul, Ankara, and Izmir; 2–4 years of experience is common. EPAM Turkey posted "Senior AI Engineer with ReactJS", "Lead AI Engineer", and "Senior AI Engineer with Databricks" roles (2026). Two current examples read on the employers' boards: Vertigo Games "AI Engineer" (Istanbul, 2026-11; Python, internal agent workflows, daily coding-agent use) and ING Hubs Türkiye "Senior Agentic AI Engineer" (2026-09; LangGraph, CrewAI, AutoGen, Kubernetes). Some Turkish postings use the classic ML definition (model development, computer vision, production data); others mean LLM integration and automation (agents, webhooks). Check which one a posting means.
 
-**Typical skills:** LangChain, RAG, PyTorch (the skills LinkedIn lists most often for this role); tool use, structured output, writing evals, embeddings and vector/hybrid search, cost and latency management (prompt caching), prompt injection. Mostly Python; TypeScript is common in product-side roles.
+**Typical skills:** In the reviewed postings: agents and tool use (19/22), evals (16/22), RAG (15/22), security and access control (13/22), cost and latency (13/22), observability (11/22), MCP (4/22). Python is required in 17/22 (2 more accept TypeScript); PyTorch and training appear only in ML-hybrid postings (4/22). LinkedIn's most-listed skills for the role are LangChain, RAG, and PyTorch; LangChain/LangGraph are named in 5/22. Full skill tree in the [role pack](../roles/ai-engineer.md).
 
 **Transition map**
 | From | Transfers | New to learn |
