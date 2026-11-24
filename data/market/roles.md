@@ -120,6 +120,38 @@ Postings for "Yapay Zeka Mühendisi" appear on kariyer.net and techcareer.net in
 
 ---
 
+## ai-security-engineer — AI Security Engineer
+
+**Definition:** A security engineer who secures the LLM applications and agents a company builds or adopts: threat-models them, tests them adversarially (prompt injection, tool abuse, data exfiltration), and builds the controls around them, above all what an agent is allowed to do (scoped credentials, least privilege, approval for high-impact actions, limits on tools and data egress). Postings split into engineering (most), red teaming, research/ML defences, and governance; most expect prior security or AppSec experience ([role pack](../roles/ai-security-engineer.md), 13 postings, 2026-11).
+
+**Variant titles:** Security Engineer, AI Security; Agent Security Engineer; AI Software Security Engineer; Security Engineer, Applied AI; AI Red Team Engineer (offensive variant); ML Engineer, AI Security (defences variant).
+
+**Demand signals**
+| Signal | Value | Scope | Type | Source | Date |
+|---|---|---|---|---|---|
+| AI Security Engineer postings | 2,409 (Jan–Sep 2026) | US | posting count | [CyberSN Cybersecurity Jobs Report](https://cybersn.com/resources/reports/cybersecurity-jobs-report) | 2026-10 |
+| AI Security Engineer postings | +268.3% vs Jan–Sep 2025 | US | growth | [CyberSN via SecurityWeek](https://www.securityweek.com/us-cybersecurity-job-postings-fall-26-as-ai-security-engineer-demand-soars/) | 2026-10-18 |
+| All cybersecurity postings (context) | 235,786 (Jan–Sep 2026), −26.4% YoY | US | posting count | [CyberSN via SecurityWeek](https://www.securityweek.com/us-cybersecurity-job-postings-fall-26-as-ai-security-engineer-demand-soars/) | 2026-10-18 |
+| Open AI/ML security engineer postings | 850+; median advertised salary $140,000 | Not stated | posting count / salary | [SANS via Cybersecurity Dive](https://www.cybersecuritydive.com/news/ai-security-jobs-hiring-sans-tracker/833465/) | 2026-10-20 |
+| AI red-team postings | ~100; median $124,000 | Not stated | posting count / salary | [SANS via Cybersecurity Dive](https://www.cybersecuritydive.com/news/ai-security-jobs-hiring-sans-tracker/833465/) | 2026-10-20 |
+
+**Market notes — Turkey:** No private-sector posting titled "AI Security Engineer", "LLM security", or "AI red team" was found (2026-11; kariyer.net couldn't be read automatically, so this isn't a full check). The Presidency's Cybersecurity Directorate's 2026 contracted-specialist call ([Siber Güvenlik Başkanlığı](https://cdn.siberguvenlik.gov.tr/public/news/sinav_ilan_metni.pdf), closed 2026-09-11) listed AI regulation and AI development positions next to penetration-testing roles. In practice the work sits inside AppSec, cloud security, or AI engineering roles; remote roles in Europe are the realistic target.
+
+**Typical skills:** Threat modelling LLM apps and agents; prompt injection, direct and indirect (OWASP LLM01:2026, ASI01 Agent Goal Hijack); agent permissions and excessive agency (LLM03:2026; ASI02, ASI03): least privilege, scoped credentials, human approval; sensitive-data disclosure and exfiltration (LLM02:2026); non-human identity (OAuth, service accounts, secrets); adversarial testing, manual and automated (Promptfoo, PyRIT, Garak, Inspect AI), turned into CI regression tests; guardrails and their limits; MCP and connector security; AI supply chain (LLM04:2026, ASI04); logging and incident response for agents. Frameworks: OWASP Top 10 for LLM Applications 2026, OWASP Top 10 for Agentic Applications 2026, MITRE ATLAS, NIST AI RMF. Underneath: classic application security, cloud IAM, Python. Full skill tree in the [role pack](../roles/ai-security-engineer.md).
+
+**Transition map**
+| From | Transfers | New to learn |
+|---|---|---|
+| Backend | APIs, authn/authz, service identities, data flows, CI/CD, logging | Application security practice, threat modelling, prompt injection and agent permissions, adversarial testing |
+| Fullstack | The above, plus safe rendering of untrusted output (LLM10:2026) | Same as backend; identity and cloud IAM in more depth |
+| Frontend | Output handling and XSS awareness, product sense | Backend, identity, cloud, and application security first: the longest path of the three |
+| AI / LLM engineer | How agents, RAG, tool use, and evals work | Security fundamentals (authorization, identity, threat modelling), an offensive testing mindset |
+| AppSec / pentester / cloud security | Threat modelling, web/API testing, IAM, reporting findings | How LLM apps and agents work (build one), AI-specific attack classes, automated LLM testing |
+
+**For whom:** Developers who like breaking and hardening systems more than shipping features, and security engineers who want to specialize in AI. For an application developer without security experience, the realistic route is AppSec, or owning the security of AI features on their current team, first: 8 of 13 reviewed postings ask for prior security experience.
+
+---
+
 ## ai-consultant — AI Consultant / Strategist
 
 **Definition:** Helps organizations plan and roll out AI solutions. Less code, more analysis, communication, and process design.
