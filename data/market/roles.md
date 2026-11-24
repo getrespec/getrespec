@@ -27,16 +27,20 @@ last_updated: 2026-11-18
 
 ## ai-fluent-developer — AI-fluent version of your current role
 
-**Definition:** The title stays the same (Frontend, Backend, Fullstack, Software Developer); the difference is using AI tools and LLM integrations as a natural part of the job.
+**Definition:** The title stays the same (Frontend, Backend, Fullstack, Software Developer); the difference is using AI tools and LLM integrations as a natural part of the job ([role pack](../roles/ai-fluent-developer.md), 28 postings, 2026-11).
+
+**Variant titles:** Software Engineer (AI-Native), Agentic Software Developer, titles that name the tools ("… + Cursor/Windsurf"); in Turkey "… (AI Odaklı)".
 
 **Demand signals**
 | Signal | Value | Scope | Type | Source | Date |
 |---|---|---|---|---|---|
 | Tech postings requiring AI skills | 75% | US | share | [Dice via CIO](https://www.cio.com/article/4201347/information-technology-jobs-report.html) | 2026-07 |
+| Ordinary developer postings that mention AI coding tools or AI-assisted development | 69 of 160 (43%) | 10 cities, Workable, created 2026-09-25 to 2026-11-24 | share | Respec keyword count for the [role pack](../roles/ai-fluent-developer.md) — evidence: weak | 2026-11 |
+| Frontend postings naming a generative-AI tool or concept | 35.5% of 1,246 (Copilot 7.1%) | Not stated | share | [InterviewStack](https://interviewstack.io/blog/how-ai-is-changing-frontend-developer-2026) — evidence: weak | 2026-11-21 |
 
-**Market notes — Turkey:** Founder's field observation (unverified): most backend/software postings now ask for fullstack skills or LLM experience.
+**Market notes — Turkey:** Several large employers now expect AI coding-tool use in ordinary developer postings: Wingie Enuygun (Software Engineer and Mobile Engineer, "AI-Native"), Trendyol ("AI-Assisted Craft"), Pazarama, Rapsodo (2026-09/11). Full-stack plus AI shows up mainly in smaller companies' postings (e.g. "Laravel + AI Odaklı", "AI & RAG Odaklı"); LLM integration is usually a nice-to-have, and some current postings don't mention AI at all. The share isn't measured. This replaces an earlier unverified founder observation.
 
-**Typical skills:** Using and directing AI coding agents effectively, LLM API integration, prompt and context design, verifying and testing AI-written code, basic security risks such as prompt injection.
+**Typical skills:** Directing AI coding agents (context, task briefs, context files such as AGENTS.md or CLAUDE.md); reviewing and testing AI-written code; using agents safely (permissions, secrets, prompt injection through files, web pages, and MCP); MCP; LLM API integration with structured output (less often, frequently a nice-to-have). Full skill tree in the [role pack](../roles/ai-fluent-developer.md).
 
 **For whom:** Everyone. The shortest transition, and a foundation for every other role here.
 
