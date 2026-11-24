@@ -81,24 +81,25 @@ Postings for "Yapay Zeka Mühendisi" appear on kariyer.net and techcareer.net in
 
 ## forward-deployed-engineer — Forward-Deployed Engineer (FDE)
 
-**Definition:** An engineer who scopes, builds, and ships production software inside the customer's environment, on the customer's data and workflows. Expected to move comfortably between a codebase and a client meeting. Born from Palantir's model; growth is driven by companies such as Anthropic, OpenAI, Palantir, and Stripe.
+**Definition:** An engineer who scopes, builds, and ships production software inside the customer's environment, on the customer's data and workflows. Expected to move comfortably between a codebase and a client meeting. Born from Palantir's model; growth is driven by companies such as Anthropic, OpenAI, Palantir, and Stripe. In 2026 postings at AI companies the FDE ships LLM agents and workflows connected to the customer's systems and owns discovery, scoping, evals, and handover as well as the build; an internal variant, embedded with the company's own business teams, also exists ([role pack](../roles/forward-deployed-engineer.md), 18 postings, 2026-11).
 
-**Variant titles:** Applied AI Engineer, AI Solutions Deployment Engineer, Forward Deployed Software Engineer (FDSE).
+**Variant titles:** Applied AI Engineer, AI Solutions Deployment Engineer, Forward Deployed Software Engineer (FDSE), Forward Deployed AI Engineer, Frontier Agents Engineer (Scale AI), Agent Deployment Engineer (Decagon). The non-engineering half of the job is often posted separately as Deployment Strategist, AI Deployment Manager, or Deployment Lead.
 
 **Demand signals**
 | Signal | Value | Scope | Type | Source | Date |
 |---|---|---|---|---|---|
-| FDE postings | >1000% YoY for Jan–Aug 2026; +4600% vs 2023 | US | growth | [Lightcast via Fortune](https://fortune.com/2026/09/03/forward-deployed-engineers-fast-growing-six-figure-silicon-valley-job-integrate-ai-with-customers-tech-careers-palantir/) | 2026-09 |
+| FDE postings | <200 (2023) → ~1,200 (2025) → >7,300 (Jan–Sep 2026) | US | posting count | [Lightcast via CNBC](https://www.cnbc.com/2026/10/15/aws-anthropic-racing-to-deploy-army-of-specialized-ai-engineers.html) | 2026-10 |
+| Top posters, Jan–Sep 2026 | Deloitte 872, Accenture 688, Google 499, KPMG 447 | US | posting count | [Lightcast via CNBC](https://www.cnbc.com/2026/10/15/aws-anthropic-racing-to-deploy-army-of-specialized-ai-engineers.html) | 2026-10 |
 | FDE postings | ~643 → ~5,330 (Apr 2025 → Apr 2026) | US, Indeed | posting count | [Business Insider via NextWave](https://winninghabits.beehiiv.com/p/the-rise-of-forward-deployed-engineers-the-ai-job-growing-amid-tech-layoffs) — evidence: weak (secondary) | 2026-04 |
 | Open FDE roles at AI companies | 224 across 39 companies | Global | posting count | [KuCoin/CryptoBriefing](https://www.kucoin.com/news/flash/ai-industry-sees-1-000-surge-in-forward-deployed-engineer-hiring) — evidence: weak | mid-2026 |
 | FDE postings | +1807% YoY | India, Indeed | growth | [Analytics India Magazine](https://analyticsindiamag.com/ai-news/forward-deployed-engineer-job-postings-in-india-grew-nearly-19x-in-a-year-report) | 2026-06 |
-| Median advertised salary | >$188,000 (software engineers ~$145,000) | US | salary | [Lightcast via Fortune](https://fortune.com/2026/09/03/forward-deployed-engineers-fast-growing-six-figure-silicon-valley-job-integrate-ai-with-customers-tech-careers-palantir/) | 2026-09 |
+| Median advertised salary | $195,456 (+40% vs 2023) | US | salary | [Lightcast via CNBC](https://www.cnbc.com/2026/10/15/aws-anthropic-racing-to-deploy-army-of-specialized-ai-engineers.html) | 2026-10 |
 
-**Market notes — Turkey:** EPAM Turkey posted "Senior Forward Deployed Engineer" and "Lead Forward Deployed Engineer" roles on kariyer.net (2026).
+**Market notes — Turkey:** EPAM Turkey posted "Senior Forward Deployed Engineer" and "Lead Forward Deployed Engineer" roles on kariyer.net (2026; both closed by 2026-08, per search snippets). Open on 2026-11-24: Wonderful "Forward Deployed Engineer" for Turkey (Ashby, posted 2026-03-12). Mundi (Istanbul, treasury startup) asks for Turkish and English and "production code with AI in the loop". BCG X's Forward Deployed AI Engineer role in Türkiye is marked filled.
 
-**Typical skills:** Python and JavaScript as a baseline; problem framing and scoping with customers, fast integration with unfamiliar systems, LLM application skills (RAG, agents, evals), presenting and writing.
+**Typical skills:** Python, with TypeScript most often as a second language; discovery and scoping with customers; integrating with unfamiliar enterprise systems (APIs, webhooks, SaaS, legacy); tool use, agents, and MCP; evals and guardrails; security and governance inside the customer's environment; deploying into customer-owned cloud accounts; demos, playbooks, and handover docs; turning field feedback into product input. Full skill tree in the [role pack](../roles/forward-deployed-engineer.md).
 
-**Caution:** Growth rates are huge but absolute posting counts are small; whether demand lasts and how clear the career path is are both debated ([IBTimes](https://www.ibtimes.co.in/ai-hiring-boom-pushes-fde-jobs-higher-questions-remain-907488)). The role is heavily customer-facing and English-heavy at global companies.
+**Caution:** Growth rates are huge but absolute posting counts are small; whether demand lasts and how clear the career path is are both debated ([IBTimes](https://www.ibtimes.co.in/ai-hiring-boom-pushes-fde-jobs-higher-questions-remain-907488)). The role is heavily customer-facing and English-heavy at global companies. In a 2025 sample of 1,000 postings, about 30% were rebranded sales or solutions roles ([Bloomberry](https://bloomberry.com/blog/i-analyzed-1000-forward-deployed-engineer-jobs-what-i-learned/), evidence: weak); in 18 postings from AI-company boards (2026-11), 1 was, but consultancies, the largest posters, weren't sampled.
 
 ---
 
