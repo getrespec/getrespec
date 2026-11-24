@@ -1,38 +1,49 @@
 # update-trends — Refresh role and job-market data
 
-**Goal:** Refresh `data/market/roles.md` and the role packs in `data/roles/` with current, sourced data.
+**Goal:** Refresh `data/market/roles.md`, the role packs in `data/roles/`, and `data/resources/curricula.md` with current, sourced data, and tell the learner what changed for their plan.
 
-If you can't search the web, tell the learner and stop; never invent data.
+If you can't search the web, tell the learner and stop; never invent data. This is research, not a quick lookup: read the sources themselves, not only search snippets.
 
-## 1. Read the current file
-Keep its format and rules (the "How to read" section at the top) exactly.
+**Scope (decided 2026-11-24):** Respec covers roles where the main work is writing software. Roles that are mostly advisory or process work (e.g. `ai-consultant`) stay in `roles.md` as a short entry but get no role pack.
 
-## 2. Search
-Run separate searches for each role:
-- **Global demand:** LinkedIn (Jobs on the Rise, Economic Graph), Indeed Hiring Lab, Lightcast, Dice reports
+## 1. Read the current files
+Read `data/market/roles.md` (keep the "How to read" rules exactly), `data/roles/README.md`, and every pack in `data/roles/`. Note each pack's `last_researched` date.
+
+## 2. Market scan (all roles)
+Run separate searches; read each report itself, not an article about it, whenever you can reach it.
+- **Primary demand sources:** LinkedIn Jobs on the Rise and Economic Graph, Indeed Hiring Lab (AI tracker and title studies), Lightcast (including its data in the Stanford AI Index), PwC Global AI Jobs Barometer, CompTIA and Dice tech jobs reports, and for security roles CyberSN and SANS.
+- **Per role:** posting counts, growth, share, and salary signals for every role in the file.
 - **Market notes:** for each country with a "Market notes" section, its main job boards and salary pages (for Turkey: kariyer.net, techcareer.net, LinkedIn Türkiye, Indeed Türkiye). If the learner's target market has no section yet, add one.
-- **Skills:** skills and tools most requested in recent postings
-- **New roles:** roles gaining traction recently that aren't in the file
+- **New roles:** technical AI titles gaining traction that aren't in the file. Also check whether an existing role is really a skill inside another role (e.g. "agent engineer" inside `ai-engineer`) rather than a title of its own.
 
-## 3. Rules
+## 3. Rules for signals
 - Every signal has: metric, value, scope (country/market), source (link), date, metric type (`growth`, `posting count`, `share`, `salary`, `survey`, `qualitative`).
 - Prefer primary sources (the report owner). Mark blogs and aggregators `evidence: weak`.
 - If there's a newer value for the same metric, replace the old one and note the change in the changelog.
-- Add a new role to the main list only if it appears in two independent sources; otherwise put it under "Watchlist".
+- Add a new role to the main list only if it appears in two independent sources; otherwise put it under "Watchlist". Remove a Watchlist role only with a reason in the changelog.
 - Never convert or compare different metric types.
 
-## 4. Role packs
-For the learner's target role first (and for every other pack if the learner asks), refresh `data/roles/<role-id>.md` following `data/roles/README.md`:
-- Read at least 8 current postings for the role (job boards and employers' own boards; prefer postings from the last 60 days and more than one market, including the learner's). Replace postings that are older than six months.
-- Recount how many postings ask for each skill and update priorities by the README's rules. Add skills that now appear in 3 or more postings; never renumber existing skill IDs.
-- Check every standard and version the pack names (e.g. the OWASP Top 10 for LLM Applications edition) and update it if a newer one is out.
+## 4. Provider docs check
+Lessons and skills follow the frontier providers' docs (AGENTS.md → Checking facts that change). Open the "Official provider docs" pages in `data/resources/curricula.md`, including each provider's models page and changelog, and list since the last run:
+- new API features that change how something is built (a new tool type, a new output mode, a new caching option);
+- parameters or features that are deprecated, restricted, or rejected by current models.
+Use this list in step 5 (skill descriptions) and step 7 (tell the learner which of their lessons may now be outdated).
+
+## 5. Role packs
+Refresh the learner's target role first; refresh the others if the learner asks or if `last_researched` is older than 90 days. If your agent can run sub-agents, give each pack its own sub-agent and review what comes back before writing it. For each pack, following `data/roles/README.md`:
+- **Postings:** read at least 10 current postings (at least 8 if the role is rare, and say so), preferably from the last 60 days, from employers' own job boards. Cover more than one market and include at least 2 from the learner's market when they exist. Replace postings older than six months. Record each one in the table, marking partial reads.
+- **Variants:** if one title covers different jobs (e.g. LLM product work vs model training), report the split you saw and say which variant the skill tree describes.
+- **Counts and priorities:** recount how many postings ask for each skill and update priorities by the README's rules. Add skills that now appear in 3 or more postings; never renumber existing skill IDs; mark retired skills in the changelog.
+- **Docs alignment:** check every skill against the step 4 list. A skill built on a deprecated or restricted feature gets reworded to what replaces it; a new feature that postings ask for becomes a skill.
+- **Standards:** check every standard and version the pack names (e.g. the OWASP Top 10 for LLM Applications edition) and update it if a newer one is out.
 - Set `last_researched`, `postings_reviewed`, and add a changelog line.
-If the learner's role has no pack yet, offer to create one from `data/roles/_template.md`.
 
-Then compare the learner's `curriculum.coverage` with the refreshed pack and tell them what changed for their plan (a skill that became `core`, a new requirement). Offer to apply it with `/respec plan` (refine); don't change the curriculum without asking.
+**New packs:** a role in the main list without a pack gets one only if it's in scope and you can find at least 8 real postings. Start from `data/roles/_template.md` and add it to the table in `data/roles/README.md`.
 
-## 5. Resources
-Check the links in `data/resources/curricula.md`; flag broken ones and add strong new resources.
+## 6. Resources
+Check the links in `data/resources/curricula.md`; flag broken ones and add strong new resources. Keep the "Official provider docs" table current.
 
-## 6. Wrap up
-Set `last_updated` to today and add a changelog entry at the bottom. Summarize the 3–5 most important changes for the learner (in their language); call out any change that affects their target role.
+## 7. Wrap up
+- Set `last_updated` in `roles.md` and `last_checked` in `curricula.md` to today, and add changelog entries.
+- Compare the learner's `curriculum.coverage` with their refreshed pack and tell them what changed for their plan (a skill that became `core`, a new requirement, a lesson built on something now deprecated). Offer to apply it with `/respec plan` (refine); don't change the curriculum without asking.
+- Summarize the 3–5 most important changes for the learner (in their language); call out any change that affects their target role.
