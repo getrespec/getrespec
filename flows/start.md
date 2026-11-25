@@ -8,7 +8,7 @@ Speak in the learner's language (see AGENTS.md → Language).
 If `learner/state.json` exists, ask whether to continue where they left off or start over. If starting over, move the current contents of `learner/` (except `cv/`) to `learner/_archive/<YYYY-MM-DD>/`.
 
 ## 1. Language guide
-As soon as you know the learner's language, check for `data/language/<language>.md`. If it's missing, create it from `data/language/_template.md` as AGENTS.md → "Writing in the learner's language" describes, and mention in one sentence that it's a draft that will improve when the learner points out awkward wording.
+As soon as you know the learner's language, check for `data/language/<language>.md`. If it's missing, create it from `data/language/_template.md` as AGENTS.md → "Writing in the learner's language" describes, and mention in one sentence that it's a draft that will improve when the learner points out awkward wording. If the language isn't `en` or `tr`, also write `learner/ui-strings.json` (AGENTS.md → Dashboard interface strings).
 
 ## 2. CV
 - If `learner/cv/` contains a file, read it. For PDFs, try your own reading ability first; fall back to `pdftotext` if available.

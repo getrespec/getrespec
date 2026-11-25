@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import { applyOverrides, matchesLanguage } from "./overrides.js";
 
 const en = {
   levels: ["Apprentice", "Journeyman", "Master"],
@@ -25,7 +26,8 @@ const en = {
     evaluation: "Your assignment is being evaluated.",
   } as Record<string, string>,
   progress: "Progress",
-  modulesDone: (d: number, t: number, h: number) => `${d} of ${t} modules completed${h ? `, ${h} with help` : ""}`,
+  modulesDone: (d: number, t: number) => `${d} of ${t} modules completed`,
+  modulesHelped: (h: number) => `, ${h} with help`,
   time: "Study time",
   hoursUnit: "h",
   byEstimate: "Based on estimated hours",
@@ -178,7 +180,8 @@ const tr: Strings = {
     evaluation: "Ödevin değerlendiriliyor.",
   },
   progress: "İlerleme",
-  modulesDone: (d, t, h) => `${t} modülden ${d} tanesi tamamlandı${h ? `, ${h} tanesi yardımla` : ""}`,
+  modulesDone: (d, t) => `${t} modülden ${d} tanesi tamamlandı`,
+  modulesHelped: (h) => `, ${h} tanesi yardımla`,
   time: "Çalışma süresi",
   hoursUnit: "sa",
   byEstimate: "Tahmini saatlere göre",
@@ -300,9 +303,17 @@ const tr: Strings = {
 
 const ALL: Record<string, Strings> = { en, tr };
 
-export function stringsFor(lang?: string): { t: Strings; lang: string } {
+// Built-in strings for en and tr. Any other language uses learner/ui-strings.json, which the agent
+// writes in that language (AGENTS.md → Language); whatever it lacks stays in English.
+export function stringsFor(lang?: string, file?: unknown): { t: Strings; lang: string } {
   const l = String(lang ?? "en").slice(0, 2).toLowerCase();
-  return ALL[l] ? { t: ALL[l], lang: l } : { t: en, lang: "en" };
+  const base = ALL[l] ? { t: ALL[l], lang: l } : { t: en, lang: "en" };
+  if (!lang || !matchesLanguage(file, lang)) return base;
+  let tag = "en";
+  try {
+    tag = Intl.getCanonicalLocales(lang)[0];
+  } catch {}
+  return { t: applyOverrides(base.t, file, tag), lang: tag };
 }
 
 export const I18nContext = createContext<{ t: Strings; lang: string }>({ t: en, lang: "en" });

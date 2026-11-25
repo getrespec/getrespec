@@ -62,6 +62,16 @@ test("serves state, profile, usage, and the module file list", async () => {
   assert.ok(!paths.some((p) => p.includes(".env")), "dotfiles are not listed");
 });
 
+test("serves ui-strings.json when the agent wrote one, 404 otherwise", async () => {
+  assert.equal((await get("/api/ui-strings")).status, 404);
+  writeFileSync(join(learner, "ui-strings.json"), JSON.stringify({ language: "de", strings: { overview: "Übersicht" } }));
+  const r = await json("/api/ui-strings");
+  assert.equal(r.status, 200);
+  assert.equal(r.data.strings.overview, "Übersicht");
+  writeFileSync(join(learner, "ui-strings.json"), "{ not json");
+  assert.equal((await get("/api/ui-strings")).status, 404);
+});
+
 test("reads module text files", async () => {
   const f = await json("/api/file?path=" + encodeURIComponent("modules/m02/work/src/route.ts"));
   assert.equal(f.status, 200);
