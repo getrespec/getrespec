@@ -6,6 +6,8 @@ To update an existing copy, run `/respec update` in your agent. Your `learner/` 
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-25
+
 The first public release.
 
 ### Added
