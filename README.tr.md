@@ -27,9 +27,8 @@ Respec senin dilinde konuşur: `/respec start` ile başla ve Türkçe yaz, sana 
 ## Başlarken
 
 ```bash
-git clone https://github.com/getrespec/getrespec.git respec
-cd respec
-claude            # ya da klasörü Codex / Cursor ile aç
+git clone https://github.com/getrespec/getrespec
+cd getrespec && claude   # ya da klasörü Codex / Cursor ile aç
 ```
 
 Sonra:

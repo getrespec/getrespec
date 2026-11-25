@@ -27,9 +27,8 @@ Respec speaks your language: start with `/respec start` and write in Turkish, Ge
 ## Getting started
 
 ```bash
-git clone https://github.com/getrespec/getrespec.git respec
-cd respec
-claude            # or open the folder with Codex / Cursor
+git clone https://github.com/getrespec/getrespec
+cd getrespec && claude   # or open the folder with Codex / Cursor
 ```
 
 Then:
