@@ -134,10 +134,14 @@ test("pushes a change event when a module file changes", async () => {
         if (buf.includes("event: ready")) {
           setTimeout(() => writeFileSync(join(learner, "modules", "m04", "quiz.md"), "# new quiz"), 100);
         }
-        const m = buf.match(/event: change\ndata: (.+)\n/);
-        if (m) {
-          req.destroy();
-          resolve(JSON.parse(m[1]));
+        // Earlier tests write learner files too, and the watcher can report them late (Linux), so
+        // wait for the event that names this file instead of taking the first one.
+        for (const m of buf.matchAll(/event: change\ndata: (.+)\n/g)) {
+          const data = JSON.parse(m[1]);
+          if (data.paths.some((p) => p.endsWith("m04/quiz.md"))) {
+            req.destroy();
+            resolve(data);
+          }
         }
       });
     });
