@@ -17,5 +17,6 @@
    - Run `node scripts/migrate-state.mjs`. It does nothing when the state is already current.
    - If the dashboard server is running, it must be restarted to serve the new version: stop it and start `node scripts/serve.mjs` again (or ask the learner to).
    - Re-read `AGENTS.md` and the flow files: instructions may have changed.
+   - If `state.learner.language` isn't `en` or `tr`, bring `learner/ui-strings.json` up to date: write it if it's missing, or add the keys the new `en` strings have (AGENTS.md → Dashboard interface strings).
    - Run `node scripts/check-update.mjs --force` to confirm the new version.
 7. **Record it.** Add a `history` entry ("Respec updated from 0.1.0 to 0.2.0") and tell the learner in one or two sentences what they'll notice first.

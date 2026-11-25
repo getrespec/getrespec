@@ -40,7 +40,7 @@ export function Overview({ state }: { state: State }) {
 
       {p.total > 0 && (
         <section className="tiles" aria-label={t.progress}>
-          <Tile label={t.progress} value={t.pct(p.pct)} sub={t.modulesDone(p.done.length, p.total, p.helped.length)}>
+          <Tile label={t.progress} value={t.pct(p.pct)} sub={t.modulesDone(p.done.length, p.total) + (p.helped.length ? t.modulesHelped(p.helped.length) : "")}>
             <Meter value={p.done.length} max={p.total} label={t.progress} />
           </Tile>
           <Tile

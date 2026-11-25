@@ -170,6 +170,17 @@ function api(req, res, url) {
     return send(res, 200, { markdown: readFileSync(pp, "utf8") });
   }
 
+  // Interface strings the agent wrote for a language the dashboard doesn't ship (AGENTS.md → Language).
+  if (p === "/api/ui-strings") {
+    const up = join(learnerDir, "ui-strings.json");
+    if (!existsSync(up)) return send(res, 404, { error: "no_ui_strings" });
+    try {
+      return send(res, 200, readJson(up));
+    } catch {
+      return send(res, 404, { error: "invalid_ui_strings" }); // a broken file falls back to English
+    }
+  }
+
   if (p === "/api/usage") {
     const records = loadUsage(join(learnerDir, "usage", "usage.jsonl"));
     let state = null;

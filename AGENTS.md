@@ -22,6 +22,18 @@ These instructions are in English, but the learner reads your output in their ow
 
 This applies to everything the learner reads: chat, lessons, code comments, visuals, quizzes, evaluations, and the text values in `quiz.json` and `evaluation.json`.
 
+### Dashboard interface strings
+
+The dashboard ships its menus, buttons, and labels in English and Turkish only (`en` and `tr` in `dashboard/src/i18n.ts`). For any other `state.learner.language`, write `learner/ui-strings.json` so the dashboard speaks the learner's language too:
+
+```json
+{ "language": "de", "strings": { "overview": "Übersicht", "modulesDone": "{0} von {1} Modulen abgeschlossen", "toLevel1": { "one": "Noch {0} Modul bis Geselle", "other": "Noch {0} Module bis Geselle" } } }
+```
+
+- Translate every key of the `en` object, following "Writing in the learner's language" above and the language guide. Keep the same shape: text stays text, lists stay lists of the same length, maps keep their keys.
+- An arrow function becomes a template: `{0}`, `{1}`… stand for its arguments in order (`(d, t) => …` → `{0}` is `d`). When the English depends on a count (`n === 1 ? … : …`), give plural forms keyed by the language's plural categories (`one`, `few`, `many`, `other`…; `other` is required).
+- When to write it: during `start`, once the language is known; when the learner switches language; and after `update`, add any keys the new `en` has that the file lacks. Missing or malformed entries fall back to English, so a partial file never breaks the dashboard.
+
 ## Core principles
 
 1. **What, where, when.** Tie every concept to: what it does, when to choose it, when not to, and what the alternative is. You are teaching decisions, not memorization.
@@ -86,6 +98,7 @@ learner/                      Learner-specific; never committed
   state.json                  Single source of truth
   .env                        API keys
   .update-check.json          Result of the last update check (written by check-update.mjs)
+  ui-strings.json             Dashboard interface strings in the learner's language (only for languages other than en/tr)
   dossier/<module-id>.json    Dossier narrative written by the agent (flows/dossier.md)
   dossier/<module-id>.html    Rendered dossier the learner shares (scripts/dossier.mjs)
   dossier/<module-id>.pdf     PDF copy, printed with the learner's Chrome or Edge

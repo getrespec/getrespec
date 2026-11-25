@@ -6,6 +6,9 @@ To update an existing copy, run `/respec update` in your agent. Your `learner/` 
 
 ## [Unreleased]
 
+### Added
+- The dashboard's menus, buttons, and labels now appear in your language, not only in English and Turkish: your agent writes them to `learner/ui-strings.json` when you start, and `/respec update` keeps them current. Dates and numbers follow your language too.
+
 ## [0.1.0] - 2026-11-25
 
 The first public release.

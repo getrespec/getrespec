@@ -167,8 +167,9 @@ function Profile() {
 
 function StateGate({ connected }: { connected: boolean }) {
   const res = useApi<State>("/api/state");
+  const uiStrings = useApi<unknown>("/api/ui-strings");
   const route = useRoute();
-  const i18n = stringsFor(res.data?.learner?.language);
+  const i18n = stringsFor(res.data?.learner?.language, uiStrings.data);
   useEffect(() => {
     document.documentElement.lang = i18n.lang;
   }, [i18n.lang]);
