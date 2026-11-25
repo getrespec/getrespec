@@ -21,7 +21,11 @@ The first public release.
 - Version info and update checks: `/respec update`, and a notice in the dashboard when a new release is out.
 - Documentation in English and Turkish (`README.md`, `README.tr.md`).
 - Licensed under the Functional Source License 1.1, Apache 2.0 Future License (`LICENSE.md`).
-- Role packs (`data/roles/`): a sourced skill tree per role with priorities, prerequisites, outcomes, and how to check each skill. The first pack, AI Product Engineer, is based on 9 current postings.
+- Role packs (`data/roles/`): a sourced skill tree per role with priorities, prerequisites, outcomes, and how to check each skill, built from current job postings. Six roles: AI Product Engineer, AI Engineer, Forward-Deployed Engineer, AI-fluent developer, ML Engineer, and AI Security Engineer.
+- `/respec update-trends` refreshes market data and role packs from primary sources, checks the providers' docs for new and deprecated features, and tells you which of your lessons may be out of date.
+- Lessons follow the official docs of the model providers (Anthropic, OpenAI, Google, Ollama) and leave out theory you won't meet when building on their APIs.
+- Quiz and review questions are asked plainly, one thing per question, and the role-map quiz (`m00`) grades only what its lesson covers.
+- A release process for maintainers (`RELEASING.md`): every pull request adds a changelog entry, and merging a release pull request publishes the GitHub release.
 - `/respec plan` asks for the job postings you're targeting, reads them, and makes sure the plan covers what they ask for.
 - Lessons verify fast-changing facts (SDK details, model names, standard versions) against official sources and say when they did.
 - The curriculum is checked for gaps at the end of each phase, before the capstone, and when the same question comes up twice.

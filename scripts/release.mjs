@@ -1,13 +1,13 @@
 #!/usr/bin/env node
-// Cuts a release: sets the version, dates the changelog, commits, and tags. It doesn't push.
+// Prepares a release on a branch: sets the version, dates the changelog, and commits. It doesn't tag or push.
 //
-//   node scripts/release.mjs 0.2.0            release 0.2.0
+//   node scripts/release.mjs 0.2.0            prepare 0.2.0
 //   node scripts/release.mjs 0.2.0 --dry-run  show what would change
 //
-// Before running: move what changed into the "## [Unreleased]" section of CHANGELOG.md.
-// After running:  git push && git push origin v0.2.0
-// Pushing the tag runs .github/workflows/release.yml, which publishes the GitHub release
-// with that version's changelog section as its notes.
+// Before running: what changed is under "## [Unreleased]" in CHANGELOG.md, and you're on a branch
+// (e.g. release/v0.2.0), not main. After running: push the branch and open a pull request.
+// Merging it into main runs .github/workflows/release.yml, which tags v0.2.0 and publishes the
+// GitHub release with that version's changelog section as its notes. See RELEASING.md.
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -25,6 +25,13 @@ const git = (...a) => execFileSync("git", a, { cwd: root, encoding: "utf8" }).tr
 if (!version || !parseVersion(version)) fail("Usage: node scripts/release.mjs <version>   (e.g. 0.2.0)");
 const tag = `v${version}`;
 const pkg = readPackage();
+
+if (git("rev-parse", "--abbrev-ref", "HEAD") === "main") fail("Run this on a release branch, not main: git switch -c release/" + tag);
+try {
+  git("fetch", "--tags", "--quiet"); // releases are tagged on GitHub, so local tags may be behind
+} catch {
+  console.warn("Couldn't fetch tags; checking against local tags only.");
+}
 
 if (git("tag", "--list", tag)) fail(`Tag ${tag} already exists.`);
 const lastTag = git("tag", "--list", "v*", "--sort=-v:refname").split("\n")[0];
@@ -53,11 +60,10 @@ const files = {
 
 console.log(`${pkg.version} → ${version}\n\nNotes:\n${m[1].trim()}\n`);
 if (dry) {
-  console.log(`[dry-run] Would update ${Object.keys(files).join(", ")}, commit "Release ${tag}", and tag ${tag}.`);
+  console.log(`[dry-run] Would update ${Object.keys(files).join(", ")} and commit "Release ${tag}".`);
   process.exit(0);
 }
 for (const [rel, content] of Object.entries(files)) writeFileSync(join(root, rel), content);
 git("add", ...Object.keys(files));
 git("commit", "-m", `Release ${tag}`);
-git("tag", "-a", tag, "-m", `Respec ${version}`);
-console.log(`Tagged ${tag}. Publish it with:\n  git push && git push origin ${tag}`);
+console.log(`Committed "Release ${tag}". Push the branch and open a pull request; merging it publishes ${tag}.`);

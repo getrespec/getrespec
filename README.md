@@ -142,7 +142,7 @@ Contributions are accepted under the same license.
 
 Run the tests with `node --test test/*.test.mjs`. Try the dashboard with sample data: `node scripts/serve.mjs --learner examples/learner-demo`.
 
-To cut a release: add your changes under `## [Unreleased]` in `CHANGELOG.md`, run `node scripts/release.mjs <version>` (it sets the version, dates the changelog, commits, and tags), then `git push && git push origin v<version>`. Pushing the tag publishes the GitHub release with that version's notes.
+Add what your pull request changes under `## [Unreleased]` in `CHANGELOG.md`; CI checks for it. [`RELEASING.md`](RELEASING.md) explains how versions are chosen and how a release is published: a release pull request, which publishes the GitHub release when it's merged.
 
 This README has a Turkish version, [`README.tr.md`](README.tr.md). When you change one, update the other in the same pull request.
 

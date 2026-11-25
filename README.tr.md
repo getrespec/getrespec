@@ -142,7 +142,7 @@ Katkılar aynı lisansla kabul edilir.
 
 Testleri `node --test test/*.test.mjs` ile çalıştır. Dashboard'u örnek veriyle denemek için: `node scripts/serve.mjs --learner examples/learner-demo`.
 
-Yeni sürüm çıkarmak için: değişiklikleri `CHANGELOG.md` dosyasındaki `## [Unreleased]` başlığının altına yaz, `node scripts/release.mjs <sürüm>` komutunu çalıştır (sürümü ayarlar, changelog'a tarihi ekler, commit atar ve etiketi oluşturur), sonra `git push && git push origin v<sürüm>`. Etiketi push'ladığında GitHub sürümü, o sürümün notlarıyla birlikte yayınlanır.
+Pull request'inin neyi değiştirdiğini `CHANGELOG.md` dosyasındaki `## [Unreleased]` başlığının altına yaz; CI bunu kontrol eder. Sürüm numarasının nasıl seçildiği ve sürümün nasıl yayınlandığı [`RELEASING.md`](RELEASING.md) dosyasında: bir sürüm pull request'i açılır, merge edildiğinde GitHub sürümü kendiliğinden yayınlanır.
 
 Bu README'nin İngilizce bir sürümü var: [`README.md`](README.md). Birini değiştirdiğinde aynı pull request'te diğerini de güncelle.
 
