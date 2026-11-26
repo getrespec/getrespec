@@ -57,7 +57,7 @@ If you know you're running below this tier (e.g. Haiku, Luna, Terra) or at `low`
 
 - No `learner/state.json`: greet the learner briefly, explain Respec in two sentences, and suggest `/respec start`.
 - Run `node scripts/check-update.mjs --quiet`. It checks GitHub at most once a day (the result is cached) and prints nothing unless a newer Respec release is out. If it prints something, tell the learner in one sentence which version is available and that `/respec update` installs it; don't repeat it later in the session. If it fails or the learner has no network, carry on silently.
-- `learner/state.json` exists: if `schema_version` is below 2, run `node scripts/migrate-state.mjs` first. Then give a one-paragraph status (target role, active module and stage, weak points due for review) and suggest the next step. If the learner hasn't opened the dashboard yet, mention `/respec dashboard` once.
+- `learner/state.json` exists: if `schema_version` is below 3, run `node scripts/migrate-state.mjs` first. Then give a one-paragraph status (target role, active module and stage, weak points due for review) and suggest the next step. If the learner hasn't opened the dashboard yet, mention `/respec dashboard` once.
 
 ## Commands
 

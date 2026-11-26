@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "learner": {
     "name": "Sample Learner",
     "current_role": "Senior Frontend Developer",
@@ -101,6 +101,9 @@
           "Can explain tokens and the context window",
           "Can predict how temperature affects output"
         ],
+        "skills": [
+          "llm.behavior"
+        ],
         "why": "A prerequisite in every AI Engineer posting.",
         "est_hours": 3,
         "resources": [
@@ -127,6 +130,9 @@
         "objectives": [
           "Can stream a response from an LLM API and show it in the UI",
           "Can cancel a request and handle errors"
+        ],
+        "skills": [
+          "llm.api"
         ],
         "why": "Core work in product-side AI roles.",
         "est_hours": 5,
@@ -155,6 +161,9 @@
           "Can design a system prompt and examples for a task",
           "Can decide what goes into the context and what doesn't"
         ],
+        "skills": [
+          "llm.prompt-context"
+        ],
         "why": "Listed in postings as prompt/context engineering.",
         "est_hours": 4,
         "resources": [
@@ -182,6 +191,9 @@
           "Can get schema-conforming JSON from a model",
           "Can catch invalid output and retry"
         ],
+        "skills": [
+          "llm.structured-output"
+        ],
         "why": "The standard way to turn AI output into application data.",
         "est_hours": 4,
         "resources": [
@@ -208,6 +220,9 @@
         "objectives": [
           "Can define tools for a model and execute its calls safely"
         ],
+        "skills": [
+          "agent.tool-use"
+        ],
         "why": "The foundation of agents.",
         "est_hours": 5,
         "resources": [],
@@ -228,6 +243,9 @@
         "type": "mixed",
         "objectives": [
           "Can generate embeddings and run a similarity search"
+        ],
+        "skills": [
+          "rag.search"
         ],
         "why": "A prerequisite for RAG.",
         "est_hours": 4,
@@ -250,6 +268,9 @@
         "objectives": [
           "Can build Q&A over their own documents"
         ],
+        "skills": [
+          "rag.design"
+        ],
         "why": "The skill AI Engineer postings ask for most.",
         "est_hours": 8,
         "resources": [],
@@ -270,6 +291,9 @@
         "type": "practice",
         "objectives": [
           "Can build a multi-step agent"
+        ],
+        "skills": [
+          "agent.loops"
         ],
         "why": "Central to the 2026 AI Engineer definition.",
         "est_hours": 8,
@@ -292,6 +316,9 @@
         "objectives": [
           "Can write an eval set and measure prompt changes"
         ],
+        "skills": [
+          "quality.evals"
+        ],
         "why": "Quality assurance for AI in production.",
         "est_hours": 6,
         "resources": [],
@@ -312,6 +339,9 @@
         "type": "mixed",
         "objectives": [
           "Can measure and reduce per-request cost and latency"
+        ],
+        "skills": [
+          "quality.cost-latency"
         ],
         "why": "The basis of production decisions.",
         "est_hours": 4,
@@ -334,6 +364,9 @@
         "objectives": [
           "Can mitigate the OWASP LLM risks"
         ],
+        "skills": [
+          "sec.prompt-injection"
+        ],
         "why": "Mandatory for every AI product.",
         "est_hours": 4,
         "resources": [],
@@ -354,6 +387,9 @@
         "type": "practice",
         "objectives": [
           "Can ship an AI feature with monitoring"
+        ],
+        "skills": [
+          "quality.observability"
         ],
         "why": "Taking the product from demo to production.",
         "est_hours": 5,
@@ -414,6 +450,9 @@
     "coverage": [
       {
         "skill": "Tokens, context window, temperature",
+        "id": "llm.behavior",
+        "priority": "core",
+        "depth": "working",
         "status": "covered",
         "modules": [
           "m01"
@@ -422,6 +461,9 @@
       },
       {
         "skill": "LLM API integration and streaming",
+        "id": "llm.api",
+        "priority": "core",
+        "depth": "working",
         "status": "covered",
         "modules": [
           "m02"
@@ -430,6 +472,9 @@
       },
       {
         "skill": "Prompt and context design",
+        "id": "llm.prompt-context",
+        "priority": "core",
+        "depth": "working",
         "status": "covered",
         "modules": [
           "m03"
@@ -438,6 +483,9 @@
       },
       {
         "skill": "Structured output",
+        "id": "llm.structured-output",
+        "priority": "important",
+        "depth": "working",
         "status": "covered",
         "modules": [
           "m04"
@@ -446,6 +494,9 @@
       },
       {
         "skill": "Tool use",
+        "id": "agent.tool-use",
+        "priority": "core",
+        "depth": "working",
         "status": "covered",
         "modules": [
           "m05"
@@ -454,6 +505,9 @@
       },
       {
         "skill": "Embeddings and vector search",
+        "id": "rag.search",
+        "priority": "important",
+        "depth": "working",
         "status": "covered",
         "modules": [
           "m06"
@@ -462,6 +516,9 @@
       },
       {
         "skill": "RAG",
+        "id": "rag.design",
+        "priority": "core",
+        "depth": "working",
         "status": "covered",
         "modules": [
           "m07"
@@ -470,6 +527,9 @@
       },
       {
         "skill": "Agent loop and orchestration",
+        "id": "agent.loops",
+        "priority": "core",
+        "depth": "working",
         "status": "covered",
         "modules": [
           "m08"
@@ -478,6 +538,9 @@
       },
       {
         "skill": "Evals",
+        "id": "quality.evals",
+        "priority": "core",
+        "depth": "deep",
         "status": "covered",
         "modules": [
           "m09"
@@ -486,6 +549,9 @@
       },
       {
         "skill": "Cost, latency, prompt caching",
+        "id": "quality.cost-latency",
+        "priority": "core",
+        "depth": "working",
         "status": "covered",
         "modules": [
           "m10"
@@ -494,6 +560,9 @@
       },
       {
         "skill": "Prompt injection and safe rendering",
+        "id": "sec.prompt-injection",
+        "priority": "core",
+        "depth": "working",
         "status": "covered",
         "modules": [
           "m11"
@@ -502,6 +571,9 @@
       },
       {
         "skill": "Observability and deployment",
+        "id": "quality.observability",
+        "priority": "core",
+        "depth": "working",
         "status": "covered",
         "modules": [
           "m12"
@@ -510,36 +582,57 @@
       },
       {
         "skill": "Consuming REST APIs",
+        "id": "eng.integration",
+        "priority": "core",
+        "depth": "working",
         "status": "known",
         "note": "Placement: knows"
       },
       {
         "skill": "Streaming UI state",
+        "id": "llm.streaming",
+        "priority": "advanced",
+        "depth": "working",
         "status": "known",
         "note": "Placement: knows"
       },
       {
         "skill": "TypeScript",
+        "id": "eng.typescript",
+        "priority": "important",
+        "depth": "working",
         "status": "known",
         "note": "Placement: knows; product-side roles accept it"
       },
       {
         "skill": "Python",
+        "id": "eng.python",
+        "priority": "core",
+        "depth": "working",
         "status": "optional",
         "note": "Some postings require it; product-side roles accept TypeScript"
       },
       {
         "skill": "LangChain",
+        "id": "agent.frameworks",
+        "priority": "important",
+        "depth": "working",
         "status": "optional",
         "note": "You'll learn the patterns directly; add it if a posting you target asks for it"
       },
       {
         "skill": "Fine-tuning",
+        "id": "ml.fine-tuning",
+        "priority": "important",
+        "depth": "working",
         "status": "optional",
         "note": "Worth it only after prompting and RAG fall short"
       },
       {
         "skill": "PyTorch",
+        "id": "ml.pytorch",
+        "priority": "important",
+        "depth": "working",
         "status": "optional",
         "note": "Mostly in ML-heavy postings, which aren't the target"
       }

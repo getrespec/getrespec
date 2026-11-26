@@ -12,6 +12,9 @@ To update an existing copy, run `/respec update` in your agent. Your `learner/` 
 ### Changed
 - AI Product Engineer role pack: all nine postings re-read in full and every count checked again. RAG shows up in 3 of 9 postings (was 2), deploying and running in production in all 9, evals in 6; a new "Re-check" table shows which posting asks for what.
 
+### Migration
+- `learner/state.json` moves to schema v3: skills in your coverage map and modules are recorded by catalog ID (`agent.tool-use`) instead of the role pack's own IDs (`B1`). `/respec update` runs `node scripts/migrate-state.mjs` for you; it keeps a backup (`learner/state.v2.backup.json`), changes no module, status or score, and copies a coverage item when its old skill was split into several catalog skills. Copies carry the skill's English name until the next `/respec plan`.
+
 ## [0.2.0] - 2026-11-25
 
 ### Added

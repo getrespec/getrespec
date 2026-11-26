@@ -55,3 +55,31 @@ test("every catalog skill is used by at least one pack", () => {
   const used = new Set(packs.flatMap((p) => p.rows.map((r) => r.id)));
   assert.deepEqual(catalog.map((s) => s.id).filter((id) => !used.has(id)), []);
 });
+
+test("old pack IDs in a state become catalog IDs", async () => {
+  const { toCatalogIds } = await import("../scripts/lib/skills.mjs");
+  const rows = readPack(join(root, "data/roles/ai-product-engineer.md"));
+  const state = {
+    curriculum: {
+      coverage: [
+        { skill: "Agents", id: "B2", priority: "core", status: "covered", modules: ["m09"], note: "n" },
+        { skill: "From a posting", status: "covered", modules: ["m09"], postings: ["p1"] },
+        { skill: "Unknown", id: "Z9", status: "optional" },
+        { skill: "Prompting", id: "A3", priority: "core", status: "known" },
+      ],
+      modules: [{ id: "m09", skills: ["B2", "A3"] }, { id: "m00" }],
+    },
+  };
+  const log = toCatalogIds(state, rows);
+  const cov = state.curriculum.coverage;
+  assert.deepEqual(cov.map((c) => c.id), ["agent.loops", "agent.human-approval", undefined, "Z9", "llm.prompt-context"]);
+  assert.deepEqual(cov[0], { skill: "Agents", id: "agent.loops", priority: "core", depth: "working", status: "covered", modules: ["m09"], note: "n" });
+  assert.equal(cov[1].skill, "Approval before actions"); // split copy takes the pack's name
+  assert.equal(cov[1].status, "covered");
+  assert.deepEqual(state.curriculum.modules[0].skills, ["agent.loops", "agent.human-approval", "llm.prompt-context"]);
+  assert.ok(log.some((l) => l.startsWith("coverage B2 → agent.loops, agent.human-approval")));
+  // Z9 isn't an old pack ID (those are A1–G9), so it stays. A second run changes nothing.
+  const again = structuredClone(state);
+  assert.deepEqual(toCatalogIds(again, rows), []);
+  assert.deepEqual(again, state);
+});

@@ -51,7 +51,7 @@ after(() => server?.kill());
 test("serves state, profile, usage, and the module file list", async () => {
   const s = await json("/api/state");
   assert.equal(s.status, 200);
-  assert.equal(s.data.schema_version, 2);
+  assert.equal(s.data.schema_version, 3);
   const p = await json("/api/profile");
   assert.match(p.data.markdown, /# Profile/);
   const u = await json("/api/usage");
