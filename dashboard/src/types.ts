@@ -34,6 +34,7 @@ export type CoverageItem = {
   skill: string;
   id?: string;
   priority?: "core" | "important" | "advanced";
+  depth?: "basic" | "working" | "deep";
   status: "known" | "covered" | "optional";
   modules?: string[];
   postings?: string[];

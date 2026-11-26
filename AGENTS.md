@@ -57,7 +57,7 @@ If you know you're running below this tier (e.g. Haiku, Luna, Terra) or at `low`
 
 - No `learner/state.json`: greet the learner briefly, explain Respec in two sentences, and suggest `/respec start`.
 - Run `node scripts/check-update.mjs --quiet`. It checks GitHub at most once a day (the result is cached) and prints nothing unless a newer Respec release is out. If it prints something, tell the learner in one sentence which version is available and that `/respec update` installs it; don't repeat it later in the session. If it fails or the learner has no network, carry on silently.
-- `learner/state.json` exists: if `schema_version` is below 2, run `node scripts/migrate-state.mjs` first. Then give a one-paragraph status (target role, active module and stage, weak points due for review) and suggest the next step. If the learner hasn't opened the dashboard yet, mention `/respec dashboard` once.
+- `learner/state.json` exists: if `schema_version` is below 3, run `node scripts/migrate-state.mjs` first. Then give a one-paragraph status (target role, active module and stage, weak points due for review) and suggest the next step. If the learner hasn't opened the dashboard yet, mention `/respec dashboard` once.
 
 ## Commands
 
@@ -82,7 +82,8 @@ In Claude Code these run as `/respec <command>`. In other agents (Codex, Cursor,
 data/market/roles.md          Role and job-market trends (ships with the repo)
 data/resources/curricula.md   External resources and curricula
 data/language/<code>.md       Writing guide for a learner language; _template.md is the structure for new ones
-data/roles/<role-id>.md       Role pack: the sourced skill tree for one role (priorities, prerequisites, outcomes); see data/roles/README.md
+data/skills.md                Skill catalog: every skill once, with a stable ID, prerequisites, outcomes by depth, and how to check it
+data/roles/<role-id>.md       Role pack: which catalog skills one role asks for (priority, posting counts, depth), from sourced postings; see data/roles/README.md
 flows/                        Flow definitions
 examples/learner-demo/         A sample learner folder; its state.json is the reference format
 scripts/serve.mjs             Local dashboard server (read-only)
@@ -117,7 +118,7 @@ learner/                      Learner-specific; never committed
 
 ## state.json rules
 
-- The format matches `examples/learner-demo/state.json` exactly, plus the optional fields described in `flows/plan.md` (`learner.target_postings`; `id`, `priority`, and `postings` on coverage items; `skills` on modules). Don't add or rename other fields; put anything extra in `notes`.
+- The format matches `examples/learner-demo/state.json` exactly, plus the optional fields described in `flows/plan.md` (`learner.target_postings`; `id`, `priority`, `depth`, and `postings` on coverage items; `skills` on modules). Don't add or rename other fields; put anything extra in `notes`.
 - After every stage transition, update the state. The dashboard app reads `learner/` live; there's nothing to rebuild.
 - Module `status`: `locked` → `active` → `completed` or `assisted`. Only one module is `active` at a time.
 - Module `stage`: `lesson` → `quiz` → `review` (if needed) → `assignment` → `evaluation` → `done`. Modules with `type: "theory"` have no assignment; passing the quiz completes them.
@@ -125,7 +126,7 @@ learner/                      Learner-specific; never committed
 - Dates are `YYYY-MM-DD`. Log every significant event in `history` with one short sentence.
 - `learner.target_postings`: job postings the learner is aiming at (`flows/plan.md` step 2), saved under `learner/postings/`. Use them first in the role map, in "Where it shows up in the role", and for the capstone.
 - `learner.preferences`: set by the `plan` interview (`flows/plan.md` step 3): `goal`, `scope`, `example_context`, `capstone_context`, `lesson_order`, `llm_access`, `asked_at`. Read it before writing any lesson, quiz, or assignment. If the learner states a new preference, update it.
-- `curriculum.coverage`: every skill of the target role (from its role pack and the target postings) with `status` `known`, `covered` (with `modules`), or `optional`, and a `note`. Keep it in sync when modules are added or removed. Older states may have `curriculum.skipped` instead; leave it as is.
+- `curriculum.coverage`: every skill of the target role (from its role pack and the target postings) with `status` `known`, `covered` (with `modules`), or `optional`, and a `note`. Skills are recorded by catalog ID (`data/skills.md`), so what a learner knows carries over when they change role. Keep it in sync when modules are added or removed. Older states may have `curriculum.skipped` instead; leave it as is.
 - `weak_points`: concepts answered wrong or missing from an assignment. Ask about at least one in every later quiz (spaced repetition). Increment `correct_count` on each correct answer; remove the item when it reaches 2.
 
 ## Mastery thresholds
@@ -327,11 +328,11 @@ Assignment code that calls an LLM API goes through the local proxy, so every req
 
 ## Market data
 
-Use `data/roles/<role-id>.md` (the role pack) for what a role requires: skills, priorities, prerequisites, and outcomes. Use `data/market/roles.md` when recommending roles and in each lesson's "Where it shows up in the role" section and the role map (`m00`). If its `last_updated` date is older than 60 days, suggest `/respec update-trends`. Always state the source and date of any figure. Never compare different metric types (growth rate, posting count, share, survey). When the learner's target market has a "Market notes" section, use it.
+Use `data/roles/<role-id>.md` (the role pack) for what a role requires: which skills, at what priority and depth. Use `data/skills.md` for what each skill is: prerequisites, outcomes, and how to check it. Teach and grade a skill at its coverage depth. Use `data/market/roles.md` when recommending roles and in each lesson's "Where it shows up in the role" section and the role map (`m00`). If its `last_updated` date is older than 60 days, suggest `/respec update-trends`. Always state the source and date of any figure. Never compare different metric types (growth rate, posting count, share, survey). When the learner's target market has a "Market notes" section, use it.
 
 ## Don't
 
-- Modify files outside `learner/` during the learning flow. Exceptions: `update` pulls a new release with git, after the learner confirms; `update-trends` updates `data/market/roles.md`, `data/roles/*.md`, and `data/resources/curricula.md`; when the learner points out a wrong or unnatural word, fix it where it appears and add the pair (wrong → better) to `data/language/<language>.md` with source `learner`; if the learner's suggestion contradicts a `draft` row, replace that row.
+- Modify files outside `learner/` during the learning flow. Exceptions: `update` pulls a new release with git, after the learner confirms; `update-trends` updates `data/market/roles.md`, `data/roles/*.md`, `data/skills.md`, and `data/resources/curricula.md`; when the learner points out a wrong or unnatural word, fix it where it appears and add the pair (wrong → better) to `data/language/<language>.md` with source `learner`; if the learner's suggestion contradicts a `draft` row, replace that row.
 - Write personal information from the learner's CV or profile anywhere outside `learner/`.
 - Mark a module `completed` without an evaluation.
 - Delete anything under `learner/`; when starting over, move old content to `learner/_archive/<date>/`.

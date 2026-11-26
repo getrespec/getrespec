@@ -60,76 +60,83 @@ Markets: Turkey 7, US 5, UK 2, India 2, and one each from Portugal, Argentina, t
 
 ## Skill tree
 
-**Priority** comes from the postings above: `core` = in at least half of them (12 of 23), or part of the role's definition; `important` = in 3 or more; `advanced` = in 1–2, or only in senior/staff postings. **Seen in** counts the postings that ask for the skill. P23 was only partly read, so counts are a lower bound. With `scope: job-ready`, a plan covers every `core` skill the learner doesn't already have; `full-role` adds `important` and `advanced`.
+Each skill is defined once in [`data/skills.md`](../skills.md): what it is, its prerequisites, the outcomes, and how to check it. This table says how this role asks for it.
 
-**Skip** marks what a learner with that background can usually test out of in placement instead of studying: `backend` = backend or platform developer, `data` = data engineer.
+- **Priority** comes from the postings above: `core` = in at least half of them (12 of 23), or part of the role's definition; `important` = in 3 or more; `advanced` = in 1–2, or only in senior/staff postings. With `scope: job-ready`, a plan covers every `core` skill the learner doesn't already have; `full-role` adds `important` and `advanced`.
+- **Seen in** counts the postings that ask for the skill. P23 was only partly read, so counts are a lower bound.
+- **Skip** (in "In this role") marks what a learner with that background can usually test out of in placement instead of studying: `backend` = backend or platform developer, `data` = data engineer.
+- **Depth** is `basic`, `working`, or `deep`, as defined in the catalog. **In this role** is what this role adds to the catalog's outcomes.
+- **Was** is the skill's ID in this pack up to v0.2.0. `scripts/migrate-state.mjs` uses it to update learners' states; it is removed in the release after v0.3.0. An old ID on more than one row was split.
 
-### A. Math and ML foundations
+### Math and ML foundations
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| A1 | Python for data work: NumPy, pandas, notebooks vs packaged code | core | 20/23 | – | Load, clean, and reshape a data set; vectorize instead of looping; move notebook code into a tested module | Small task; code review |
-| A2 | The math that ML needs first: vectors, matrices and shapes; derivatives and the chain rule; probability, distributions, expectation and variance; basic statistics and hypothesis tests | core | definition; named in 5/23 (rarely written down, assumed by "ML fundamentals" and degree requirements) | – | Compute a gradient by hand for a two-parameter model; explain a matrix multiply by its shapes; tell whether an A/B difference is likely noise | Worked-problem quiz with numbers |
-| A3 | Classical ML: regression, classification, clustering, gradient-boosted trees, feature engineering (scikit-learn, XGBoost, LightGBM) | core | 13/23 (10 name methods or libraries, 3 ask for "ML fundamentals") | A1, A2 | Build a baseline and a boosted-tree model on tabular data and explain which features matter | Assignment on a tabular data set |
-| A4 | Evaluation and experiment design: train/validation/test splits, metrics that fit the problem, overfitting, data leakage, class imbalance, hyperparameter search | core | 12/23 | A3 | Pick a metric for a business goal; find a leak in a pipeline; compare two models fairly | Scenario quiz + "find the leak" exercise |
+| `ml.python-data` | Python for data work | A1 | core | 20/23 | working | – |
+| `ml.math` | The math that ML needs first | A2 | core | definition; named in 5/23 (rarely written down, assumed by "ML fundamentals" and degree requirements) | working | – |
+| `ml.classical` | Classical ML | A3 | core | 13/23 (10 name methods or libraries, 3 ask for "ML fundamentals") | working | – |
+| `ml.evaluation` | Evaluation and experiment design | A4 | core | 12/23 | working | – |
 
-### B. Deep learning and PyTorch
+### Deep learning and PyTorch
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| B1 | PyTorch: tensors, autograd, `Dataset`/`DataLoader`, writing the training and evaluation loop yourself, saving and loading checkpoints | core | 14/23 | A1, A2 | Train a small network with a hand-written loop; debug shape and device errors; resume from a checkpoint | Assignment: training loop with a loss curve |
-| B2 | Deep learning fundamentals: layers, activations, loss functions, optimizers, learning-rate schedules, regularization; CNN and Transformer architectures | important | 7/23 | B1 | Explain why a loss curve diverges or plateaus and fix it; read a Transformer block and name each part | Debugging exercise; defence questions |
-| B3 | One application domain in depth: recommendations and ranking, forecasting and time series, computer vision, or NLP | core | 13/23 ask for at least one | A4, B1 | Ship a model in the chosen domain with domain-appropriate metrics (e.g. NDCG, MAPE, mAP, F1) | Capstone in that domain |
-| B4 | GPU and distributed training: mixed precision, multi-GPU data parallel (DDP, FSDP), data-loading bottlenecks, cost per run | important | 6/23 | B1 | Profile a training run, find whether GPU or data loading is the bottleneck, and fix it | Before/after throughput numbers |
-| B5 | Reading papers and reproducing a method | important | 4/23 | B2 | Reimplement one result from a paper and report where it differs | Write-up with code |
+| `ml.pytorch` | PyTorch | B1 | core | 14/23 | working | – |
+| `ml.deep-learning` | Deep learning fundamentals | B2 | important | 7/23 | working | – |
+| `ml.application-domain` | One application domain in depth | B3 | core | 13/23 ask for at least one | working | – |
+| `ml.distributed-training` | GPU and distributed training | B4 | important | 6/23 | working | – |
+| `ml.papers` | Reading papers and reproducing a method | B5 | important | 4/23 | working | – |
 
-### C. Fine-tuning and LLMs
+### Fine-tuning and LLMs
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| C1 | Transfer learning: fine-tune a pretrained model (Hugging Face Transformers) and decide when fine-tuning beats prompting a hosted model on cost, latency, and accuracy | important | 4/23 | B1, A4 | Fine-tune a small pretrained model on a labelled set and compare it with a prompted hosted model on the same eval | Eval report with cost and latency |
-| C2 | LLM fine-tuning methods: supervised fine-tuning, parameter-efficient methods (LoRA, QLoRA through Hugging Face PEFT), preference optimization (DPO), distillation | advanced | 3/23 (LoRA itself named in 0/23) | C1, B4 | Fine-tune an open-weight model with LoRA on one GPU and show it beats the base model on a held-out eval | Assignment with eval before/after |
-| C3 | LLMs as a system component: embeddings, retrieval and vector databases, RAG, LLM pipelines, agents | important | 5/23 required + 2 as a plus | A4 | Build a retrieval pipeline and measure its answer quality | Eval of answer accuracy |
-| C4 | Evaluating LLM and generative systems: eval suites as release gates, LLM-as-judge calibrated against human labels | important | 3/23 | C3, A4 | Build an eval set and a judge; measure how often the judge agrees with human labels | Eval report with agreement rate |
-| C5 | Inference optimization: batching, quantization, compression, export (ONNX), serving engines for open-weight models (vLLM) | important | 5/23 | B1, E1 | Cut latency or cost of a served model without lowering its eval score | Before/after numbers |
+| `ml.fine-tuning` | Transfer learning and fine-tuning | C1 | important | 4/23 | working | – |
+| `ml.llm-fine-tuning` | LLM fine-tuning methods | C2 | advanced | 3/23 (LoRA itself named in 0/23) | working | – |
+| `rag.design` | LLMs as a system component | C3 | important | 5/23 required + 2 as a plus | working | LLM pipelines and agents as one component of an ML system |
+| `rag.search` | Embeddings and vector databases | C3 | important | counted with `rag.design` (old C3) | working | – |
+| `quality.evals` | Evaluating LLM and generative systems | C4 | important | 3/23 | deep | Measure how often the judge agrees with human labels |
+| `ml.inference` | Inference optimization | C5 | important | 5/23 | working | – |
 
-### D. Data for ML
+### Data for ML
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| D1 | SQL and large-scale data processing (Spark/PySpark or similar) | important | 11/23 (expected almost everywhere) | A1 | Build a training set from raw tables with joins and window functions; run the same on Spark | Assignment. Skip: `data` |
-| D2 | Feature and data pipelines: scheduled and streaming pipelines (Airflow, Kafka), feature stores, computing a feature once and serving it the same way in training and production | core | 13/23 | D1 | Build a daily feature pipeline and serve the same features online without skew | Assignment with a skew test. Skip: `data` (pipelines part) |
-| D3 | Data quality and data sets: labeling guidelines, annotation quality, curation, synthetic data | important | 7/23 | A4 | Write labeling rules, measure label agreement, and show the effect of cleaner data on the model | Before/after eval |
+| `eng.sql` | SQL | D1 | important | 11/23 (expected almost everywhere) | working | Build a training set from raw tables with joins and window functions. Skip: `data` |
+| `ml.data-processing` | Large-scale data processing | D1 | important | counted with `eng.sql` (old D1) | working | Skip: `data` |
+| `ml.feature-pipelines` | Feature and data pipelines | D2 | core | 13/23 | working | Skip: `data` (pipelines part) |
+| `ml.datasets` | Data quality and data sets | D3 | important | 7/23 | working | – |
 
-### E. Shipping and operating models (MLOps)
+### Shipping and operating models (MLOps)
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| E1 | Packaging and serving models: batch vs real-time inference, REST/gRPC endpoints (FastAPI or similar), latency and reliability targets | core | 18/23 | A3 or B1 | Serve a model behind an API with a latency budget, and run the same model as a batch job | Working service + load test. Skip: `backend` (API part) |
-| E2 | Containers and orchestration: Docker, Kubernetes (or OpenShift) | core | 14/23 | E1 | Containerize training and serving; deploy to a cluster | Working deployment. Skip: `backend` if already used |
-| E3 | A cloud and one managed ML platform: Amazon SageMaker AI, Azure Machine Learning, Databricks, or Google Cloud's platform (formerly Vertex AI) | core | 13/23 name a cloud; 7/23 name a managed ML platform | E2 | Train, register, and deploy a model on one managed platform; know what it costs | Working pipeline on one platform |
-| E4 | CI/CD and reproducibility for ML: tests for data and models, experiment tracking and model registry (MLflow or W&B), data and model versioning | core | 15/23 (MLflow named in 5) | E1 | Retrain and redeploy from a commit with tracked data, parameters, and metrics; roll back to a previous model version | Pipeline demo. Skip: `backend` (CI/CD part) |
-| E5 | Monitoring in production: data and prediction drift, silent degradation, alerting, retraining triggers, incident handling | core | 15/23 | E1, A4 | Detect drift on a served model, alert, and trigger a retrain | Assignment with injected drift |
-| E6 | Safe rollout: offline evaluation, shadow runs, champion/challenger, online A/B tests and reading their results | important | 3/23 | E5, A2 | Plan a rollout from offline eval to A/B test with a rollback rule | Design review + A/B analysis quiz |
-| E7 | Infrastructure as code (Terraform, Pulumi, CloudFormation) | important | 3/23 | E3 | Provision training and serving infrastructure from code | Working config. Skip: `backend` (often) |
+| `ml.serving` | Packaging and serving models | E1 | core | 18/23 | working | Skip: `backend` (API part) |
+| `eng.kubernetes` | Containers and orchestration | E2 | core | 14/23 | working | Containerize training and serving. Skip: `backend` if already used |
+| `ml.platform` | A cloud and one managed ML platform | E3 | core | 13/23 name a cloud; 7/23 name a managed ML platform | working | – |
+| `ml.reproducibility` | CI/CD and reproducibility for ML | E4 | core | 15/23 (MLflow named in 5) | working | Skip: `backend` (CI/CD part) |
+| `ml.monitoring` | Monitoring in production | E5 | core | 15/23 | working | – |
+| `ml.rollout` | Safe rollout | E6 | important | 3/23 | working | – |
+| `eng.iac` | Infrastructure as code | E7 | important | 3/23 | working | Training and serving infrastructure. Skip: `backend` (often) |
 
-### F. Engineering and working with others
+### Engineering and working with others
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| F1 | Production software engineering: clean code, tests, code review, profiling; often a second language (Go, Java, Scala, C++) | core | definition; named in 10/23 | – | Turn research code into a tested, reviewed package | Usually known; confirm in placement. Skip: `backend` |
-| F2 | ML system design: contracts between data, model, and consumers; trade-offs between latency, cost, accuracy, and failure modes | important | 6/23 (mostly senior) | E1, E5 | Design an ML system on a whiteboard and defend its trade-offs | Interview-style design review |
-| F3 | Framing business problems as ML problems, and working with data scientists and product | important | 7/23 | A4 | Turn a vague request into a target, a metric, and a baseline, or argue that ML isn't needed | Spec exercise |
-| F4 | Using AI coding agents across the ML lifecycle, and verifying their output | advanced | 2/23 | F1 | Deliver a pipeline with an agent and show how its output was checked | Portfolio write-up |
-| F5 | Privacy, security, and compliance for training data (KVKK/GDPR, sensitive data, access control) | important | 3/23 | D2 | Keep sensitive fields out of training data and logs; document data lineage | Review of own pipeline |
+| `eng.software-engineering` | Production software engineering | F1 | core | definition; named in 10/23 | working | Turn research code into a tested, reviewed package; often a second language (Go, Java, Scala, C++). Usually known; confirm in placement. Skip: `backend` |
+| `ml.system-design` | ML system design | F2 | important | 6/23 (mostly senior) | working | – |
+| `work.problem-framing` | Framing business problems as ML problems | F3 | important | 7/23 | working | A target, a metric, and a baseline, or an argument that ML isn't needed; working with data scientists and product |
+| `dev.lifecycle` | AI coding agents across the ML lifecycle | F4 | advanced | 2/23 | working | – |
+| `dev.verify-output` | Verifying agent output | F4 | advanced | counted with `dev.lifecycle` (old F4, 2/23) | working | – |
+| `ml.data-privacy` | Privacy, security, and compliance for training data | F5 | important | 3/23 | working | – |
 
-### G. Specialties (senior or niche)
+### Specialties (senior or niche)
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| G1 | Reinforcement learning and reward modelling (including RLHF) | advanced | 2/23 | B2, C2 | Explain and run a small RL or preference-learning experiment | Assignment |
-| G2 | Federated and privacy-preserving learning (differential privacy) | advanced | 1/23 | B1, F5 | Train a model across two data silos without moving the data | Assignment |
-| G3 | Edge and embedded deployment (compression, on-device evaluation) | advanced | 2/23 | C5 | Run a compressed model on a constrained target and measure accuracy loss | Before/after numbers |
+| `ml.rl` | Reinforcement learning and reward modelling | G1 | advanced | 2/23 | working | – |
+| `ml.federated` | Federated and privacy-preserving learning | G2 | advanced | 1/23 | working | – |
+| `ml.edge` | Edge and embedded deployment | G3 | advanced | 2/23 | working | – |
 
 ## Learning order
 
@@ -137,19 +144,19 @@ Prerequisites above define the order. This is the longest path in Respec for an 
 
 **How long:** we found no reliable source for how long the move takes. As a rough guide (an estimate, not sourced): expect well over a year of steady part-time study to reach a portfolio that matches a mid-level posting, longer than the AI Engineer path (6–12 months in `data/market/roles.md`, evidence weak). Postings then ask for 2–5+ years of production ML experience, which you build on the job. The realistic first step for most developers is an MLOps-leaning role or ML work inside their current company.
 
-**Which math first:** you don't need a math degree to start, but you can't skip A2. Learn just enough to read a training loop: vectors, matrices and their shapes; derivatives and the chain rule (that is what backpropagation is); probability, expectation and variance; and the statistics behind evaluation and A/B tests. Leave eigenvectors, SVD, and formal optimization theory until a lesson needs them (B2, B5). Learn the math next to code, not before all code: each concept should show up in a model you train the same week.
+**Which math first:** you don't need a math degree to start, but you can't skip `ml.math`. Learn just enough to read a training loop: vectors, matrices and their shapes; derivatives and the chain rule (that is what backpropagation is); probability, expectation and variance; and the statistics behind evaluation and A/B tests. Leave eigenvectors, SVD, and formal optimization theory until a lesson needs them (`ml.deep-learning`, `ml.papers`). Learn the math next to code, not before all code: each concept should show up in a model you train the same week.
 
 A typical path for a backend or full-stack developer:
 
-1. **Foundations (A1 → A2 → A3 → A4):** tabular ML with scikit-learn and boosted trees, and evaluation done properly. Many production postings (P14, P18, P19) are mostly this.
-2. **Ship it early (E1 → E2 → E4 → E5):** serve, containerize, track, and monitor the tabular model from step 1. Backend developers move fast here and should, because this is the most-requested part of the role.
-3. **Data (D1 → D2 → D3):** feature pipelines and training-serving consistency. Data engineers can mostly skip D1 and D2.
-4. **Deep learning (B1 → B2 → B3):** PyTorch with a hand-written training loop, then one domain in depth. Choose the domain from your target postings.
-5. **Cloud and rollout (E3 → E6 → E7, F2):** one managed platform, A/B tests, and system design.
-6. **LLMs and fine-tuning (C3 → C1 → C4 → C5 → C2), B4:** only after B1. Go deeper here if your target postings are in the "model training / LLM adaptation" group.
-7. **Capstone:** a model trained, evaluated, deployed, monitored, and retrained through a pipeline, with a write-up of the trade-offs (F1, F3 shown through it). G skills only if a target posting asks.
+1. **Foundations (`ml.python-data` → `ml.math` → `ml.classical` → `ml.evaluation`):** tabular ML with scikit-learn and boosted trees, and evaluation done properly. Many production postings (P14, P18, P19) are mostly this.
+2. **Ship it early (`ml.serving` → `eng.kubernetes` → `ml.reproducibility` → `ml.monitoring`):** serve, containerize, track, and monitor the tabular model from step 1. Backend developers move fast here and should, because this is the most-requested part of the role.
+3. **Data (`eng.sql` → `ml.data-processing` → `ml.feature-pipelines` → `ml.datasets`):** feature pipelines and training-serving consistency. Data engineers can mostly skip `eng.sql`, `ml.data-processing` and `ml.feature-pipelines`.
+4. **Deep learning (`ml.pytorch` → `ml.deep-learning` → `ml.application-domain`):** PyTorch with a hand-written training loop, then one domain in depth. Choose the domain from your target postings.
+5. **Cloud and rollout (`ml.platform` → `ml.rollout` → `eng.iac`, `ml.system-design`):** one managed platform, A/B tests, and system design.
+6. **LLMs and fine-tuning (`rag.design` → `ml.fine-tuning` → `quality.evals` → `ml.inference` → `ml.llm-fine-tuning`), `ml.distributed-training`:** only after `ml.pytorch`. Go deeper here if your target postings are in the "model training / LLM adaptation" group.
+7. **Capstone:** a model trained, evaluated, deployed, monitored, and retrained through a pipeline, with a write-up of the trade-offs (`eng.software-engineering`, `work.problem-framing` shown through it). The specialty skills (`ml.rl`, `ml.federated`, `ml.edge`) only if a target posting asks.
 
-**Shorter path for a backend developer aiming at MLOps / ML platform roles** (P4, P7, P10, P13, P23): A1 → A2 (lighter) → A3 → A4 → E1–E7 → D2 → B1 (enough to run and debug someone else's training loop) → B4 → F2. This trades modelling depth for platform depth, which those postings say they want.
+**Shorter path for a backend developer aiming at MLOps / ML platform roles** (P4, P7, P10, P13, P23): `ml.python-data` → `ml.math` (lighter) → `ml.classical` → `ml.evaluation` → `ml.serving`, `eng.kubernetes`, `ml.platform`, `ml.reproducibility`, `ml.monitoring`, `ml.rollout`, `eng.iac` → `ml.feature-pipelines` → `ml.pytorch` (enough to run and debug someone else's training loop) → `ml.distributed-training` → `ml.system-design`. This trades modelling depth for platform depth, which those postings say they want.
 
 ## Market notes
 
@@ -175,4 +182,5 @@ A typical path for a backend or full-stack developer:
 
 ## Changelog
 
+- 2026-11-27: skill tree moved to the shared catalog (`data/skills.md`). Rows now point to catalog IDs; old IDs are in the `Was` column. Split: C3 into `rag.design` + `rag.search`, D1 into `eng.sql` + `ml.data-processing`, F4 into `dev.lifecycle` + `dev.verify-output`. The "Skip" notes moved to "In this role". Counts and priorities unchanged.
 - 2026-11-24: first version, from 23 postings.
