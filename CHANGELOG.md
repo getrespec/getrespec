@@ -6,6 +6,8 @@ To update an existing copy, run `/respec update` in your agent. Your `learner/` 
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-26
+
 ### Added
 - A shared skill catalog, `data/skills.md`: each skill is defined once (outcomes, prerequisites, how to check it) with a stable ID such as `agent.tool-use`. Different job titles mostly ask for the same skills, so progress will carry over between roles. All six role packs now point to it, with their own priority, posting counts and depth (`basic`, `working`, `deep`) per skill. `/respec plan` records skills by catalog ID, counts what you already learned for an earlier role as known, and tells you how much of neighbouring roles your plan covers; `/respec role` uses the same overlap when you change role.
 
