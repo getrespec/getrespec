@@ -36,63 +36,71 @@ First read on 2026-11-20 through Firecrawl job search. "Board" means read on the
 
 ## Skill tree
 
-**Priority** comes from the postings above: `core` = in at least half of them, or part of the role's definition; `important` = in 3 or more; `advanced` = in 1–2, or only in senior/staff postings. **Seen in** counts the postings that ask for the skill, including "preferred" items; counts were re-checked against the full text of all nine postings on 2026-11-25. With `scope: job-ready`, a plan covers every `core` skill the learner doesn't already have; `full-role` adds `important` and `advanced`.
+Each skill is defined once in [`data/skills.md`](../skills.md): what it is, its prerequisites, the outcomes, and how to check it. This table says how this role asks for it.
 
-### A. LLM application foundations
+- **Priority** comes from the postings above: `core` = in at least half of them, or part of the role's definition; `important` = in 3 or more; `advanced` = in 1–2, or only in senior/staff postings. With `scope: job-ready`, a plan covers every `core` skill the learner doesn't already have; `full-role` adds `important` and `advanced`.
+- **Seen in** counts the postings that ask for the skill, including "preferred" items; counts were re-checked against the full text of all nine postings on 2026-11-25.
+- **Depth** is `basic`, `working`, or `deep`, as defined in the catalog. **In this role** is what this role adds to the catalog's outcomes.
+- **Was** is the skill's ID in this pack up to v0.2.0. `scripts/migrate-state.mjs` uses it to update learners' states; it is removed in the release after v0.3.0. An old ID on more than one row was split.
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+### llm: LLM application foundations
+
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| A1 | How LLMs behave in an API call: tokens, context window, output limits, statelessness, cost per token, and which settings the current models accept | core | definition | – | Estimate a request's tokens and cost; predict what history length and output limits change; check the provider docs before relying on a setting | Scenario quiz with numbers |
-| A2 | Calling LLM APIs from a server: keys, errors, retries, timeouts | core | 9/9 | A1 | Call a model safely from a backend; handle rate limits and failures | Assignment: endpoint with failure handling |
-| A3 | Prompt and context design: system prompts, examples, delimiters, grounding | core | 9/9 | A1 | Write a prompt that holds its format and declines outside its source | Test cases including out-of-scope questions |
-| A4 | Structured output and validation (schemas, retry with feedback) | important | 2/9 + implied by agents | A2 | Get schema-valid data and handle invalid output | Assignment with a validator |
-| A5 | Streaming answers into the UI, with stop, retry, and accessible status | important | rarely named; expected for user-facing AI | A2 | Stream, cancel upstream, show done/stopped/failed | Assignment; screen-reader check |
+| `llm.behavior` | How LLMs behave | A1 | core | definition | working | – |
+| `llm.api` | Calling LLM APIs from a server | A2 | core | 9/9 | working | – |
+| `llm.prompt-context` | Prompt and context design | A3 | core | 9/9 | working | – |
+| `llm.structured-output` | Structured output and validation | A4 | important | 2/9 + implied by agents | working | – |
+| `llm.streaming` | Streaming with cancellation | A5 | important | rarely named; expected for user-facing AI | working | Into the UI, with stop, retry, and accessible done/stopped/failed status; also checked with a screen reader |
 
-### B. Agents, tools, and data
+### agent: Agents and tool use
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| B1 | Tool use / function calling, and showing tool calls in the UI | core | 6/9 | A3, A4 | Let a model call your functions safely; render each step | Assignment with two tools |
-| B2 | Multi-step agents and orchestration (loops, state, human approval, rollback) | core | 8/9 | B1, C1 | Build a bounded agent loop with approval before actions | Assignment + defence questions |
-| B3 | Grounding with your data: long context vs RAG, embeddings, retrieval | important | 3/9 | A3 | Choose and build the right retrieval for a data set | Eval of answer accuracy before/after |
-| B4 | MCP: exposing a product's data and actions to agents | advanced | 1/9 (staff); also Turkey market | B1 | Build a small MCP server with scoped permissions | Working server used from an agent |
-| B5 | Memory and context systems for agents | advanced | 1/9 (staff) | B2, B3 | Store and retrieve per-user context | Design review |
+| `agent.tool-use` | Tool use / function calling | B1 | core | 6/9 | working | Show each tool call and its result in the UI |
+| `agent.loops` | Agent loops and orchestration | B2 | core | 8/9 | working | – |
+| `agent.human-approval` | Approval before actions | B2 | core | counted with `agent.loops` (old B2, 8/9) | working | – |
+| `agent.mcp` | MCP | B4 | advanced | 1/9 (staff); also Turkey market | working | Exposing the product's own data and actions to agents |
+| `agent.memory` | Memory and context for agents | B5 | advanced | 1/9 (staff) | working | – |
 
-### C. Quality, safety, and operations of AI features
+### rag: Retrieval and data
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| C1 | Evals: test sets, graders, regression checks, "what does correct look like" | core | 6/9 | A3 | Build an eval set and compare two prompt or model versions | Eval report with before/after |
-| C2 | Guardrails and failure handling: hallucination, validation, human in the loop | core | 5/9 | A3, A4 | Detect and contain bad output before users see it | Failure-case tests |
-| C3 | LLM security: OWASP Top 10 for LLM Applications 2026 (prompt injection, sensitive information disclosure, excessive agency, improper output handling) | core | 5/9 | A3, B1 | Threat-model a feature; defend against injection; render output safely; limit tool permissions | Red-team exercise on own feature |
-| C4 | Observability for AI: traces, logging, catching drift | important | 3/9 | A2 | Trace a request end to end and find a regression | Debugging assignment |
-| C5 | Cost and latency: caching, model choice, token budgets | important | 2/9 + OWASP LLM06:2026 (Unbounded Consumption) | A1, C4 | Cut cost per request without lowering the eval score | Before/after numbers |
+| `rag.design` | Grounding with your data | B3 | important | 3/9 | working | – |
+| `rag.search` | Embeddings and retrieval | B3 | important | counted with `rag.design` (old B3, 3/9) | working | – |
 
-### D. Full-stack product engineering
+### quality: Quality, safety, and operations
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| D1 | TypeScript, React, Next.js (or equivalent) frontend | core | 7/9 | – | Build product UI with a design system | Usually known; confirm in placement |
-| D2 | Backend APIs and services (Node.js or similar) | core | 8/9 explicit; P4 implies it (runs what it builds across TypeScript, Rust and Ruby) | – | Design and build an API with background jobs | Assignment |
-| D3 | Databases: SQL, data modelling, migrations (PostgreSQL) | core | 5/9 | D2 | Model data, write queries, ship a migration safely | Assignment with schema change |
-| D4 | Auth, permissions, and handling sensitive data | important | 4/9 | D2, D3 | Add sign-in, roles, and tenant isolation; keep PII out of prompts and logs | Security review of own app |
-| D5 | Deploy and run what you build: CI/CD, monitoring, rollback | core | 9/9 | D2 | Ship through a pipeline with tests; monitor and roll back | Working pipeline |
-| D6 | Python for AI tooling | advanced | 2/9 | – | Read and write Python services and scripts | Small task |
+| `quality.evals` | Evals | C1 | core | 6/9 | working | – |
+| `quality.guardrails` | Guardrails and failure handling | C2 | core | 5/9 | working | – |
+| `quality.security` | LLM security | C3 | core | 5/9 | working | Render model output safely in the UI. Only P1 names prompt injection |
+| `quality.observability` | Observability for AI | C4 | important | 3/9 | working | – |
+| `quality.cost-latency` | Cost and latency | C5 | important | 2/9 + OWASP LLM06:2026 (Unbounded Consumption) | working | – |
 
-### E. AI-native development workflow
+### eng: Full-stack product engineering
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| E1 | Building with AI coding agents: specs and acceptance tests agents can execute, review and test gates, verifying output, cost control | core | 6/9 (P2 also expects AI in daily work, without naming coding agents) | – | Deliver a feature with an agent and show how its output was verified | Portfolio write-up; interview-style defence |
+| `eng.frontend` | Product frontend | D1 | core | 7/9 | working | Usually the learner's starting point |
+| `eng.typescript` | TypeScript/Node | D1 | core | counted with `eng.frontend` (old D1, 7/9) | working | – |
+| `eng.backend` | Backend APIs and services | D2 | core | 8/9 explicit; P4 implies it (runs what it builds across TypeScript, Rust and Ruby) | working | Node.js or similar |
+| `eng.sql` | Databases and migrations | D3 | core | 5/9 | working | – |
+| `eng.auth` | Auth, permissions, sensitive data | D4 | important | 4/9 | working | Tenant isolation |
+| `eng.deploy` | Deploy and run | D5 | core | 9/9 | working | – |
+| `eng.python` | Python | D6 | advanced | 2/9 | basic | Read and write Python services and scripts for AI tooling |
 
-### F. Product and collaboration
+### work: Workflow and collaboration
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| F1 | Product sense: start from the problem, ship small, learn from usage and feedback | core | 9/9 | – | Turn a vague request into a short spec and a measurable outcome | Spec exercise |
-| F2 | Judging when not to use AI (a rule or plain code beats an agent) | important | 2/9 (explicitly) | B2 | Defend choosing a non-AI solution with reasons | Scenario quiz |
-| F3 | UX for AI features: design systems, accessibility, trust (citations, uncertainty, undo) | important | 4/9 | D1 | Design an AI interaction users can trust and correct | Design review |
-| F4 | Working with stakeholders: demos, explaining limits, collecting feedback | important | 4/9 | F1 | Demo a feature and its limits to non-engineers | Recorded demo or write-up |
+| `work.coding-agents` | Building with AI coding agents | E1 | core | 6/9 (P2 also expects AI in daily work, without naming coding agents) | working | – |
+| `work.problem-framing` | Starting from the problem | F1 | core | 9/9 | working | Product sense: ship small and learn from usage and feedback |
+| `work.when-not-ai` | Judging when not to use AI | F2 | important | 2/9 (explicitly) | working | – |
+| `work.ai-ux` | UX for AI features | F3 | important | 4/9 | working | – |
+| `work.stakeholders` | Working with stakeholders | F4 | important | 4/9 | working | – |
 
 ## Re-check 2026-11-25
 
@@ -113,9 +121,9 @@ Notes: P3's agent experience and P9's RAG and AI coding tools are "preferred". P
 
 ## Learning order
 
-Prerequisites above define the order. A typical path for a frontend developer: A1 → A2 → A3 → A5 → A4 → C1 → B1 → C2 → C3 → B2 → B3 → D2/D3/D4 (alongside the AI modules that need a backend) → D5 → C4 → C5 → F3 → capstone → portfolio (E1, F1, F4 shown through the capstone).
+Prerequisites above define the order. A typical path for a frontend developer: `llm.behavior` → `llm.api` → `llm.prompt-context` → `llm.streaming` → `llm.structured-output` → `quality.evals` → `agent.tool-use` → `quality.guardrails` → `quality.security` → `agent.loops` → `rag.design` → `eng.backend`/`eng.sql`/`eng.auth` (alongside the AI modules that need a backend) → `eng.deploy` → `quality.observability` → `quality.cost-latency` → `work.ai-ux` → capstone → portfolio (`work.coding-agents`, `work.problem-framing`, `work.stakeholders` shown through the capstone).
 
-Evals (C1) come early on purpose: postings treat measuring quality as part of building, not a final step.
+Evals (`quality.evals`) come early on purpose: postings treat measuring quality as part of building, not a final step.
 
 ## Market notes
 
@@ -131,6 +139,7 @@ Evals (C1) come early on purpose: postings treat measuring quality as part of bu
 
 ## Changelog
 
+- 2026-11-27: skill tree moved to the shared catalog (`data/skills.md`). Rows now point to catalog IDs; old IDs are in the `Was` column. B2, B3 and D1 split: `agent.loops` + `agent.human-approval`, `rag.design` + `rag.search`, `eng.frontend` + `eng.typescript`. Counts and priorities unchanged; `eng.python` marked `basic`.
 - 2026-11-25: all nine postings re-read in full (P8 and P9 had been partly read). Counts updated: B2 6→8, B3 2→3, C1 5→6, D1 6→7, D2 9→8 explicit (P4 implied), D5 7→9, E1 5→6. Priorities unchanged. Added "Re-check 2026-11-25".
 - 2026-11-24: A1 reworded to follow current provider docs (sampling settings are restricted on many current models); same ID and priority.
 - 2026-11-20: first version, from 9 postings.
