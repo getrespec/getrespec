@@ -35,11 +35,10 @@ test("catalog prerequisites exist and have no cycles", () => {
   for (const s of catalog) visit(s.id, []);
 });
 
-test("converted packs point only to catalog skills, once each", () => {
-  // shortcut: packs still in the old format have no catalog rows and are skipped; require all packs once step 2 converts them.
-  const converted = packs.filter((p) => p.rows.length);
-  assert.ok(converted.length >= 2);
-  for (const { f, rows } of converted) {
+test("every pack points only to catalog skills, once each", () => {
+  assert.equal(packs.length, 6);
+  for (const { f, rows } of packs) {
+    assert.ok(rows.length > 0, `${f}: no skill rows`);
     const seen = new Set();
     for (const r of rows) {
       assert.ok(byId.has(r.id), `${f}: unknown skill ${r.id}`);
@@ -47,6 +46,12 @@ test("converted packs point only to catalog skills, once each", () => {
       seen.add(r.id);
       assert.match(r.priority, /^(core|important|advanced)\b/, `${f}: ${r.id} priority`);
       assert.match(r.depth, /^(basic|working|deep)$/, `${f}: ${r.id} depth`);
+      assert.match(r.was ?? "", /^[A-G][0-9]$/, `${f}: ${r.id} needs its old ID in Was`);
     }
   }
+});
+
+test("every catalog skill is used by at least one pack", () => {
+  const used = new Set(packs.flatMap((p) => p.rows.map((r) => r.id)));
+  assert.deepEqual(catalog.map((s) => s.id).filter((id) => !used.has(id)), []);
 });

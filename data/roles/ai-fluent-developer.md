@@ -65,57 +65,78 @@ Markets: Turkey 7 (P1–P7), UK 6, Germany 2, Netherlands 2, Spain 1, Poland 1, 
 
 ## Skill tree
 
-**Priority** comes from the postings above: `core` = in at least half of them, or part of the role's definition; `important` = in 3 or more; `advanced` = in 1–2, or only in senior/staff postings. **Seen in** counts the postings that ask for the skill. P4 and P7 were only partly read, so counts are a lower bound. Because every posting was chosen for mentioning AI, A1's 28/28 shows the selection, not market share. With `scope: job-ready`, a plan covers every `core` skill the learner doesn't already have; `full-role` adds `important` and `advanced`.
+Each skill is defined once in [`data/skills.md`](../skills.md): what it is, its prerequisites, the outcomes, and how to check it. This table says how this role asks for it.
 
-Tool facts named below (context files, MCP, permissions) were checked against the vendors' docs on 2026-11-24 (see Sources). They change often: lessons must check them again.
+- **Priority** comes from the postings above: `core` = in at least half of them, or part of the role's definition; `important` = in 3 or more; `advanced` = in 1–2, or only in senior/staff postings. With `scope: job-ready`, a plan covers every `core` skill the learner doesn't already have; `full-role` adds `important` and `advanced`.
+- **Seen in** counts the postings that ask for the skill. P4 and P7 were only partly read, so counts are a lower bound. Because every posting was chosen for mentioning AI, `dev.agent-basics`' 28/28 shows the selection, not market share.
+- Tool facts behind the `dev` skills (context files, MCP, permissions) were checked against the vendors' docs on 2026-11-24 (see Sources). They change often: lessons must check them again.
+- **Depth** is `basic`, `working`, or `deep`, as defined in the catalog. **In this role** is what this role adds to the catalog's outcomes.
+- **Was** is the skill's ID in this pack up to v0.2.0. `scripts/migrate-state.mjs` uses it to update learners' states; it is removed in the release after v0.3.0. An old ID on more than one row was split.
 
-### A. Working with coding agents
+### dev: Developing with AI coding agents
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| A1 | Daily use of an AI coding agent (Claude Code, Codex, Cursor, Copilot): modes, permissions, when to use chat, edit, or agent | core | 28/28 (tools named in 19) | – | Finish a real task in your own codebase with an agent, from prompt to merged change | Recorded session or written walkthrough |
-| A2 | Directing an agent: break work into tasks, give context, constraints, and acceptance criteria; plan before code; iterate | core | definition; 6/28 explicitly | A1 | Write a task brief the agent completes without rework; say why a task is or isn't worth delegating | Same task with a weak and a strong brief; compare results |
-| A3 | Using agents across the lifecycle: refactoring, writing tests, debugging, documentation, porting code | important | 7/28 | A2 | Refactor a legacy module and add tests with an agent, keeping behaviour unchanged | Assignment: before/after test run |
-| A4 | Project context for agents: `AGENTS.md`, `CLAUDE.md`, Cursor rules, Copilot instructions, skills; keeping them current | important | 4/28 | A2 | Write a context file that makes an agent follow the repo's build, test, and style rules | Fresh agent session follows them without reminders |
-| A5 | Connecting agents to tools through MCP (issue tracker, error monitoring, docs, design files), with scoped access | important | 4/28 | A1, C1 | Connect one MCP server, use it in a task, and explain what it can read and do | Working setup + access review |
+| `dev.agent-basics` | Daily use of a coding agent | A1 | core | 28/28 (tools named in 19) | working | – |
+| `dev.directing` | Directing an agent | A2 | core | definition; 6/28 explicitly | working | – |
+| `dev.verify-output` | Reviewing and verifying agent output | B1 | core | definition; 12/28 | working | – |
+| `dev.safe-agent-use` | Safe agent use | C1 | core | 6/28; listed in `roles.md`; vendor docs make reviewing the user's job | working | – |
+| `dev.lifecycle` | Agents across the lifecycle | A3 | important | 7/28 | working | – |
+| `dev.context-files` | Project context for agents | A4 | important | 4/28 | working | – |
+| `dev.mcp-tools` | Connecting agents to tools through MCP | A5 | important | 4/28 | working | – |
+| `dev.tests-gate` | Tests and CI as the safety net | B2 | important | 6/28 tied to AI work | working | – |
+| `dev.delegation-judgement` | Where agents help and where they add risk | B3 | important | 7/28 | working | – |
+| `dev.explain-workflow` | Explaining your AI workflow | E1 | important | 4/28 (one employer uses AI in the interview) | working | – |
+| `dev.team-practice` | Raising the team's practice | E2 | important | 7/28 (mostly senior) | working | – |
 
-### B. Verifying AI-written code
+### llm: LLM features in the product
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| B1 | Reviewing and verifying agent output: read every diff, run it, check edge cases, own every line that ships | core | definition; 12/28 | A1 | Find the planted bugs in an agent-written change and explain each one | Review exercise with seeded defects |
-| B2 | Tests and CI as the safety net: tests first or alongside, agent-written tests checked for real assertions, CI gates | important | 6/28 tied to AI work | B1 | Catch an agent's wrong change through tests before review | Assignment: failing test that catches a regression |
-| B3 | Judgement: where agents help and where they add risk (security-critical code, unfamiliar domains, large rewrites); keeping the quality bar | important | 7/28 | B1 | Defend a choice to do a task by hand, or to delegate it, with reasons | Scenario quiz |
+| `llm.api` | Calling an LLM API from your app | D1 | core | definition; 9/28 (4 as nice-to-have) | working | With a clear system prompt; a small endpoint is enough |
+| `llm.structured-output` | Schema-validated output | D1 | core | counted with `llm.api` (old D1) | working | – |
 
-### C. Security when working with AI
+### agent: Agents and tool use
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| C1 | Safe agent use: permission modes and sandboxing, keeping secrets and personal data out of prompts and unapproved tools, prompt injection through files, web pages and MCP tools, trusting MCP servers, reviewing generated code for vulnerabilities | core | 6/28; listed in `roles.md`; vendor docs make reviewing the user's job | A1 | Set up an agent with least privilege; explain how a poisoned README or web page could steer it and what stops it | Red-team exercise on own setup |
-| C2 | Security of LLM features: OWASP Top 10 for LLM Applications 2026 (prompt injection, sensitive information disclosure, improper output handling, excessive agency) | advanced | 2/28; needed before shipping D1 | C1, D1 | Threat-model a small LLM feature and defend it against injection and unsafe output | Red-team exercise on own feature |
+| `agent.tool-use` | Tool calling | D2 | important | 4/28 | working | Two of your own functions |
+| `agent.mcp` | MCP server in the product | D2 | important | counted with `agent.tool-use` (old D2, 4/28) | working | Expose one action as an MCP server |
 
-### D. LLM features in the product
+### rag: Retrieval and data
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| D1 | Calling an LLM API from your app: keys server-side, errors and retries, a clear system prompt, structured output validated against a schema | core | definition; 9/28 (4 as nice-to-have) | – | Ship a small endpoint that returns schema-valid data and handles failures | Assignment with a validator and failure tests |
-| D2 | Tool calling, simple agents, and MCP servers inside the product | important | 4/28 | D1, C2 | Let a model call two of your functions safely; expose one action as an MCP server | Assignment |
-| D3 | Grounding with your data (RAG) | advanced | 2/28 | D1 | Answer from a document set and cite the source | Accuracy check on test questions |
-| D4 | Evaluating LLM output: small test sets, regression checks, cost and latency | advanced | 2/28 | D1 | Compare two prompt versions on a test set with numbers | Eval report |
-| D5 | UX for AI output: show what the AI did, let users check and correct it | advanced | 2/28 | D1 | Design a result view with sources, uncertainty, and undo | Design review |
+| `rag.design` | Grounding with your data | D3 | advanced | 2/28 | working | – |
 
-### E. Working with AI on a team
+### quality: Quality, safety, and operations
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| E1 | Explaining your AI workflow with evidence: which tools, what you delegate, how you verify, what it changed | important | 4/28 (one employer uses AI in the interview) | A2, B1 | Give a five-minute account of a real task, with the diff and how you checked it | Interview-style defence |
-| E2 | Raising the team's practice: shared context files, documented prompts and workflows, reusable skills, mentoring | important | 7/28 (mostly senior) | A4, E1 | Write a reusable skill or workflow another developer can use | Peer uses it on their task |
+| `quality.evals` | Evaluating LLM output | D4 | advanced | 2/28 | working | Small test sets; cost and latency too |
+
+### sec: Security of LLM features
+
+Needed before shipping an LLM feature, even though few postings name it.
+
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
+|---|---|---|---|---|---|---|
+| `sec.prompt-injection` | Prompt injection | C2 | advanced | 2/28 | basic | A small LLM feature |
+| `sec.data-disclosure` | Sensitive data disclosure | C2 | advanced | counted with `sec.prompt-injection` (old C2, 2/28) | basic | – |
+| `sec.output-handling` | Unsafe output | C2 | advanced | counted with `sec.prompt-injection` (old C2, 2/28) | basic | – |
+| `sec.excessive-agency` | Excessive agency | C2 | advanced | counted with `sec.prompt-injection` (old C2, 2/28) | basic | – |
+
+### work: Workflow and collaboration
+
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
+|---|---|---|---|---|---|---|
+| `work.ai-ux` | UX for AI output | D5 | advanced | 2/28 | working | – |
 
 ## Learning order
 
-Prerequisites above define the order. A typical path: A1 → A2 → B1 → C1 → B2 → A4 → A3 → B3 → A5 → D1 → C2 → D2 → E1 (portfolio piece) → E2. D3–D5 only if the learner's product needs them.
+Prerequisites above define the order. A typical path: `dev.agent-basics` → `dev.directing` → `dev.verify-output` → `dev.safe-agent-use` → `dev.tests-gate` → `dev.context-files` → `dev.lifecycle` → `dev.delegation-judgement` → `dev.mcp-tools` → `llm.api` → the `sec` skills → `agent.tool-use` → `dev.explain-workflow` (portfolio piece) → `dev.team-practice`. `rag.design`, `quality.evals`, `work.ai-ux` only if the learner's product needs them.
 
-C1 comes right after B1 on purpose: an agent runs commands and reads untrusted text from day one, so safe setup can't wait until the end. D1 comes after the agent work because the postings weigh it lower. For a learner who already builds LLM features at work, move D1 earlier.
+`dev.safe-agent-use` comes right after `dev.verify-output` on purpose: an agent runs commands and reads untrusted text from day one, so safe setup can't wait until the end. `llm.api` comes after the agent work because the postings weigh it lower. For a learner who already builds LLM features at work, move `llm.api` earlier.
 
 ## Market notes
 
@@ -145,8 +166,9 @@ C1 comes right after B1 on purpose: an agent runs commands and reads untrusted t
 - [Claude Code – Security](https://code.claude.com/docs/en/security) (checked 2026-11-24): permission modes, sandboxing, prompt injection, MCP trust, "You're responsible for reviewing proposed code and commands for safety before approval".
 - [GitHub Docs – Adding repository custom instructions for Copilot](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions) (checked 2026-11-24): `.github/copilot-instructions.md`, path-specific `.instructions.md`, `AGENTS.md`, `CLAUDE.md`/`GEMINI.md`; used by the cloud agent and code review.
 - [Cursor – Rules](https://cursor.com/docs/context/rules) (checked 2026-11-24): project rules in `.cursor/rules` (`.mdc`), user rules, team rules, `AGENTS.md`.
-- [OWASP GenAI LLM Top 10 2026](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/) (page states publication 2026-08-03). The entry IDs for 2026 weren't verified in this pass, so C2 names the risks without numbers. Check the PDF before a lesson cites IDs.
+- [OWASP GenAI LLM Top 10 2026](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/) (page states publication 2026-08-03). The entry IDs for 2026 weren't verified in this pass, so the risks were named without numbers here; the catalog's `sec` skills now carry the numbers checked for the AI Security Engineer pack. Check the PDF before a lesson cites IDs.
 
 ## Changelog
 
+- 2026-11-27: skill tree moved to the shared catalog (`data/skills.md`). Rows now point to catalog IDs; old IDs are in the `Was` column. Split: C2 into the four `sec` skills, D1 into `llm.api` + `llm.structured-output`, D2 into `agent.tool-use` + `agent.mcp`. Counts and priorities unchanged.
 - 2026-11-24: first version, from 28 postings.

@@ -68,94 +68,117 @@ All postings were read on 2026-11-24 from the employers' own boards, through the
 
 ## Skill tree
 
-**Priority** comes from the postings above:
-- `core`: in at least half of them (9 or more of 18), or part of the role's definition.
-- `important`: in 3 or more.
-- `advanced`: in 1–2, or only in senior or staff postings.
+Each skill is defined once in [`data/skills.md`](../skills.md): what it is, its prerequisites, the outcomes, and how to check it. This table says how this role asks for it.
 
-**Seen in** counts the postings that ask for the skill. P18 was only partly read, and OpenAI's identical texts are counted once, so every count is a lower bound. With `scope: job-ready`, a plan covers every `core` skill the learner doesn't already have; `full-role` adds `important` and `advanced`.
+- **Priority** comes from the postings above: `core` = in at least half of them (9 or more of 18), or part of the role's definition; `important` = in 3 or more; `advanced` = in 1–2, or only in senior or staff postings. With `scope: job-ready`, a plan covers every `core` skill the learner doesn't already have; `full-role` adds `important` and `advanced`.
+- **Seen in** counts the postings that ask for the skill. P18 was only partly read, and OpenAI's identical texts are counted once, so every count is a lower bound.
+- The skills follow what current model APIs offer (see the catalog). `ml.fine-tuning` is included because three postings ask for it.
+- **Depth** is `basic`, `working`, or `deep`, as defined in the catalog. **In this role** is what this role adds to the catalog's outcomes.
+- **Was** is the skill's ID in this pack up to v0.2.0. `scripts/migrate-state.mjs` uses it to update learners' states; it is removed in the release after v0.3.0. An old ID on more than one row was split.
 
-The skills follow what current model APIs offer. All three providers offer function calling. Anthropic and OpenAI also offer remote MCP servers from the API, strict schemas for tool calls, and packaged skills. Gemini offers function-calling modes, parallel and compositional calls. Sampling parameters and model internals are not skills here: no posting asks for them. Fine-tuning (B7) is included because three postings ask for it.
+### llm: LLM application foundations
 
-### A. LLM application foundations
-
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| A1 | How models behave and how to choose one: tokens, context window, statelessness, non-determinism, cost and latency per request, capability vs latency vs cost | core | definition; trade-offs named in 3/18 | – | Estimate a workload's tokens, cost and latency; choose a model for a customer use case and defend the choice | Scenario quiz with numbers |
-| A2 | Calling model APIs from production code: keys and secrets, errors, retries, timeouts, fallbacks, streaming | core | 13/18 require shipped LLM systems | A1 | Call a model from a backend service that survives rate limits, timeouts and provider errors | Assignment: service with failure injection |
-| A3 | Prompt and context engineering: system prompts, examples, grounding in customer data, keeping context small | core | 6/18 named; implied by the 13 above | A1 | Write a prompt that holds its format on the customer's real data and declines outside its scope | Test cases including out-of-scope inputs |
-| A4 | Structured output: strict schemas for tool calls and responses, validation, retry with feedback | important | rarely named; every integration in B5 depends on it | A2 | Get schema-valid data from a model and handle invalid output without crashing the integration | Assignment with a validator |
+| `llm.behavior` | How models behave | A1 | core | definition | working | – |
+| `llm.model-choice` | Choosing a model | A1 | core | counted with `llm.behavior` (old A1); trade-offs named in 3/18 | working | Choose a model for a customer use case and defend the choice |
+| `llm.api` | Calling model APIs from production code | A2 | core | 13/18 require shipped LLM systems | working | Fallbacks and streaming too |
+| `llm.prompt-context` | Prompt and context engineering | A3 | core | 6/18 named; implied by the 13 above | working | On the customer's real data; keep the context small |
+| `llm.structured-output` | Structured output | A4 | important | rarely named; every integration in `eng.integration` depends on it | working | Invalid output must not crash the integration |
 
-### B. Agents, tools, and customer systems
+### agent: Agents and tool use
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| B1 | Tool use (function calling): describing tools, handling tool calls and results, parallel calls, forcing or limiting tool use | core | 6/18 named; needed by the 12 agent postings | A3, A4 | Give a model 3+ tools over a customer's API and run the full call/result loop safely | Assignment with three tools |
-| B2 | Agent design: multi-step loops (plan-and-execute, ReAct), state, stop conditions, human approval, and when a fixed workflow beats an agent | core | 12/18 | B1, C1 | Build a bounded agent with approval before side effects; explain why a step is or isn't agentic | Assignment + defence questions |
-| B3 | MCP: build an MCP server that exposes a customer system with scoped permissions; connect agents to remote MCP servers | important | 5/18 | B1 | Ship an MCP server over a real API and use it from two different agent clients | Working server + permission review |
-| B4 | Grounding in customer data: retrieval, embeddings and vector stores vs long context vs direct queries | important | 3/18 | A3 | Choose and build retrieval for a customer's documents, and show accuracy before and after | Eval of answer accuracy |
-| B5 | Enterprise integration: REST APIs, webhooks, SaaS systems (CRM, ERP, ticketing), legacy systems and messy data formats; learning an unfamiliar codebase quickly | core | 12/18 | A4 | Connect an agent to two systems you didn't write, including one with poor documentation, and handle its failure modes | Assignment against an unfamiliar API |
-| B6 | Packaging agent capabilities for reuse: skills, sub-agents, harnesses, vendor agent builders | important | 5/18 | B2 | Turn a one-off agent into a reusable skill or sub-agent that another team can install | Packaged deliverable used in a second project |
-| B7 | Customising models: when fine-tuning beats prompting and retrieval, how to prepare data, how to evaluate the result | important | 3/18 (ML-leaning postings: Cohere, Mistral lead, Palantir) | C1, B4 | Argue for or against fine-tuning for a use case with an eval-based comparison | Design review; optional small experiment |
+| `agent.tool-use` | Tool use | B1 | core | 6/18 named; needed by the 12 agent postings | working | Three or more tools over a customer's API |
+| `agent.loops` | Agent design | B2 | core | 12/18 | working | Plan-and-execute and ReAct loops |
+| `agent.human-approval` | Approval before side effects | B2 | core | counted with `agent.loops` (old B2, 12/18) | working | – |
+| `agent.mcp` | MCP | B3 | important | 5/18 | working | A server over a customer's real API, used from two different agent clients; remote MCP servers |
+| `agent.packaging` | Packaging agent capabilities for reuse | B6 | important | 5/18 | working | – |
 
-### C. Quality, safety, and operations
+### rag: Retrieval and data
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| C1 | Evals: success criteria agreed with the customer, golden datasets, regression suites, LLM-as-a-judge, comparing versions | core | 9/18 | A3 | Build an eval set from the customer's real cases and use it to accept or reject a prompt, model or agent change | Eval report with before/after |
-| C2 | Guardrails and failure handling: validation, layered checks, fallbacks, human in the loop, graceful degradation | important | 4/18 | A4, C1 | Detect and contain bad output and failed tool calls before they reach a user or a customer system | Failure-case tests |
-| C3 | Security, data handling and governance in someone else's environment: OWASP Top 10 for LLM Applications 2026 (LLM01:2026 Prompt Injection, LLM02:2026 Sensitive Information Disclosure, LLM03:2026 Excessive Agency), least-privilege tools, audit logs, compliance limits | important | 8/18 | B1, D7 | Threat-model a deployment; limit tool permissions; keep sensitive data out of prompts and logs; produce an audit trail | Red-team exercise + security review |
-| C4 | Observability, debugging and operating what you ship: traces of model and tool calls, logs, finding why an agent did something, upgrades, incident response | important | 7/18 | A2 | Trace a failed agent run to its cause; write a runbook the customer's team can follow | Debugging assignment + runbook |
-| C5 | Cost and latency: model choice, caching, batching, token budgets, per-tenant limits | important | 3/18 + OWASP LLM06:2026 (Unbounded Consumption) | A1, C4 | Cut cost or latency per task without lowering the eval score | Before/after numbers |
+| `rag.design` | Grounding in customer data | B4 | important | 3/18 | working | Also direct queries against the customer's systems |
+| `rag.search` | Embeddings and vector stores | B4 | important | counted with `rag.design` (old B4, 3/18) | working | – |
 
-### D. Production engineering in the customer's environment
+### quality: Quality, safety, and operations
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| D1 | Python for production services and scripts | core | 12/18 (+1 as a plus) | – | Write, test and package a Python service | Usually known by backend developers; confirm in placement |
-| D2 | TypeScript/JavaScript as a second language | core | 10/18 | – | Read and change a Node.js or TypeScript codebase | Small task |
-| D3 | A UI when the problem needs one (React or similar), accessible | important | 5/18 | D2 | Build a small internal tool or review screen for a customer's operators | Assignment; accessibility check |
-| D4 | Backend services, API design, system design, distributed systems | important | 8/18 | – | Design a service that fits into an existing architecture and explain the trade-offs | Design review |
-| D5 | Data: SQL, data modelling, pipelines, warehouses | important | 8/18 | D4 | Query and reshape the customer's data; build a small pipeline feeding an agent | Assignment |
-| D6 | Cloud and deployment into customer-owned environments: containers, Kubernetes, IaC (Terraform), CI/CD, networking basics | important | 8/18 | D4 | Deploy a service into an account or cluster you don't own, with infrastructure as code and a rollback path | Working deployment |
-| D7 | Identity and access in enterprise systems: OAuth/OIDC, service accounts, mTLS, secrets | important | 3/18 | D4 | Connect to a customer system with the least privilege it allows; rotate a secret without downtime | Assignment + review |
+| `quality.evals` | Evals | C1 | core | 9/18 | deep | Success criteria agreed with the customer; the eval decides whether a change is accepted |
+| `quality.guardrails` | Guardrails and failure handling | C2 | important | 4/18 | working | Graceful degradation; failed tool calls must not reach a customer system |
+| `quality.observability` | Observability, debugging and operating what you ship | C4 | important | 7/18 | working | Runbooks, upgrades and incident response the customer's team can follow |
+| `quality.cost-latency` | Cost and latency | C5 | important | 3/18 + OWASP LLM06:2026 (Unbounded Consumption) | working | Per-tenant limits |
 
-### E. AI-native development workflow
+### sec: Security in someone else's environment
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| E1 | Building with AI coding agents: specs and acceptance tests an agent can run, checking its output, using agents to learn an unfamiliar codebase fast | important | 4/18 | – | Deliver an integration with a coding agent and show how its output was verified | Portfolio write-up; defence |
+| `sec.prompt-injection` | Prompt injection | C3 | important | 8/18 ask for security, data handling, or governance | working | Least-privilege tools, audit trails, and the customer's compliance limits |
+| `sec.excessive-agency` | Excessive agency | C3 | important | counted with `sec.prompt-injection` (old C3, 8/18) | working | – |
+| `sec.data-disclosure` | Sensitive data disclosure | C3 | important | counted with `sec.prompt-injection` (old C3, 8/18) | working | – |
 
-### F. Customer-facing delivery
+### eng: Production engineering in the customer's environment
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| F1 | Discovery and problem framing: learn how the work is really done, find where AI helps, turn a vague request into a problem statement with success criteria | core | 15/18 | – | Run a discovery session from notes or a recording and produce a one-page problem statement with measurable success criteria | Role-play discovery + written output |
-| F2 | Scoping and owning delivery: MVP scope, sequencing, trade-offs between scope, speed and quality, raising risks early, from prototype to production | core | 13/18 | F1 | Write a scoped delivery plan with milestones and risks, and re-plan when a blocker appears | Scoping exercise with a mid-way change |
-| F3 | Communicating with technical and non-technical stakeholders: explaining model limits, technical credibility with the customer's architects, saying no with reasons | core | 13/18 | – | Explain a design and its limits to an engineer and to an executive; push back on a bad request with evidence | Two recorded or written explanations |
-| F4 | Demos, prototypes and proofs of concept that show value fast and are honest about limits | important | 7/18 | F1, B2 | Build a working prototype on realistic data in a time box and demo it, limits included | Recorded demo |
-| F5 | Writing that outlives you: playbooks, runbooks, reference architectures, handover docs | core | 14/18 | F2 | Write a handover pack so the customer's team can run and extend the system without you | Doc review: can someone else follow it? |
-| F6 | Turning field signal into product input: spotting repeated patterns, writing them up for the product and research teams, deciding what belongs in the core product | core | 11/18 | F5 | Write a field report that separates one-off customisation from a reusable product gap | Written report |
-| F7 | Measuring impact and driving adoption: a baseline before you build, adoption and workflow metrics after, helping users change how they work | important | 5/18 | F1, C1 | Show a before/after on a business metric for a shipped solution | Impact report |
-| F8 | Domain fluency in one vertical (finance, healthcare, security, public sector…) | important | 5/18, mostly as a plus | F1 | Use the vertical's terms, constraints and regulations correctly in a design | Scenario quiz in the chosen vertical |
+| `eng.integration` | Enterprise integration | B5 | core | 12/18 | working | – |
+| `eng.python` | Python | D1 | core | 12/18 (+1 as a plus) | working | Usually known by backend developers; confirm in placement |
+| `eng.typescript` | TypeScript/JavaScript | D2 | core | 10/18 | basic | A second language: read and change a Node.js or TypeScript codebase |
+| `eng.frontend` | A UI when the problem needs one | D3 | important | 5/18 | working | Small internal tools or review screens for the customer's operators, accessible |
+| `eng.backend` | Backend services and system design | D4 | important | 8/18 | deep | – |
+| `eng.sql` | Data | D5 | important | 8/18 | working | Query and reshape the customer's data; small pipelines feeding an agent; warehouses |
+| `eng.deploy` | Deploying into customer-owned environments | D6 | important | 8/18 | working | Into an account or cluster you don't own, with a rollback path; networking basics |
+| `eng.kubernetes` | Kubernetes | D6 | important | counted with `eng.deploy` (old D6, 8/18) | working | – |
+| `eng.iac` | Infrastructure as code | D6 | important | counted with `eng.deploy` (old D6, 8/18) | working | Terraform |
+| `eng.auth` | Identity and access in enterprise systems | D7 | important | 3/18 | working | Service accounts, mTLS; connect with the least privilege the customer's system allows |
+
+### dev: Developing with AI coding agents
+
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
+|---|---|---|---|---|---|---|
+| `dev.directing` | Directing a coding agent | E1 | important | 4/18 | working | – |
+| `dev.verify-output` | Verifying agent output | E1 | important | counted with `dev.directing` (old E1, 4/18) | working | – |
+| `dev.lifecycle` | Agents across the lifecycle | E1 | important | counted with `dev.directing` (old E1, 4/18) | working | Using agents to learn an unfamiliar codebase fast |
+
+### work: Customer-facing delivery
+
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
+|---|---|---|---|---|---|---|
+| `work.problem-framing` | Discovery and problem framing | F1 | core | 15/18 | working | Run a discovery session with the customer and find where AI helps |
+| `work.delivery` | Scoping and owning delivery | F2 | core | 13/18 | working | – |
+| `work.stakeholders` | Communicating with technical and non-technical stakeholders | F3 | core | 13/18 | working | Technical credibility with the customer's architects; saying no with reasons |
+| `work.docs` | Writing that outlives you | F5 | core | 14/18 | working | – |
+| `work.field-signal` | Turning field signal into product input | F6 | core | 11/18 | working | – |
+| `work.prototyping` | Demos, prototypes and proofs of concept | F4 | important | 7/18 | working | – |
+| `work.impact` | Measuring impact and driving adoption | F7 | important | 5/18 | working | A baseline before you build; helping users change how they work |
+| `work.domain` | Domain fluency in one vertical | F8 | important | 5/18, mostly as a plus | working | – |
+
+### ml: Model-side skills
+
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
+|---|---|---|---|---|---|---|
+| `ml.fine-tuning` | When fine-tuning pays | B7 | important | 3/18 (ML-leaning postings: Cohere, Mistral lead, Palantir) | basic | Argue for or against it with an eval-based comparison; a small experiment is optional |
 
 ## Learning order
 
-The prerequisites above set the order. A typical path for a backend or full-stack developer, who usually has D1 or D2, D4 and D5 already:
+The prerequisites above set the order. A typical path for a backend or full-stack developer, who usually has `eng.python` or `eng.typescript`, `eng.backend` and `eng.sql` already:
 
-1. Foundations: A1 → A2 → A3 → A4.
-2. Tools, evals and integration: B1 → C1 → B5.
-3. Agents and safety: B2 → C2 → C3 (with D7) → B3.
-4. Running in production: C4 → C5.
-5. Breadth: B4 → B6 → D6 and D3 where needed.
+1. Foundations: `llm.behavior` → `llm.api` → `llm.prompt-context` → `llm.structured-output`.
+2. Tools, evals and integration: `agent.tool-use` → `quality.evals` → `eng.integration`.
+3. Agents and safety: `agent.loops` → `quality.guardrails` → the `sec` skills (with `eng.auth`) → `agent.mcp`.
+4. Running in production: `quality.observability` → `quality.cost-latency`.
+5. Breadth: `rag.design` → `agent.packaging` → `eng.deploy` and `eng.frontend` where needed.
 6. Capstone: a "customer deployment" with a discovery note, scope, eval report, runbook, demo and field report.
-7. Optional: B7 and F8.
+7. Optional: `ml.fine-tuning` and `work.domain`.
 
-Start the customer skills with the first assignment instead of leaving them for the end. Every assignment begins with a short problem statement and success criteria (F1, F2) and ends with a handover note (F5). Postings rank these skills as high as the engineering ones, and they only improve with practice.
+Start the customer skills with the first assignment instead of leaving them for the end. Every assignment begins with a short problem statement and success criteria (`work.problem-framing`, `work.delivery`) and ends with a handover note (`work.docs`). Postings rank these skills as high as the engineering ones, and they only improve with practice.
 
-Evals (C1) come before agents (B2) on purpose. Postings ask the FDE to prove a deployment works with evidence the customer accepts, not by demo.
+Evals (`quality.evals`) come before agents (`agent.loops`) on purpose. Postings ask the FDE to prove a deployment works with evidence the customer accepts, not by demo.
 
-If the learner is aiming at an employer that hires the implementation variant (like P15), F1–F4 and B5 matter more and B6–B7 matter less. The plan should say so.
+If the learner is aiming at an employer that hires the implementation variant (like P15), `work.problem-framing`, `work.delivery`, `work.stakeholders`, `work.prototyping` and `eng.integration` matter more and `agent.packaging`, `ml.fine-tuning` matter less. The plan should say so.
 
 ## Market notes
 
@@ -198,4 +221,5 @@ Smaller companies hiring: UiPath (Paris), Enode (remote Europe), Kong (UK), Hand
 
 ## Changelog
 
+- 2026-11-27: skill tree moved to the shared catalog (`data/skills.md`). Rows now point to catalog IDs; old IDs are in the `Was` column. Split: A1 into `llm.behavior` + `llm.model-choice`, B2 into `agent.loops` + `agent.human-approval`, B4 into `rag.design` + `rag.search`, C3 into three `sec` skills, D6 into `eng.deploy` + `eng.kubernetes` + `eng.iac`, E1 into `dev.directing` + `dev.verify-output` + `dev.lifecycle`. Counts and priorities unchanged.
 - 2026-11-24: first version, from 18 postings.

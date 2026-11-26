@@ -49,72 +49,83 @@ All read on 2026-11-24. "Board" = read in full from the employer's own board (Wo
 
 ## Skill tree
 
-**Priority** comes from the postings above: `core` = in at least half of them (7+ of 13), or part of the role's definition; `important` = in 3 or more; `advanced` = in 1–2, or only in senior/staff postings. **Seen in** counts the postings that ask for the skill (P8 and P13 were only partly read, so counts are a lower bound). Standards are named with their edition; see Sources for the versions checked. With `scope: job-ready`, a plan covers every `core` skill the learner doesn't already have; `full-role` adds `important` and `advanced`.
+Each skill is defined once in [`data/skills.md`](../skills.md): what it is, its prerequisites, the outcomes, and how to check it. This table says how this role asks for it.
 
-### A. Foundations: how AI systems are built
+- **Priority** comes from the postings above: `core` = in at least half of them (7+ of 13), or part of the role's definition; `important` = in 3 or more; `advanced` = in 1–2, or only in senior/staff postings. With `scope: job-ready`, a plan covers every `core` skill the learner doesn't already have; `full-role` adds `important` and `advanced`.
+- **Seen in** counts the postings that ask for the skill (P8 and P13 were only partly read, so counts are a lower bound). Standards are named with their edition in the catalog; see Sources below for the versions checked.
+- **Depth** is `basic`, `working`, or `deep`, as defined in the catalog. **In this role** is what this role adds to the catalog's outcomes.
+- **Was** is the skill's ID in this pack up to v0.2.0. `scripts/migrate-state.mjs` uses it to update learners' states; it is removed in the release after v0.3.0. An old ID on more than one row was split.
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+### Foundations: how AI systems are built
+
+Old A1 covered how LLM apps and agents work as one skill. It now points to the catalog skills a builder learns, at `basic` depth: enough to draw an agent's data and control flow, marking every place untrusted text enters and every action it can take.
+
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| A1 | How LLM apps and agents work: messages and roles, tool use, agent loops, RAG, memory, MCP clients and servers | core | 8/13 | – | Draw the data and control flow of an agent, marking every place untrusted text enters and every action it can take | Diagram review; build a small two-tool agent |
-| A2 | Software engineering and automation in Python (APIs, services, CI/CD) | core | 11/13 | – | Write and ship a service or tool, not only a script | Usually known; confirm in placement |
-| A3 | Cloud and platform basics: one major cloud's IAM, networking, containers, managed AI services (e.g. AWS Bedrock, Azure) | core | 7/13 | A2 | Deploy a model-backed service with least-privilege roles and private networking | Assignment; config review |
+| `agent.tool-use` | Tool use | A1 | core | 8/13 | basic | Build a small two-tool agent |
+| `agent.loops` | Agent loops | A1 | core | counted with `agent.tool-use` (old A1, 8/13) | basic | – |
+| `rag.design` | RAG | A1 | core | counted with `agent.tool-use` (old A1, 8/13) | basic | – |
+| `agent.memory` | Memory | A1 | core | counted with `agent.tool-use` (old A1, 8/13) | basic | – |
+| `agent.mcp` | MCP clients and servers | A1 | core | counted with `agent.tool-use` (old A1, 8/13) | basic | – |
+| `eng.python` | Software engineering and automation in Python | A2 | core | 11/13 | working | APIs, services and CI/CD: ship a service or tool, not only a script. Usually known; confirm in placement |
+| `eng.cloud-iam` | Cloud and platform basics | A3 | core | 7/13 | working | Containers too |
 
-### B. Security foundations (where a security background is expected)
+### Security foundations (where a security background is expected)
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| B1 | Application security: web and API vulnerabilities, authorization bugs, secure code review, SAST/DAST, dependency scanning | core | 7/13 | A2 | Find and fix an auth bypass and an injection in a code review; run a scanner and triage results | Code-review exercise with planted bugs |
-| B2 | Identity, secrets, and non-human identity: OAuth 2.x grants, SSO, service accounts, scoped short-lived credentials, secrets management | core | 8/13 | B1 | Give an agent its own identity with only the scopes it needs, expiring credentials, and an owner | Assignment: agent with scoped OAuth token |
-| B3 | Threat modelling AI systems: trust boundaries, data flows, attacker goals, mapping risks to controls | core | 7/13 | A1, B1 | Produce a threat model of an agent that names each risk with its OWASP or ATLAS ID and a control | Written threat model + defence questions |
+| `sec.appsec` | Application security | B1 | core | 7/13 | working | – |
+| `eng.auth` | Identity, secrets, and non-human identity | B2 | core | 8/13 | deep | OAuth 2.x grants |
+| `sec.threat-modeling` | Threat modelling AI systems | B3 | core | 7/13 | working | – |
 
-### C. LLM and agent threats and defences
+### LLM and agent threats and defences
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| C1 | Prompt injection, direct and indirect (OWASP LLM01:2026 Prompt Injection; ASI01 Agent Goal Hijack; ATLAS AML.T0051, .000 Direct, .001 Indirect): keep untrusted content out of instructions, mark its source, constrain what it can trigger | core | 8/13 | A1, B3 | Show an indirect injection through a document or tool result, then contain it so the agent cannot act on it | Red-team exercise on own agent; before/after attack success rate |
-| C2 | Agent permissions and excessive agency (OWASP LLM03:2026 Excessive Agency; ASI02 Tool Misuse and Exploitation; ASI03 Identity and Privilege Abuse; ATLAS AML.T0053 AI Agent Tool Invocation): tool allowlists, least privilege, human approval for high-impact actions, per-session scopes | core | 10/13 | B2, C1 | Design an agent whose worst-case action, after a successful injection, is acceptable; require approval for writes | Assignment + "what's the blast radius?" defence |
-| C3 | Sensitive data disclosure and data loss (OWASP LLM02:2026 Sensitive Information Disclosure; LLM08:2026 Hidden Context Exposure; ATLAS AML.T0086 Exfiltration via AI Agent Tool Invocation): PII in prompts and logs, egress limits, DLP, exfiltration through links and tool calls | core | 8/13 | C1 | Block a data-exfiltration path (e.g. a rendered link or outbound tool call) and keep secrets out of context and logs | Exfiltration test before/after |
-| C4 | Retrieval and memory security (OWASP LLM09:2026 Vector and Embedding Weaknesses; LLM05:2026 Data and Model Poisoning; ASI06 Memory & Context Poisoning; ATLAS AML.T0080 AI Agent Context Poisoning): permission-aware retrieval, tenant isolation, poisoned documents and memory | important | 4/13 | A1, C1 | Make retrieval respect the asking user's permissions; detect a poisoned memory entry | Assignment with two tenants |
-| C5 | Safe output handling, code execution, and resource limits (OWASP LLM10:2026 Improper Output Handling; ASI05 Unexpected Code Execution (RCE); LLM06:2026 Unbounded Consumption): treat model output as untrusted input, sandbox generated code, cap tokens, calls, and spend | important | 3/13 (P5, P9, P13) + rarely written but implied by every agent with a code or shell tool | B1, C2 | Run model-generated code in an isolated sandbox with no network or secrets; render output without XSS | Assignment; escape attempts |
-| C6 | MCP and connector security: OAuth for MCP servers (authorization section of the MCP specification 2026-07-28), approved-connector lists, tool-description poisoning (ATLAS AML.T0110 AI Agent Tool Poisoning) | important | 5/13 | B2, C2 | Review an MCP server for scope, token handling, and poisoned tool descriptions; restrict an agent to approved connectors | Review exercise on a real MCP server |
-| C7 | AI supply chain (OWASP LLM04:2026 Supply Chain; ASI04 Agentic Supply Chain Vulnerabilities; ATLAS AML.T0010 Supply Chain Compromise, .003 Model Repository): models, datasets, packages, MCP servers, provenance and pinning | core | definition; 2/13 explicit (P1, P4) | B1 | Inventory an app's models, datasets, packages, and MCP servers; pin and verify them | Inventory + review of a sample repo |
+| `sec.prompt-injection` | Prompt injection | C1 | core | 8/13 | deep | – |
+| `sec.excessive-agency` | Agent permissions and excessive agency | C2 | core | 10/13 | deep | Per-session scopes; the agent's own identity (`eng.auth`) |
+| `sec.data-disclosure` | Sensitive data disclosure and data loss | C3 | core | 8/13 | deep | – |
+| `sec.retrieval-memory` | Retrieval and memory security | C4 | important | 4/13 | working | – |
+| `sec.output-handling` | Safe output handling, code execution, and resource limits | C5 | important | 3/13 (P5, P9, P13) + rarely written but implied by every agent with a code or shell tool | deep | – |
+| `sec.mcp` | MCP and connector security | C6 | important | 5/13 | working | – |
+| `sec.supply-chain` | AI supply chain | C7 | core | definition; 2/13 explicit (P1, P4) | working | – |
 
-### D. Adversarial testing
+### Adversarial testing
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| D1 | Manual adversarial testing of LLM apps and agents: jailbreaks (ATLAS AML.T0054 LLM Jailbreak), direct and indirect injection, tool abuse, data exfiltration, guardrail bypass; reporting findings with impact | core | 9/13 | C1, C2, C3 | Run a scoped test against an agent and report findings with reproduction steps, impact, and fix | Test report reviewed against a rubric |
-| D2 | Automated adversarial testing and security evals: attack datasets, LLM-as-a-judge graders, tools such as Promptfoo, PyRIT, Garak, Inspect AI; findings turned into regression tests and release gates in CI | important | 6/13 | D1, A2 | Add an injection test suite to CI that fails the build when the attack success rate rises | Working pipeline with before/after numbers |
-| D3 | Offensive security tradecraft: penetration testing, web and API exploitation (e.g. Burp Suite), AD and cloud attack paths, C2 frameworks | important | 4/13 (P1, P6, P7, P10); red-team variant | B1 | Chain a classic vulnerability with an AI weakness into one attack path | Lab exercise; outside Respec's scope beyond the basics |
+| `sec.red-teaming` | Manual adversarial testing | D1 | core | 9/13 | working | – |
+| `sec.security-evals` | Automated adversarial testing and security evals | D2 | important | 6/13 | working | – |
+| `sec.offensive` | Offensive security tradecraft | D3 | important | 4/13 (P1, P6, P7, P10); red-team variant | basic | Respec covers the basics only |
 
-### E. Defend and operate
+### Defend and operate
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| E1 | Guardrails and runtime defences: input and tool-output screening classifiers, structured outputs between steps, AI gateways, DLP, providers' safety features; knowing their limits | core | 8/13 | C1, C3 | Layer screening, structured outputs, and permissions; measure what each layer catches and what still gets through | Eval report per layer |
-| E2 | Logging, detection, and incident response for AI systems: which events agents must log (prompts, tool calls, grants), detections for risky grants and data flows, AI incident playbooks | important | 6/13 | A3, C2 | Define an agent's audit log, write one detection, and walk an AI incident from alert to containment | Detection rule + tabletop exercise |
+| `sec.runtime-defenses` | Guardrails and runtime defences | E1 | core | 8/13 | working | – |
+| `sec.detection-response` | Logging, detection, and incident response | E2 | important | 6/13 | working | – |
 
-### F. Frameworks, governance, communication
+### Frameworks, governance, communication
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| F1 | Security frameworks for AI: OWASP Top 10 for LLM Applications 2026, OWASP Top 10 for Agentic Applications 2026, MITRE ATLAS (v2026.10), NIST AI RMF 1.0 with the Generative AI Profile (NIST AI 600-1) | important | 5/13 (3/13 name OWASP/ATLAS/NIST AI RMF directly) | B3 | Map a threat model's findings to the right IDs and say which list fits which question | Mapping exercise |
-| F2 | AI governance and regulation: AI inventory, standards and approval criteria, vendor review, ISO/IEC 42001:2023, EU AI Act dates that apply to the product | important | 5/13 | F1 | Write an approval checklist for a new AI tool that gives a fast "yes, with conditions" | Checklist review |
-| F3 | Explaining risk and remediation to engineers and non-engineers | core | 8/13 | B3 | Turn a finding into a prioritised fix the owning team accepts | Written finding + stakeholder role-play |
+| `sec.frameworks` | Security frameworks for AI | F1 | important | 5/13 (3/13 name OWASP/ATLAS/NIST AI RMF directly) | working | – |
+| `sec.governance` | AI governance and regulation | F2 | important | 5/13 | working | – |
+| `work.stakeholders` | Explaining risk and remediation | F3 | core | 8/13 | working | To engineers and non-engineers: turn a finding into a prioritised fix the owning team accepts |
 
-### G. Research and ML defences
+### Research and ML defences
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| G1 | Adversarial ML and model internals: poisoning, model and data extraction, membership inference (ATLAS AML.T0137), training or fine-tuning detectors and robust models | important | 4/13 (P1, P9, P10, P12); research and defences variants | A2, D2 | Train and evaluate a small injection classifier; explain extraction and membership-inference attacks | Eval report; outside the engineering variant's job-ready scope |
+| `sec.adversarial-ml` | Adversarial ML and model internals | G1 | important | 4/13 (P1, P9, P10, P12); research and defences variants | working | Outside the engineering variant's job-ready scope |
 
 ## Learning order
 
 Prerequisites above define the order.
 
-**From backend or full-stack development** (the engineering variant): A1 → A3 → B1 → B2 → B3 → C1 → C2 → C3 → D1 → E1 → C6 → C5 → C4 → D2 → C7 → E2 → F1 → F2 → capstone (a threat model, a hardened agent, and a CI test suite that proves the hardening) → F3 shown through the capstone write-up. A2 is usually known; check it in placement. B1 and B2 come before the AI-specific part on purpose: most findings in AI systems are ordinary authorization and identity failures that an injection makes reachable, and 8 of 13 postings expect security experience. A developer who already builds LLM features (Respec's `ai-engineer` or `ai-product-engineer` packs) can skip most of A1 and start at B1.
+**From backend or full-stack development** (the engineering variant): `agent.tool-use` → `eng.cloud-iam` → `sec.appsec` → `eng.auth` → `sec.threat-modeling` → `sec.prompt-injection` → `sec.excessive-agency` → `sec.data-disclosure` → `sec.red-teaming` → `sec.runtime-defenses` → `sec.mcp` → `sec.output-handling` → `sec.retrieval-memory` → `sec.security-evals` → `sec.supply-chain` → `sec.detection-response` → `sec.frameworks` → `sec.governance` → capstone (a threat model, a hardened agent, and a CI test suite that proves the hardening) → `work.stakeholders` shown through the capstone write-up. `eng.python` is usually known; check it in placement. `sec.appsec` and `eng.auth` come before the AI-specific part on purpose: most findings in AI systems are ordinary authorization and identity failures that an injection makes reachable, and 8 of 13 postings expect security experience. A developer who already builds LLM features (Respec's `ai-engineer` or `ai-product-engineer` packs) can skip most of the foundations (`agent.tool-use` to `agent.mcp`) and start at `sec.appsec`.
 
-**From security** (AppSec, pentesting, cloud security): A1 → A2 (only if the learner doesn't ship code) → B3 (adapt existing threat modelling to agents) → C1 → C2 → C3 → D1 → C6 → C5 → C4 → E1 → D2 → C7 → F1. Spend the time on A1 and on building a small agent yourself: the postings that hire from security still expect hands-on experience with "LLM applications, agents, or AI developer tools" (P5). Red-team-minded learners add D3 and G1.
+**From security** (AppSec, pentesting, cloud security): `agent.tool-use` → `eng.python` (only if the learner doesn't ship code) → `sec.threat-modeling` (adapt existing threat modelling to agents) → `sec.prompt-injection` → `sec.excessive-agency` → `sec.data-disclosure` → `sec.red-teaming` → `sec.mcp` → `sec.output-handling` → `sec.retrieval-memory` → `sec.runtime-defenses` → `sec.security-evals` → `sec.supply-chain` → `sec.frameworks`. Spend the time on `agent.tool-use` and on building a small agent yourself: the postings that hire from security still expect hands-on experience with "LLM applications, agents, or AI developer tools" (P5). Red-team-minded learners add `sec.offensive` and `sec.adversarial-ml`.
 
 ## Market notes
 
@@ -141,4 +152,5 @@ Prerequisites above define the order.
 
 ## Changelog
 
+- 2026-11-27: skill tree moved to the shared catalog (`data/skills.md`). Rows now point to catalog IDs; old IDs are in the `Was` column. Split: A1 into five builder skills at `basic` depth (`agent.tool-use`, `agent.loops`, `rag.design`, `agent.memory`, `agent.mcp`). B2 is `eng.auth` at `deep`; F3 is `work.stakeholders`. Counts and priorities unchanged.
 - 2026-11-24: first version, from 13 postings.
