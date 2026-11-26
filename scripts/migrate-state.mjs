@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Upgrades learner/state.json and learner/modules/* to the current schema (v2).
+// Upgrades learner/state.json and learner/modules/* to the current schema (v3).
 // v1 used Turkish enum values and file names; v2 uses English ones.
+// v3 records skills by skill catalog ID (data/skills.md) instead of the role pack's own IDs (A1, B2…).
 // Safe to run more than once. Writes a backup before changing anything.
 //
 //   node scripts/migrate-state.mjs            migrate learner/
@@ -9,12 +10,13 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, renameSync, statSync } from "node:fs";
 import { dirname, join, resolve, extname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { readPack, toCatalogIds } from "./lib/skills.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const learnerDir = join(root, "learner");
 const statePath = join(learnerDir, "state.json");
 const dry = process.argv.includes("--dry-run");
-const CURRENT = 2;
+const CURRENT = 3;
 const log = (m) => console.log((dry ? "[dry-run] " : "") + m);
 
 if (!existsSync(statePath)) {
@@ -47,85 +49,102 @@ const FILES = [
 const remedial = /^odev-telafi-(\d+)\.md$/;
 const TEXT_EXT = new Set([".md", ".html", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".py", ".json", ".txt", ".sh"]);
 
-// ---- state.json ----
-const map = (table, v) => (v != null && table[v] ? table[v] : v);
-const l = state.learner ?? (state.learner = {});
-if (!l.language) {
-  const sample = JSON.stringify(state);
-  l.language = /[çğıöşüÇĞİÖŞÜ]/.test(sample) || "hitap" in l ? "tr" : "en";
-  log(`learner.language set to "${l.language}"`);
-}
-if ("hitap" in l) {
-  l.form_of_address = l.form_of_address ?? (l.hitap === "sen" ? "informal" : l.hitap === "siz" ? "formal" : l.hitap);
-  delete l.hitap;
-  log("learner.hitap → learner.form_of_address");
-}
-if (state.target_role?.id && ROLE[state.target_role.id]) {
-  log(`target_role.id ${state.target_role.id} → ${ROLE[state.target_role.id]}`);
-  state.target_role.id = ROLE[state.target_role.id];
-}
-for (const p of state.curriculum?.phases ?? []) p.id = map(PHASE, p.id);
-for (const m of state.curriculum?.modules ?? []) {
-  m.status = map(STATUS, m.status);
-  m.stage = map(STAGE, m.stage);
-  m.type = map(TYPE, m.type);
-  m.phase = map(PHASE, m.phase);
-}
-state.schema_version = CURRENT;
-log(`modules: status/stage/type values translated (${state.curriculum?.modules?.length ?? 0} modules)`);
+// v1 → v2: English enum values, file names, and folder names.
+function v1to2() {
+  // ---- state.json ----
+  const map = (table, v) => (v != null && table[v] ? table[v] : v);
+  const l = state.learner ?? (state.learner = {});
+  if (!l.language) {
+    const sample = JSON.stringify(state);
+    l.language = /[çğıöşüÇĞİÖŞÜ]/.test(sample) || "hitap" in l ? "tr" : "en";
+    log(`learner.language set to "${l.language}"`);
+  }
+  if ("hitap" in l) {
+    l.form_of_address = l.form_of_address ?? (l.hitap === "sen" ? "informal" : l.hitap === "siz" ? "formal" : l.hitap);
+    delete l.hitap;
+    log("learner.hitap → learner.form_of_address");
+  }
+  if (state.target_role?.id && ROLE[state.target_role.id]) {
+    log(`target_role.id ${state.target_role.id} → ${ROLE[state.target_role.id]}`);
+    state.target_role.id = ROLE[state.target_role.id];
+  }
+  for (const p of state.curriculum?.phases ?? []) p.id = map(PHASE, p.id);
+  for (const m of state.curriculum?.modules ?? []) {
+    m.status = map(STATUS, m.status);
+    m.stage = map(STAGE, m.stage);
+    m.type = map(TYPE, m.type);
+    m.phase = map(PHASE, m.phase);
+  }
+  log(`modules: status/stage/type values translated (${state.curriculum?.modules?.length ?? 0} modules)`);
 
-// ---- module files ----
-const pathFixes = [
-  [/ornekler\//g, "examples/"],
-  [/calisma\//g, "work/"],
-  [/\bgorsel\.html\b/g, "visual.html"],
-  [/\bders\.md\b/g, "lesson.md"],
-  [/\bpekistirme\.md\b/g, "review.md"],
-  [/\bodev\.md\b/g, "assignment.md"],
-  [/\bdegerlendirme\.md\b/g, "evaluation.md"],
-];
-const modulesDir = join(learnerDir, "modules");
-if (existsSync(modulesDir)) {
-  for (const mod of readdirSync(modulesDir)) {
-    const dir = join(modulesDir, mod);
-    if (!statSync(dir).isDirectory()) continue;
-    for (const [a, b] of FILES) {
-      if (existsSync(join(dir, a)) && !existsSync(join(dir, b))) {
-        log(`${mod}/${a} → ${mod}/${b}`);
-        if (!dry) renameSync(join(dir, a), join(dir, b));
-      }
-    }
-    for (const f of readdirSync(dir)) {
-      const m = f.match(remedial);
-      if (m) {
-        log(`${mod}/${f} → ${mod}/assignment-remedial-${m[1]}.md`);
-        if (!dry) renameSync(join(dir, f), join(dir, `assignment-remedial-${m[1]}.md`));
-      }
-    }
-    // fix path references inside every text file of the module (lessons, visuals, example code, work)
-    const walk = (d) => {
-      for (const f of readdirSync(d)) {
-        const p = join(d, f);
-        if (statSync(p).isDirectory()) {
-          if (f !== "node_modules" && !f.startsWith(".")) walk(p);
-          continue;
-        }
-        if (!TEXT_EXT.has(extname(f).toLowerCase())) continue;
-        const before = readFileSync(p, "utf8");
-        const after = pathFixes.reduce((s, [re, to]) => s.replace(re, to), before);
-        if (after !== before) {
-          if (!dry) writeFileSync(p, after);
-          log(`${relative(modulesDir, p)}: file references updated`);
+  // ---- module files ----
+  const pathFixes = [
+    [/ornekler\//g, "examples/"],
+    [/calisma\//g, "work/"],
+    [/\bgorsel\.html\b/g, "visual.html"],
+    [/\bders\.md\b/g, "lesson.md"],
+    [/\bpekistirme\.md\b/g, "review.md"],
+    [/\bodev\.md\b/g, "assignment.md"],
+    [/\bdegerlendirme\.md\b/g, "evaluation.md"],
+  ];
+  const modulesDir = join(learnerDir, "modules");
+  if (existsSync(modulesDir)) {
+    for (const mod of readdirSync(modulesDir)) {
+      const dir = join(modulesDir, mod);
+      if (!statSync(dir).isDirectory()) continue;
+      for (const [a, b] of FILES) {
+        if (existsSync(join(dir, a)) && !existsSync(join(dir, b))) {
+          log(`${mod}/${a} → ${mod}/${b}`);
+          if (!dry) renameSync(join(dir, a), join(dir, b));
         }
       }
-    };
-    walk(dir);
+      for (const f of readdirSync(dir)) {
+        const m = f.match(remedial);
+        if (m) {
+          log(`${mod}/${f} → ${mod}/assignment-remedial-${m[1]}.md`);
+          if (!dry) renameSync(join(dir, f), join(dir, `assignment-remedial-${m[1]}.md`));
+        }
+      }
+      // fix path references inside every text file of the module (lessons, visuals, example code, work)
+      const walk = (d) => {
+        for (const f of readdirSync(d)) {
+          const p = join(d, f);
+          if (statSync(p).isDirectory()) {
+            if (f !== "node_modules" && !f.startsWith(".")) walk(p);
+            continue;
+          }
+          if (!TEXT_EXT.has(extname(f).toLowerCase())) continue;
+          const before = readFileSync(p, "utf8");
+          const after = pathFixes.reduce((s, [re, to]) => s.replace(re, to), before);
+          if (after !== before) {
+            if (!dry) writeFileSync(p, after);
+            log(`${relative(modulesDir, p)}: file references updated`);
+          }
+        }
+      };
+      walk(dir);
+    }
+  }
+  if (existsSync(join(learnerDir, "_arsiv")) && !existsSync(join(learnerDir, "_archive"))) {
+    log("learner/_arsiv → learner/_archive");
+    if (!dry) renameSync(join(learnerDir, "_arsiv"), join(learnerDir, "_archive"));
   }
 }
-if (existsSync(join(learnerDir, "_arsiv")) && !existsSync(join(learnerDir, "_archive"))) {
-  log("learner/_arsiv → learner/_archive");
-  if (!dry) renameSync(join(learnerDir, "_arsiv"), join(learnerDir, "_archive"));
+
+// v2 → v3: old role pack IDs → catalog IDs, through the pack's "Was" column.
+function v2to3() {
+  const roleId = state.target_role?.id;
+  const pack = roleId ? join(root, "data", "roles", `${roleId}.md`) : null;
+  if (!pack || !existsSync(pack)) {
+    log(`no role pack for ${roleId ?? "(no target role)"}; skill IDs left as they are. Run /respec plan to refine the curriculum.`);
+    return;
+  }
+  for (const line of toCatalogIds(state, readPack(pack))) log(line);
 }
+
+if (from < 2) v1to2();
+if (from < 3) v2to3();
+state.schema_version = CURRENT;
 
 if (!dry) {
   writeFileSync(join(learnerDir, `state.v${from}.backup.json`), raw);

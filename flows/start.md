@@ -48,7 +48,7 @@ Six questions tailored to the learner's background, asked one at a time:
 Then write three lists into the profile's placement section: **knows**, **partially knows**, **doesn't know**. Summarize the result honestly in 4–5 lines.
 
 ## 6. State
-Create `learner/state.json` in the format of `examples/learner-demo/state.json`: `schema_version: 2`, `learner` (including `language`) and `placement` filled in; `target_role` null; `curriculum.modules` empty; a "profile created" entry in `history`.
+Create `learner/state.json` in the format of `examples/learner-demo/state.json`: `schema_version: 3`, `learner` (including `language`) and `placement` filled in; `target_role` null; `curriculum.modules` empty; a "profile created" entry in `history`.
 
 ## 7. Wrap up
 Suggest `/respec role` as the next step, and mention that `/respec dashboard` opens a page that follows their progress.
