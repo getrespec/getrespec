@@ -7,7 +7,7 @@ To update an existing copy, run `/respec update` in your agent. Your `learner/` 
 ## [Unreleased]
 
 ### Added
-- A shared skill catalog, `data/skills.md`: each skill is defined once (outcomes, prerequisites, how to check it) with a stable ID such as `agent.tool-use`. Different job titles mostly ask for the same skills, so progress will carry over between roles. All six role packs now point to it, with their own priority, posting counts and depth (`basic`, `working`, `deep`) per skill.
+- A shared skill catalog, `data/skills.md`: each skill is defined once (outcomes, prerequisites, how to check it) with a stable ID such as `agent.tool-use`. Different job titles mostly ask for the same skills, so progress will carry over between roles. All six role packs now point to it, with their own priority, posting counts and depth (`basic`, `working`, `deep`) per skill. `/respec plan` records skills by catalog ID, counts what you already learned for an earlier role as known, and tells you how much of neighbouring roles your plan covers; `/respec role` uses the same overlap when you change role.
 
 ### Changed
 - AI Product Engineer role pack: all nine postings re-read in full and every count checked again. RAG shows up in 3 of 9 postings (was 2), deploying and running in production in all 9, evals in 6; a new "Re-check" table shows which posting asks for what.
