@@ -9,6 +9,7 @@
 ## 2. Assessment
 For each role in roles.md, consider:
 - **Transferable skills:** what in their experience applies directly
+- **Skills already learned in Respec** (when changing role): the role packs share catalog skills (`data/skills.md`), so count how many of each role's `core` skills the learner already has (`known` coverage items or completed modules). Say it as "you already have 9 of its 14 core skills"; never add up posting counts from different packs.
 - **Missing skills:** compare with the "doesn't know" list from placement
 - **Demand:** based on their target market (use the "Market notes" section for their country when available)
 - **Constraints:** English load, need for Python, customer-facing work, weekly hours

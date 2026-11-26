@@ -4,7 +4,8 @@
 
 ## 1. Inputs
 - `state.target_role` (if missing, run `/respec role` first)
-- **The role pack** `data/roles/<role-id>.md`: the role's sourced skill tree with priorities, prerequisites, outcomes, and how to check each skill. If there's no pack for the role, use the "Typical skills" line in `data/market/roles.md` plus a search of current postings, and tell the learner the plan rests on thinner data.
+- **The role pack** `data/roles/<role-id>.md`: which skills the role asks for, with each skill's priority, how many postings ask for it, its depth (`basic`, `working`, `deep`), and what the role adds ("In this role"). If there's no pack for the role, use the "Typical skills" line in `data/market/roles.md` plus a search of current postings, map what you find to catalog skills, and tell the learner the plan rests on thinner data.
+- **The skill catalog** `data/skills.md`: what each skill is, its prerequisites ("Needs"), its outcomes at each depth, and how to check it. Skills are shared by all roles; their IDs (`agent.tool-use`) are what the state records.
 - `data/market/roles.md` → the role's definition, demand, and market notes
 - `learner/profile.md` → background, projects, placement, weekly hours, languages
 - `state.learner.preferences` (asked in step 3 if missing)
@@ -21,7 +22,7 @@ For each posting:
 1. **Read it.** Open the link. If you can't (sign-in walls such as LinkedIn, expired posting), ask the learner to paste the text. Never guess what a posting says.
 2. **Save it** to `learner/postings/<id>.md` (`p1`, `p2`…): company, title, location, link, the date you read it, and the full text.
 3. **Extract its requirements**: required and nice-to-have, one line each, in the posting's own terms.
-4. **Map each requirement** to a skill ID in the role pack. A requirement that matches no skill becomes a new coverage item of its own (step 4), noted as coming from this posting.
+4. **Map each requirement** to a catalog skill: one in the role pack if it fits, otherwise any skill in `data/skills.md` (postings under other titles often ask for skills from a neighbouring role). A requirement that matches no catalog skill becomes a coverage item of its own (step 4), noted as coming from this posting.
 5. Record it in `state.learner.target_postings`: `{ "id": "p1", "company": "…", "title": "…", "url": "…", "read_at": "YYYY-MM-DD", "file": "postings/p1.md" }`.
 
 Tell the learner in a few lines what the postings have in common and anything that stands out (a requirement the role pack rates low, an unusual stack, a language requirement).
@@ -43,22 +44,23 @@ Save the answers to `state.learner.preferences` with `asked_at` set to today. Us
 ## 4. Coverage map
 Before choosing modules, map the **whole role**, so the learner can see what's in the plan and what isn't.
 
-1. **Start from the role pack.** One coverage item per skill in its skill tree, with the pack's skill ID and priority.
-2. **Add the target postings.** For each skill a posting asks for, add the posting ID. Add a coverage item for each posting requirement that matches no skill in the pack.
-3. **Give each item a status:**
+1. **Start from the role pack.** One coverage item per row of its skill tree, with the catalog ID, the pack's priority, and its depth.
+2. **Add the target postings.** For each skill a posting asks for, add the posting ID. A posting requirement that maps to a catalog skill outside the pack gets its own item with that ID, depth `working`, and no priority; one that matches no catalog skill gets an item without an ID.
+3. **Carry over what the learner already has.** Skills are shared across roles, so look for each ID in the learner's earlier work: a coverage item marked `known`, or a completed module whose `skills` include it, in the current curriculum or in an archived one (`learner/_archive/*/curriculum.json`). It counts as `known` at the depth it was learned. If the new role needs it deeper, it stays `covered`, and the module teaches only what the deeper level adds.
+4. **Give each item a status:**
    - `known`: placement (or clear evidence in the profile) shows the learner already has it. No module.
    - `covered`: a module teaches it. "Partially knows" skills go into a single accelerated module.
    - `optional`: part of the role but outside the learner's scope.
    With `scope: job-ready`, a skill is `covered` if it's `core` in the pack **or** any target posting asks for it; `important` and `advanced` skills are `optional` otherwise. With `full-role`, every skill that isn't `known` is `covered`. A requirement from a target posting is never silently `optional`: if it's left out, the note says why and the confirmation step asks.
-4. Every item gets a one-line `note` in the learner's language: why it's known, which module covers it and how, or why it's optional.
+5. Every item gets a one-line `note` in the learner's language: why it's known, which module covers it and how, or why it's optional.
 
 Save it to `state.curriculum.coverage` (shape in `examples/learner-demo/state.json`):
-`{ "skill": "…", "id": "B1", "priority": "core", "status": "covered", "modules": ["m05"], "postings": ["p1"], "note": "…" }`. `id` and `priority` come from the role pack (leave them out for items that came only from a posting); `modules` only for `covered`; `postings` only when a target posting asks for it.
+`{ "skill": "…", "id": "agent.tool-use", "priority": "core", "depth": "working", "status": "covered", "modules": ["m05"], "postings": ["p1"], "note": "…" }`. `skill` is the catalog skill's name in the learner's language; `id` is the catalog ID (left out only for a requirement no catalog skill matches); `priority` and `depth` come from the role pack (no `priority` for items that came only from a posting); `modules` only for `covered`; `postings` only when a target posting asks for it.
 
 ## 5. Structure
 **m00 is always the role map** (`type: "theory"`, first phase, 1–2 hours): what people in this role actually do, how real postings break down into skills (the learner's target postings first, then the role pack's), and where each module fits. It comes before any technical module. Its lesson format is in AGENTS.md → "Role map lesson (m00)".
 
-**Order modules by the role pack's prerequisites** ("Needs" column) and its "Learning order" section. A module never comes before a skill it depends on.
+**Order modules by the catalog's prerequisites** ("Needs" in `data/skills.md`) and the role pack's "Learning order" section. A module never comes before a skill it depends on. A prerequisite that isn't in the coverage map is background the role takes for granted: if placement shows the learner lacks it, teach the part the module needs inside that module, and say so in its `why`.
 
 Then the phases (skip any that aren't needed):
 - **Phase 0 – Prerequisites:** only if missing (e.g. Python basics)
@@ -70,11 +72,11 @@ Then the phases (skip any that aren't needed):
 Module count after m00: 10–14 for `job-ready`, 14–20 for `full-role`. If the covered skills don't fit, group related skills into one module rather than dropping any; say so if the plan grows past the range. For each module:
 - `id` (`m00`, `m01`, …), `title`, `phase`
 - `type`: `theory` (no assignment), `practice`, `mixed`, or `capstone`
-- `objectives`: 2–4 measurable "can …" statements, taken from the role pack's "Can do" outcomes where they exist
-- `skills`: the role pack skill IDs this module covers (e.g. `["B1", "B2"]`)
+- `objectives`: 2–4 measurable "can …" statements, taken from the catalog's outcomes at the skill's depth (`working`: "Can do"; `deep`: plus "Deep adds"; `basic`: explain it and use it with docs or an example at hand) and the pack's "In this role"
+- `skills`: the catalog IDs this module covers (e.g. `["rag.design", "rag.search"]`)
 - `why`: link to job postings (a target posting if one asks for it, otherwise the role pack), short
 - `est_hours`: estimated hours
-- `resources`: 1–3 links from curricula.md or the role pack's sources (`title`, `url`)
+- `resources`: 1–3 links from curricula.md, the role pack's sources, or the catalog's sources (`title`, `url`)
 - `status`: first module `active`, the rest `locked`; `stage`: `lesson` for the first module, null for the others
 
 Phase titles, module titles, objectives, `why`, and coverage notes are written in the learner's language.
@@ -86,7 +88,8 @@ The capstone should mimic real work that job postings for the target role ask fo
 ## 6. Confirmation
 Show the learner:
 - the coverage map as a table: skill | status | module or reason, with target-posting requirements marked;
-- the phases and module titles, the total estimated hours, and a rough finish date based on their weekly hours.
+- the phases and module titles, the total estimated hours, and a rough finish date based on their weekly hours;
+- one line on neighbouring roles: for each other pack in `data/roles/`, how many of its `core` skills this plan leaves the learner with (`known` or `covered`), e.g. "This plan also covers 13 of the 16 core skills of Forward-Deployed Engineer." Show only roles above half. Count skills, never posting counts: packs are based on different postings.
 
 Ask whether to move any `optional` skill into the plan (or the reverse). Apply the changes they ask for and update the module count and dates.
 
@@ -109,4 +112,4 @@ If a curriculum already exists, ask whether to **refine** it (keep progress) or 
 4. Never change completed modules or their scores. A new module can go before the active one only if the active one depends on it; say so and ask.
 5. Confirm (step 6), save, and log what changed in `history`.
 
-**Rebuild:** move `learner/modules/` to `learner/_archive/<today>/`, clear `curriculum`, and run steps 2–7.
+**Rebuild:** move `learner/modules/` to `learner/_archive/<today>/`, save the current `curriculum` there as `curriculum.json` (step 4 reads it to carry skills over), clear `curriculum`, and run steps 2–7.

@@ -43,7 +43,7 @@ Based on the active module's `stage`:
 ## Checking for gaps
 A curriculum is not set once and left alone. Look for skills it's missing at these moments, and propose changes to the plan (`flows/plan.md` → "Changes later") instead of just answering in chat:
 - **A question outside the plan.** Answer it. If the same topic comes up a second time, or it's a requirement in one of the learner's target postings, offer to add it to the curriculum.
-- **The end of a phase.** When the last module of a phase is completed, compare `curriculum.coverage` with the current role pack and the target postings. Report anything new or anything the learner's results show is missing, in two or three lines.
+- **The end of a phase.** When the last module of a phase is completed, compare `curriculum.coverage` with the current role pack (priorities and depths) and the target postings. Report anything new or anything the learner's results show is missing, in two or three lines.
 - **Before the capstone.** List what the capstone needs that no completed module taught, and offer a short module or a reading list for each gap.
 - **Repeated weak points.** If a weak point stays in `weak_points` after two quizzes, or an evaluation shows the same gap twice, it may need its own module rather than more review; offer one.
 
