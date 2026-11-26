@@ -6,6 +6,9 @@ To update an existing copy, run `/respec update` in your agent. Your `learner/` 
 
 ## [Unreleased]
 
+### Changed
+- AI Product Engineer role pack: all nine postings re-read in full and every count checked again. RAG shows up in 3 of 9 postings (was 2), deploying and running in production in all 9, evals in 6; a new "Re-check" table shows which posting asks for what.
+
 ## [0.2.0] - 2026-11-25
 
 ### Added

@@ -2,7 +2,7 @@
 role: ai-product-engineer
 title: AI Product Engineer
 status: researched
-last_researched: 2026-11-20
+last_researched: 2026-11-25
 postings_reviewed: 9
 ---
 
@@ -20,7 +20,7 @@ Other titles for the same work: Applied AI Product Engineer, Product Engineer (a
 
 ## Postings reviewed
 
-All read on 2026-11-20 through Firecrawl job search. "Board" means read on the employer's own job board; "index" means found through a job index and only partly read.
+First read on 2026-11-20 through Firecrawl job search. "Board" means read on the employer's own job board; "LinkedIn" means read on the LinkedIn job page. On 2026-11-25 all nine were re-read in full in a browser (P8 and P9 had only been partly read before) and every count below was checked again; see "Re-check 2026-11-25".
 
 | # | Company | Title | Location | Posted | Read from | Stack and notes |
 |---|---|---|---|---|---|---|
@@ -31,12 +31,12 @@ All read on 2026-11-20 through Firecrawl job search. "Board" means read on the e
 | P5 | [Spur](https://jobs.ashbyhq.com/spur/3e021029-67f0-4574-a1b2-8517fa531529) | Applied AI Product Engineer | New York | 2026-06-07 | board | TypeScript, Next.js, React; end-to-end features, direct customer feedback; LLM products a bonus; USD 170–250K |
 | P6 | [Distru](https://jobs.lever.co/distru/42737937-162f-4933-a80a-a7eee9f44cb1) | Staff AI Product Engineer | Remote | 2026-11-09 | board | React, TypeScript, Node, PostgreSQL, GraphQL, LangGraph; multi-agent harness, MCP servers, evals before trusting a prompt, observability, rollback; USD 200–300K (staff level) |
 | P7 | [Pavago (client)](https://apply.workable.com/pavago/j/F280D10F6F/) | AI Product Engineer (Full Stack) | Remote | 2026-08-13 | board | Full stack, Supabase or similar; prompts and outputs for consistent behaviour, failure handling, validation; auth and permissions |
-| P8 | [Intellishore](https://www.linkedin.com/jobs/view/4492460266) | Senior AI Product Engineer | Zurich | 2026-11-19 | index (partial) | Full stack from LLM and agent backends to interfaces; prototype to production |
-| P9 | [Ingeniosi (client)](https://www.linkedin.com/jobs/view/4492157857) | Senior AI Product Engineer (Full Stack) | Remote (Mexico) | 2026-11-19 | index (partial) | LLM features, agents and agentic workflows in production; AI across the development lifecycle |
+| P8 | [Intellishore](https://www.linkedin.com/jobs/view/4492460266) | Senior AI Product Engineer | Zurich | 2026-11-19 | LinkedIn | Full stack from LLM and agent backends to interfaces; retrieval, tool use, multi-step agents, evals; APIs into client systems; deploy and monitor; work samples mandatory |
+| P9 | [Ingeniosi (client)](https://www.linkedin.com/jobs/view/4492157857) | Senior AI Product Engineer (Full Stack) | Remote (Mexico) | 2026-11-19 | LinkedIn | Backend (C#/.NET, Python or Java), React or Angular, REST APIs, Azure; LLM features and agents in production; RAG, vector search and Claude Code/Cursor/Copilot preferred |
 
 ## Skill tree
 
-**Priority** comes from the postings above: `core` = in at least half of them, or part of the role's definition; `important` = in 3 or more; `advanced` = in 1–2, or only in senior/staff postings. **Seen in** counts the postings that ask for the skill (P8 and P9 were only partly read, so counts are a lower bound). With `scope: job-ready`, a plan covers every `core` skill the learner doesn't already have; `full-role` adds `important` and `advanced`.
+**Priority** comes from the postings above: `core` = in at least half of them, or part of the role's definition; `important` = in 3 or more; `advanced` = in 1–2, or only in senior/staff postings. **Seen in** counts the postings that ask for the skill, including "preferred" items; counts were re-checked against the full text of all nine postings on 2026-11-25. With `scope: job-ready`, a plan covers every `core` skill the learner doesn't already have; `full-role` adds `important` and `advanced`.
 
 ### A. LLM application foundations
 
@@ -53,8 +53,8 @@ All read on 2026-11-20 through Firecrawl job search. "Board" means read on the e
 | ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
 |---|---|---|---|---|---|---|
 | B1 | Tool use / function calling, and showing tool calls in the UI | core | 6/9 | A3, A4 | Let a model call your functions safely; render each step | Assignment with two tools |
-| B2 | Multi-step agents and orchestration (loops, state, human approval, rollback) | core | 6/9 | B1, C1 | Build a bounded agent loop with approval before actions | Assignment + defence questions |
-| B3 | Grounding with your data: long context vs RAG, embeddings, retrieval | important | 2/9 | A3 | Choose and build the right retrieval for a data set | Eval of answer accuracy before/after |
+| B2 | Multi-step agents and orchestration (loops, state, human approval, rollback) | core | 8/9 | B1, C1 | Build a bounded agent loop with approval before actions | Assignment + defence questions |
+| B3 | Grounding with your data: long context vs RAG, embeddings, retrieval | important | 3/9 | A3 | Choose and build the right retrieval for a data set | Eval of answer accuracy before/after |
 | B4 | MCP: exposing a product's data and actions to agents | advanced | 1/9 (staff); also Turkey market | B1 | Build a small MCP server with scoped permissions | Working server used from an agent |
 | B5 | Memory and context systems for agents | advanced | 1/9 (staff) | B2, B3 | Store and retrieve per-user context | Design review |
 
@@ -62,7 +62,7 @@ All read on 2026-11-20 through Firecrawl job search. "Board" means read on the e
 
 | ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
 |---|---|---|---|---|---|---|
-| C1 | Evals: test sets, graders, regression checks, "what does correct look like" | core | 5/9 | A3 | Build an eval set and compare two prompt or model versions | Eval report with before/after |
+| C1 | Evals: test sets, graders, regression checks, "what does correct look like" | core | 6/9 | A3 | Build an eval set and compare two prompt or model versions | Eval report with before/after |
 | C2 | Guardrails and failure handling: hallucination, validation, human in the loop | core | 5/9 | A3, A4 | Detect and contain bad output before users see it | Failure-case tests |
 | C3 | LLM security: OWASP Top 10 for LLM Applications 2026 (prompt injection, sensitive information disclosure, excessive agency, improper output handling) | core | 5/9 | A3, B1 | Threat-model a feature; defend against injection; render output safely; limit tool permissions | Red-team exercise on own feature |
 | C4 | Observability for AI: traces, logging, catching drift | important | 3/9 | A2 | Trace a request end to end and find a regression | Debugging assignment |
@@ -72,18 +72,18 @@ All read on 2026-11-20 through Firecrawl job search. "Board" means read on the e
 
 | ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
 |---|---|---|---|---|---|---|
-| D1 | TypeScript, React, Next.js (or equivalent) frontend | core | 6/9 | – | Build product UI with a design system | Usually known; confirm in placement |
-| D2 | Backend APIs and services (Node.js or similar) | core | 9/9 | – | Design and build an API with background jobs | Assignment |
+| D1 | TypeScript, React, Next.js (or equivalent) frontend | core | 7/9 | – | Build product UI with a design system | Usually known; confirm in placement |
+| D2 | Backend APIs and services (Node.js or similar) | core | 8/9 explicit; P4 implies it (runs what it builds across TypeScript, Rust and Ruby) | – | Design and build an API with background jobs | Assignment |
 | D3 | Databases: SQL, data modelling, migrations (PostgreSQL) | core | 5/9 | D2 | Model data, write queries, ship a migration safely | Assignment with schema change |
 | D4 | Auth, permissions, and handling sensitive data | important | 4/9 | D2, D3 | Add sign-in, roles, and tenant isolation; keep PII out of prompts and logs | Security review of own app |
-| D5 | Deploy and run what you build: CI/CD, monitoring, rollback | core | 7/9 | D2 | Ship through a pipeline with tests; monitor and roll back | Working pipeline |
+| D5 | Deploy and run what you build: CI/CD, monitoring, rollback | core | 9/9 | D2 | Ship through a pipeline with tests; monitor and roll back | Working pipeline |
 | D6 | Python for AI tooling | advanced | 2/9 | – | Read and write Python services and scripts | Small task |
 
 ### E. AI-native development workflow
 
 | ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
 |---|---|---|---|---|---|---|
-| E1 | Building with AI coding agents: specs and acceptance tests agents can execute, review and test gates, verifying output, cost control | core | 5/9 | – | Deliver a feature with an agent and show how its output was verified | Portfolio write-up; interview-style defence |
+| E1 | Building with AI coding agents: specs and acceptance tests agents can execute, review and test gates, verifying output, cost control | core | 6/9 (P2 also expects AI in daily work, without naming coding agents) | – | Deliver a feature with an agent and show how its output was verified | Portfolio write-up; interview-style defence |
 
 ### F. Product and collaboration
 
@@ -93,6 +93,23 @@ All read on 2026-11-20 through Firecrawl job search. "Board" means read on the e
 | F2 | Judging when not to use AI (a rule or plain code beats an agent) | important | 2/9 (explicitly) | B2 | Defend choosing a non-AI solution with reasons | Scenario quiz |
 | F3 | UX for AI features: design systems, accessibility, trust (citations, uncertainty, undo) | important | 4/9 | D1 | Design an AI interaction users can trust and correct | Design review |
 | F4 | Working with stakeholders: demos, explaining limits, collecting feedback | important | 4/9 | F1 | Demo a feature and its limits to non-engineers | Recorded demo or write-up |
+
+## Re-check 2026-11-25
+
+All nine postings re-read in full. The broad areas below are the ones used in public write-ups about this pack (for example the LinkedIn post of 2026-11-26); the skill counts above use the same reading. ✓ = asked for (including "preferred"), – = not mentioned.
+
+| Area | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | Total |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Deploy and run in production (CI/CD, monitoring) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 9/9 |
+| Backend (APIs, databases, services) | ✓ | ✓ | ✓ | implied | ✓ | ✓ | ✓ | ✓ | ✓ | 8/9 (+1 implied) |
+| Agents or tool use | ✓ | ✓ | ✓ | ✓ | – | ✓ | ✓ | ✓ | ✓ | 8/9 |
+| Frontend | ✓ | – | ✓ | – | ✓ | ✓ | ✓ | ✓ | ✓ | 7/9 |
+| Security or guardrails | ✓ | ✓ | ✓ | – | – | ✓ | ✓ | ✓ | ✓ | 7/9 |
+| AI tools in daily work | ✓ | ✓ | ✓ | ✓ | – | ✓ | – | ✓ | ✓ | 7/9 |
+| Evals (measuring model output) | ✓ | ✓ | ✓ | ✓ | – | ✓ | – | ✓ | – | 6/9 |
+| RAG or retrieval | – | ✓ | – | – | – | – | – | ✓ | ✓ | 3/9 |
+
+Notes: P3's agent experience and P9's RAG and AI coding tools are "preferred". P5's company builds browser agents, but the role itself doesn't list agent work. Only P1 names prompt injection.
 
 ## Learning order
 
@@ -106,7 +123,7 @@ Evals (C1) come early on purpose: postings treat measuring quality as part of bu
 
 ## Sources
 
-- The postings in the table above (read 2026-11-20).
+- The postings in the table above (read 2026-11-20; re-read in full 2026-11-25).
 - [DeepLearning.AI – AI Engineering Skills Map](https://www.deeplearning.ai/resources/ai-engineering-skills) (updated 2026-09-17): four pillars (building and deploying AI applications, software engineering fundamentals, using coding agents, shaping the build), used to check the groups above.
 - [OWASP GenAI LLM Top 10 2026](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/) (published 2026-08-04).
 - [GreatFrontEnd – Frontend developer to AI engineer](https://www.greatfrontend.com/blog/frontend-developer-to-ai-engineer) (2026-10), for the frontend-origin view of the role.
@@ -114,5 +131,6 @@ Evals (C1) come early on purpose: postings treat measuring quality as part of bu
 
 ## Changelog
 
+- 2026-11-25: all nine postings re-read in full (P8 and P9 had been partly read). Counts updated: B2 6→8, B3 2→3, C1 5→6, D1 6→7, D2 9→8 explicit (P4 implied), D5 7→9, E1 5→6. Priorities unchanged. Added "Re-check 2026-11-25".
 - 2026-11-24: A1 reworded to follow current provider docs (sampling settings are restricted on many current models); same ID and priority.
 - 2026-11-20: first version, from 9 postings.

@@ -6,7 +6,7 @@ A role pack is the detailed, sourced skill map for one target role: what the rol
 
 | Pack | Status | Last researched |
 |---|---|---|
-| [ai-product-engineer](ai-product-engineer.md) | researched | 2026-11-20 |
+| [ai-product-engineer](ai-product-engineer.md) | researched | 2026-11-25 |
 | [ai-engineer](ai-engineer.md) | researched | 2026-11-24 |
 | [ai-fluent-developer](ai-fluent-developer.md) | researched | 2026-11-24 |
 | [ai-security-engineer](ai-security-engineer.md) | researched | 2026-11-24 |
