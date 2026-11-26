@@ -20,13 +20,15 @@ postings_reviewed: 0
 
 ## Skill tree
 
-Priority: `core` = at least half of the postings or the role's definition; `important` = 3 or more; `advanced` = 1–2, or senior/staff only.
+Each skill is defined once in [`data/skills.md`](../skills.md). Add a skill there first if no catalog skill fits.
 
-### A. <Area>
+Priority: `core` = at least half of the postings or the role's definition; `important` = 3 or more; `advanced` = 1–2, or senior/staff only. Depth: `basic`, `working`, or `deep` (see the catalog).
 
-| ID | Skill | Priority | Seen in | Needs | Can do (outcomes) | How to check |
-|---|---|---|---|---|---|---|
-| A1 | | | n/N | – | | |
+### <area>: <Area name from the catalog>
+
+| ID | Skill | Priority | Seen in | Depth | In this role |
+|---|---|---|---|---|---|
+| `<area>.<slug>` | <short name> | | n/N | working | – |
 
 ## Learning order
 
