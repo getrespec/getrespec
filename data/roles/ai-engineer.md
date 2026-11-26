@@ -74,7 +74,7 @@ Each skill is defined once in [`data/skills.md`](../skills.md): what it is, its 
 | `llm.api` | Calling LLM APIs from a server | A2 | core | 20/22 | working | – |
 | `llm.prompt-context` | Prompt and context engineering | A3 | core | 12/22 | working | – |
 | `llm.structured-output` | Structured output | A4 | important | 6/22 + implied by tool use | working | – |
-| `llm.model-choice` | Model selection and migration | A5 | core | 11/22 | working | `ml.fine-tuning` and `ml.self-hosting` help with these decisions |
+| `llm.model-choice` | Model selection and migration | A5 | core | 11/22 | working | `ml.fine-tuning` and `ml.inference` help with these decisions |
 | `llm.multimodal` | Multimodal input and output | A6 | important | 3/22 (P4, P12, P13) | working | – |
 | `llm.streaming` | Streaming with cancellation | A7 | advanced | 2/22 (P2, P4) | working | – |
 
@@ -107,22 +107,38 @@ Each skill is defined once in [`data/skills.md`](../skills.md): what it is, its 
 |---|---|---|---|---|---|---|
 | `quality.evals` | Evals | D1 | core | 16/22 | deep | A hiring filter: "evaluate against outcomes rather than model judges" (P5), "write evaluation harnesses before scaling pipelines" (P1) |
 | `quality.guardrails` | Guardrails and failure handling | D2 | important | 7/22 | working | – |
-| `quality.security` | LLM and agent security | D3 | core | 13/22 ask for security, privacy, or access control; prompt injection named in 3/22 | working | – |
 | `quality.observability` | Observability for LLM systems | D4 | core | 11/22 | working | – |
 | `quality.cost-latency` | Cost and latency | D5 | core | 13/22 + OWASP LLM06:2026 (Unbounded Consumption) | working | – |
 | `quality.reliability` | Production reliability | D6 | important | 6/22 | working | – |
 | `quality.release` | Release discipline for AI changes | D7 | important | 5/22 (P5, P7, P13, P16, P18) | working | – |
+
+### sec: Security
+
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
+|---|---|---|---|---|---|---|
+| `sec.prompt-injection` | Prompt injection | D3 | core | 13/22 ask for security, privacy, or access control; prompt injection named in 3/22 | working | Also the OWASP Top 10 for Agentic Applications 2026 |
+| `sec.excessive-agency` | Excessive agency | D3 | core | counted with `sec.prompt-injection` (old D3) | working | – |
+| `sec.data-disclosure` | Sensitive data disclosure | D3 | core | counted with `sec.prompt-injection` (old D3) | working | – |
+| `sec.output-handling` | Improper output handling | D3 | core | counted with `sec.prompt-injection` (old D3) | working | – |
 
 ### eng: Software engineering around the model
 
 | ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
 | `eng.python` | Python for AI services | E1 | core | 19/22 (17 require Python; 2 accept Python or TypeScript) | working | – |
-| `eng.backend` | Backend APIs and integrations | E2 | core | 15/22 | working | Internal-tool postings add business systems: CRM, support desks, SSO |
+| `eng.backend` | Backend APIs | E2 | core | 15/22 | working | – |
+| `eng.integration` | Integrating business systems | E2 | core | counted with `eng.backend` (old E2, 15/22) | working | Internal-tool postings: CRM, support desks, SSO |
 | `eng.deploy` | Deploy and run | E3 | core | 13/22 | working | – |
 | `eng.sql` | SQL and data modelling | E4 | important | 8/22 | working | – |
 | `eng.typescript` | TypeScript/Node | E5 | important | 6/22 | working | For product-side and full-stack variants |
 | `eng.auth` | Auth and permissions for AI systems | E6 | important | 4/22 (P6, P16, P18, P22) | working | – |
+
+### dev: Developing with AI coding agents
+
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
+|---|---|---|---|---|---|---|
+| `dev.directing` | Building with AI coding agents | F2 | important | 9/22 | working | – |
+| `dev.verify-output` | Verifying their output | F2 | important | counted with `dev.directing` (old F2, 9/22) | working | – |
 
 ### work: Workflow and collaboration
 
@@ -130,28 +146,28 @@ Each skill is defined once in [`data/skills.md`](../skills.md): what it is, its 
 |---|---|---|---|---|---|---|
 | `work.problem-framing` | Starting from the problem | F1 | core | 12/22 | working | – |
 | `work.stakeholders` | Working with non-engineering stakeholders | F1 | core | counted with `work.problem-framing` (old F1, 12/22) | working | Explaining trade-offs and limits to the teams an internal tool is for |
-| `work.coding-agents` | Building with AI coding agents | F2 | important | 9/22 | working | – |
 | `work.when-not-ai` | Judging when not to use an LLM | F3 | important | 6/22 (P5, P10, P11, P17, P18, P20) | working | – |
 | `work.impact` | Measuring impact after launch | F4 | important | 4/22 (P6, P16, P20, P21) | working | – |
 
 ### ml: Model-side skills (ML variant)
 
-These come from the ML-hybrid and classic-ML postings and from senior roles. The LLM-application variant doesn't need them to get hired, but `ml.fine-tuning` and `ml.self-hosting` help with `llm.model-choice` and `quality.cost-latency` decisions.
+These come from the ML-hybrid and classic-ML postings and from senior roles. The LLM-application variant doesn't need them to get hired, but `ml.fine-tuning` and `ml.inference` help with `llm.model-choice` and `quality.cost-latency` decisions.
 
 | ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
 | `ml.fine-tuning` | Fine-tuning and adapters | G1 | important | 6/22 (required in P3, P7, P12; a plus in P5, P6, P13) | working | – |
-| `ml.self-hosting` | Self-hosting open-weight models | G2 | important | 4/22 (P4, P5, P6; a plus in P9) | working | – |
-| `ml.training` | Deep learning and model training | G3 | important (ML variant only) | 4/22 (P3, P8, P11, P12) | working | – |
+| `ml.inference` | Self-hosting open-weight models | G2 | important | 4/22 (P4, P5, P6; a plus in P9) | working | – |
+| `ml.classical` | Classic ML (scikit-learn, XGBoost) | G3 | important (ML variant only) | 4/22 (P3, P8, P11, P12) | working | Train and evaluate a model; explain overfitting and validation |
+| `ml.pytorch` | Deep learning in PyTorch | G3 | important (ML variant only) | counted with `ml.classical` (old G3, 4/22) | working | – |
 | `ml.transformers` | Transformer and NLP fundamentals | G4 | advanced | 2/22 (P3, P7) | basic | – |
 
 ## Learning order
 
 Prerequisites above define the order. Evals (`quality.evals`) come early on purpose: postings treat measuring quality as part of building, and agents (`agent.loops`) need them.
 
-**From backend:** `llm.behavior` → `llm.api` → `llm.prompt-context` → `llm.structured-output` → `quality.evals` → `rag.design` → `rag.search` → `agent.tool-use` → `agent.loops` → `quality.security` → `agent.human-approval` → `agent.evals` → `quality.observability` → `quality.cost-latency` → `agent.mcp` → `agent.memory` → `agent.frameworks` → `llm.model-choice` → `quality.guardrails`/`quality.reliability`/`quality.release` → `work.problem-framing`/`work.when-not-ai` (shown through the capstone) → capstone → portfolio (`work.coding-agents`, `work.impact`). `eng.python` first if Python is new; `eng.backend`, `eng.deploy` and `eng.sql` are usually known.
+**From backend:** `llm.behavior` → `llm.api` → `llm.prompt-context` → `llm.structured-output` → `quality.evals` → `rag.design` → `rag.search` → `agent.tool-use` → `agent.loops` → the `sec` skills → `agent.human-approval` → `agent.evals` → `quality.observability` → `quality.cost-latency` → `agent.mcp` → `agent.memory` → `agent.frameworks` → `llm.model-choice` → `quality.guardrails`/`quality.reliability`/`quality.release` → `work.problem-framing`/`work.when-not-ai` (shown through the capstone) → capstone → portfolio (`dev.directing`, `dev.verify-output`, `work.impact`). `eng.python` first if Python is new; `eng.backend`, `eng.deploy` and `eng.sql` are usually known.
 
-**From frontend:** `eng.python` (Python basics) alongside `llm.behavior` → `llm.api` → `llm.prompt-context` → `llm.structured-output` → `quality.evals` → `agent.tool-use` → `agent.loops` → `rag.design` → `rag.search` → `quality.security` → `agent.human-approval` → `eng.backend` → `eng.sql` (with the modules that need a backend) → `agent.evals` → `quality.observability` → `quality.cost-latency` → `eng.deploy` → `agent.mcp` → `agent.memory` → `agent.frameworks` → `llm.model-choice` → capstone → portfolio. Streaming (`llm.streaming`) and TypeScript (`eng.typescript`) transfer directly. If the learner prefers TypeScript, aim at postings that accept it (P17, P19, P20, P22) or at the AI Product Engineer pack.
+**From frontend:** `eng.python` (Python basics) alongside `llm.behavior` → `llm.api` → `llm.prompt-context` → `llm.structured-output` → `quality.evals` → `agent.tool-use` → `agent.loops` → `rag.design` → `rag.search` → the `sec` skills → `agent.human-approval` → `eng.backend` → `eng.sql` (with the modules that need a backend) → `agent.evals` → `quality.observability` → `quality.cost-latency` → `eng.deploy` → `agent.mcp` → `agent.memory` → `agent.frameworks` → `llm.model-choice` → capstone → portfolio. Streaming (`llm.streaming`) and TypeScript (`eng.typescript`) transfer directly. If the learner prefers TypeScript, aim at postings that accept it (P17, P19, P20, P22) or at the AI Product Engineer pack.
 
 **Capstone shape that matches the postings:** an internal-tool agent for a real workflow, with retrieval over company-like data, two or more tools, an approval step before actions, an eval set with a regression gate, tracing, a cost-per-task number, and a short write-up on what was *not* automated and why.
 
@@ -183,5 +199,5 @@ As in the AI Product Engineer pack, Turkish postings ask for daily coding-agent 
 
 ## Changelog
 
-- 2026-11-27: skill tree moved to the shared catalog (`data/skills.md`). Rows now point to catalog IDs; old IDs are in the `Was` column. F1 split into `work.problem-framing` and `work.stakeholders`. Counts and priorities unchanged; `quality.evals` marked `deep`, `ml.transformers` `basic`.
+- 2026-11-27: skill tree moved to the shared catalog (`data/skills.md`). Rows now point to catalog IDs; old IDs are in the `Was` column. Split: F1 into `work.problem-framing` and `work.stakeholders`, E2 into `eng.backend` and `eng.integration`, D3 into the four `sec` skills, F2 into `dev.directing` and `dev.verify-output`, G3 into `ml.classical` and `ml.pytorch`. Counts and priorities unchanged; `quality.evals` marked `deep`, `ml.transformers` `basic`.
 - 2026-11-24: first version, from 22 postings (11 markets).

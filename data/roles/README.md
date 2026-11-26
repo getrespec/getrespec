@@ -22,7 +22,7 @@ Start from [`_template.md`](_template.md). A pack has:
 - **Front matter:** `role` (the id from `roles.md`), `title`, `status` (`draft` or `researched`), `last_researched`, `postings_reviewed`.
 - **The role today:** what the work is, other titles it's posted under, and anything that contradicts the short definition in `roles.md`.
 - **Postings reviewed:** every posting the skill counts come from, with link, date, and where it was read. At least 10 postings (8 if the role is rare, and say so), from more than one market when possible.
-- **Skill tree:** one row per catalog skill the role asks for, grouped by catalog area: the catalog ID, a short name, its priority in this role, how many of the reviewed postings ask for it, its depth (`basic`, `working`, `deep`), and what this role adds to the catalog's outcomes ("In this role"). Packs converted from the old format keep a `Was` column with their old ID (`A1`, `B2`…) until the release after v0.3.0; an old ID on several rows was split.
+- **Skill tree:** one row per catalog skill the role asks for, grouped by catalog area or by the role's own areas: the catalog ID, a short name, its priority in this role, how many of the reviewed postings ask for it, its depth (`basic`, `working`, `deep`), and what this role adds to the catalog's outcomes ("In this role"). Packs keep a `Was` column with their old ID (`A1`, `B2`…) until the release after v0.3.0; an old ID on several rows was split.
 - **Learning order:** a typical path through the prerequisites, with any reason to deviate.
 - **Market notes:** how the role shows up in specific countries.
 - **Sources** and a **Changelog**.

@@ -76,9 +76,17 @@ Each skill is defined once in [`data/skills.md`](../skills.md): what it is, its 
 |---|---|---|---|---|---|---|
 | `quality.evals` | Evals | C1 | core | 6/9 | working | – |
 | `quality.guardrails` | Guardrails and failure handling | C2 | core | 5/9 | working | – |
-| `quality.security` | LLM security | C3 | core | 5/9 | working | Render model output safely in the UI. Only P1 names prompt injection |
 | `quality.observability` | Observability for AI | C4 | important | 3/9 | working | – |
 | `quality.cost-latency` | Cost and latency | C5 | important | 2/9 + OWASP LLM06:2026 (Unbounded Consumption) | working | – |
+
+### sec: Security
+
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
+|---|---|---|---|---|---|---|
+| `sec.prompt-injection` | Prompt injection | C3 | core | 5/9 ask for LLM security | working | Only P1 names prompt injection |
+| `sec.excessive-agency` | Excessive agency | C3 | core | counted with `sec.prompt-injection` (old C3, 5/9) | working | – |
+| `sec.data-disclosure` | Sensitive data disclosure | C3 | core | counted with `sec.prompt-injection` (old C3, 5/9) | working | – |
+| `sec.output-handling` | Improper output handling | C3 | core | counted with `sec.prompt-injection` (old C3, 5/9) | working | Render model output safely in the UI |
 
 ### eng: Full-stack product engineering
 
@@ -92,11 +100,18 @@ Each skill is defined once in [`data/skills.md`](../skills.md): what it is, its 
 | `eng.deploy` | Deploy and run | D5 | core | 9/9 | working | – |
 | `eng.python` | Python | D6 | advanced | 2/9 | basic | Read and write Python services and scripts for AI tooling |
 
+### dev: Developing with AI coding agents
+
+| ID | Skill | Was | Priority | Seen in | Depth | In this role |
+|---|---|---|---|---|---|---|
+| `dev.directing` | Building with AI coding agents | E1 | core | 6/9 (P2 also expects AI in daily work, without naming coding agents) | working | Specs and acceptance tests the agent can run; cost control |
+| `dev.verify-output` | Verifying agent output | E1 | core | counted with `dev.directing` (old E1, 6/9) | working | – |
+| `dev.tests-gate` | Review and test gates | E1 | core | counted with `dev.directing` (old E1, 6/9) | working | – |
+
 ### work: Workflow and collaboration
 
 | ID | Skill | Was | Priority | Seen in | Depth | In this role |
 |---|---|---|---|---|---|---|
-| `work.coding-agents` | Building with AI coding agents | E1 | core | 6/9 (P2 also expects AI in daily work, without naming coding agents) | working | – |
 | `work.problem-framing` | Starting from the problem | F1 | core | 9/9 | working | Product sense: ship small and learn from usage and feedback |
 | `work.when-not-ai` | Judging when not to use AI | F2 | important | 2/9 (explicitly) | working | – |
 | `work.ai-ux` | UX for AI features | F3 | important | 4/9 | working | – |
@@ -121,7 +136,7 @@ Notes: P3's agent experience and P9's RAG and AI coding tools are "preferred". P
 
 ## Learning order
 
-Prerequisites above define the order. A typical path for a frontend developer: `llm.behavior` → `llm.api` → `llm.prompt-context` → `llm.streaming` → `llm.structured-output` → `quality.evals` → `agent.tool-use` → `quality.guardrails` → `quality.security` → `agent.loops` → `rag.design` → `eng.backend`/`eng.sql`/`eng.auth` (alongside the AI modules that need a backend) → `eng.deploy` → `quality.observability` → `quality.cost-latency` → `work.ai-ux` → capstone → portfolio (`work.coding-agents`, `work.problem-framing`, `work.stakeholders` shown through the capstone).
+Prerequisites above define the order. A typical path for a frontend developer: `llm.behavior` → `llm.api` → `llm.prompt-context` → `llm.streaming` → `llm.structured-output` → `quality.evals` → `agent.tool-use` → `quality.guardrails` → the `sec` skills → `agent.loops` → `rag.design` → `eng.backend`/`eng.sql`/`eng.auth` (alongside the AI modules that need a backend) → `eng.deploy` → `quality.observability` → `quality.cost-latency` → `work.ai-ux` → capstone → portfolio (`dev.directing`, `dev.verify-output`, `work.problem-framing`, `work.stakeholders` shown through the capstone).
 
 Evals (`quality.evals`) come early on purpose: postings treat measuring quality as part of building, not a final step.
 
@@ -139,7 +154,7 @@ Evals (`quality.evals`) come early on purpose: postings treat measuring quality 
 
 ## Changelog
 
-- 2026-11-27: skill tree moved to the shared catalog (`data/skills.md`). Rows now point to catalog IDs; old IDs are in the `Was` column. B2, B3 and D1 split: `agent.loops` + `agent.human-approval`, `rag.design` + `rag.search`, `eng.frontend` + `eng.typescript`. Counts and priorities unchanged; `eng.python` marked `basic`.
+- 2026-11-27: skill tree moved to the shared catalog (`data/skills.md`). Rows now point to catalog IDs; old IDs are in the `Was` column. Split: B2 into `agent.loops` + `agent.human-approval`, B3 into `rag.design` + `rag.search`, D1 into `eng.frontend` + `eng.typescript`, C3 into the four `sec` skills, E1 into `dev.directing` + `dev.verify-output` + `dev.tests-gate`. Counts and priorities unchanged; `eng.python` marked `basic`.
 - 2026-11-25: all nine postings re-read in full (P8 and P9 had been partly read). Counts updated: B2 6→8, B3 2→3, C1 5→6, D1 6→7, D2 9→8 explicit (P4 implied), D5 7→9, E1 5→6. Priorities unchanged. Added "Re-check 2026-11-25".
 - 2026-11-24: A1 reworded to follow current provider docs (sampling settings are restricted on many current models); same ID and priority.
 - 2026-11-20: first version, from 9 postings.

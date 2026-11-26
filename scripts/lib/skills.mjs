@@ -24,9 +24,8 @@ export function readCatalog(file) {
   return tables(readFileSync(file, "utf8")).map((r) => ({ id: r.ID, area: r.area, skill: r.Skill, needs: ids(r.Needs) }));
 }
 
-// Catalog-format rows of a role pack (rows whose ID is `area.slug`); old-format rows (A1…) are skipped.
+// Skill rows of a role pack.
 export function readPack(file) {
   return tables(readFileSync(file, "utf8"))
-    .filter((r) => r.ID.includes("."))
     .map((r) => ({ id: r.ID, priority: r.Priority, depth: r.Depth, was: r.Was || null }));
 }
