@@ -8,6 +8,7 @@ To update an existing copy, run `/respec update` in your agent. Your `learner/` 
 
 ### Added
 - `scripts/check-state.mjs` checks `learner/state.json` after every change the agent makes: statuses and stages, one active module, dates, catalog skill IDs, coverage that points to real modules, and modules ordered after the skills they need. The agent fixes errors before going on, so a slip in the state is caught before it breaks the dashboard or loses progress.
+- `test/e2e/plan.mjs`: an end-to-end check that runs `/respec plan` with a real Claude Code agent on the sample learner (a fresh plan, and a role change that should carry over finished skills) and checks the state it writes. Run by hand before releases that change the agent's instructions.
 
 ### Changed
 - Sample learner: locked modules reordered to follow the skill catalog's prerequisites (evals before agents, RAG design before vector search, observability before cost).
