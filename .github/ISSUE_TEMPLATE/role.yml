@@ -1,0 +1,32 @@
+name: My role or market isn't covered
+description: A role, a skill, or a country's job market is missing or out of date.
+labels: [role-data]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Respec's role packs are built from real job postings (`data/roles/`). Tell us what's missing; public links to postings help most. Any language is fine.
+  - type: input
+    id: role
+    attributes:
+      label: Role title
+      placeholder: "LLM Platform Engineer"
+    validations:
+      required: true
+  - type: input
+    id: market
+    attributes:
+      label: Country or market
+      placeholder: "Türkiye, remote EU, …"
+  - type: textarea
+    id: postings
+    attributes:
+      label: Example postings
+      description: Public links, one per line. No screenshots of private or internal postings.
+  - type: textarea
+    id: missing
+    attributes:
+      label: What's missing or wrong
+      description: Skills these postings ask for that your plan doesn't cover, or data that looks out of date.
+    validations:
+      required: true

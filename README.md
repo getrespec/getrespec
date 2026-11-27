@@ -110,6 +110,10 @@ The check asks the GitHub releases API for the latest version, at most once a da
 
 Your CV, progress, assignments, and API keys stay in the `learner/` folder, which is never committed.
 
+## Feedback
+
+After your first module and at the end of each phase, the agent offers a link to a short feedback form on GitHub. It fills in only your Respec version and target role; you write the rest and decide whether to send it. Nothing is sent automatically. You can also [open an issue](https://github.com/getrespec/getrespec/issues/new/choose) any time: something broke, your role or market is missing, or general feedback. Issues are public, so leave out your CV, keys, and files from `learner/`.
+
 ## Progress and certification
 
 Your progress in `learner/` is your own learning record: plain files you can read and change, written by the agent on your behalf. That's why it isn't proof of anything, and no certificate is based on it. Certification (coming with the web app) is a separate assessment run on Respec's servers: your capstone's tests and evals, questions about your own design decisions, and a short task you haven't seen before. Each certificate links to a public page where anyone can check what was assessed and when.

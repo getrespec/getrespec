@@ -39,6 +39,7 @@ Based on the active module's `stage`:
 - Make the next `locked` module `active`, `stage = "lesson"`, `started_at` = today.
 - Log it in `history`.
 - Remind the learner in one sentence what they learned in this module and name the next one.
+- If this was the first completed module, or the last of a phase, offer the feedback link (`AGENTS.md` → Feedback).
 
 ## Checking for gaps
 A curriculum is not set once and left alone. Look for skills it's missing at these moments, and propose changes to the plan (`flows/plan.md` → "Changes later") instead of just answering in chat:

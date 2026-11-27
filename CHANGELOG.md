@@ -6,6 +6,9 @@ To update an existing copy, run `/respec update` in your agent. Your `learner/` 
 
 ## [Unreleased]
 
+### Added
+- Feedback: after your first module and at the end of each phase, the agent offers a link to a GitHub feedback form with only your Respec version and target role filled in. You write the rest and send it yourself. New issue forms for something that broke, a missing role or market, and general feedback.
+
 ## [0.3.0] - 2026-11-26
 
 ### Added
