@@ -6,6 +6,12 @@ To update an existing copy, run `/respec update` in your agent. Your `learner/` 
 
 ## [Unreleased]
 
+### Added
+- `scripts/check-state.mjs` checks `learner/state.json` after every change the agent makes: statuses and stages, one active module, dates, catalog skill IDs, coverage that points to real modules, and modules ordered after the skills they need. The agent fixes errors before going on, so a slip in the state is caught before it breaks the dashboard or loses progress.
+
+### Changed
+- Sample learner: locked modules reordered to follow the skill catalog's prerequisites (evals before agents, RAG design before vector search, observability before cost).
+
 ## [0.3.0] - 2026-11-26
 
 ### Added
