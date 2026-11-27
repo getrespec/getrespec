@@ -112,16 +112,19 @@ function run(name) {
   if (res.is_error) fail(`the agent stopped with an error: ${res.subtype ?? out.slice(0, 200)}`);
   // ğ and dotless ı are Turkish-only; ç and ş also appear in English text (façade, names).
   if (/[ğıĞİ]/.test(out)) fail("the agent answered in Turkish; the sample learner's language is en");
-  let state;
+  let state, parsed = false;
   try {
     state = JSON.parse(readFileSync(join(learner, "state.json"), "utf8"));
+    parsed = true;
   } catch (e) {
     fail(`learner/state.json isn't readable JSON: ${e.message}`);
   }
-  if (state) {
-    const { errors, warnings } = checkState(state, { catalog, packIds: [sc.role] });
-    errors.forEach((e) => fail(`check-state: ${e}`));
-    warnings.forEach((w) => console.log(`[${name}] warning: ${w}`));
+  // check-state reports a null or non-object state; the checks below need an object.
+  const { errors = [], warnings = [] } = parsed ? checkState(state, { catalog, packIds: [sc.role] }) : {};
+  errors.forEach((e) => fail(`check-state: ${e}`));
+  // Nobody in this run asked for an exception (AGENTS.md), so a rule warning is a failure too.
+  warnings.forEach((w) => fail(`check-state warning: ${w}`));
+  if (parsed && !errors.length) {
     const mods = state.curriculum?.modules ?? [];
     if (mods.length < 5) fail(`only ${mods.length} modules`);
     if (mods[0]?.id !== "m00") fail("the first module isn't m00 (role map)");
