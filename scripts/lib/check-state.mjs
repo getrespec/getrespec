@@ -32,7 +32,8 @@ export function checkState(state, { catalog, packIds = [] }) {
     for (const k of Object.keys(obj ?? {})) if (!allowed.includes(k)) warn(`${where}: unknown field "${k}"; put extra information in notes`);
   };
   const date = (v, where) => {
-    if (v != null && !DATE.test(v)) err(`${where}: "${v}" isn't a YYYY-MM-DD date`);
+    // The round trip rejects dates that don't exist, like 2026-02-30.
+    if (v != null && !(DATE.test(v) && new Date(`${v}T00:00:00Z`).toISOString().startsWith(v))) err(`${where}: "${v}" isn't a YYYY-MM-DD date`);
   };
 
   if (state.schema_version !== SCHEMA_VERSION) {
@@ -66,8 +67,8 @@ export function checkState(state, { catalog, packIds = [] }) {
     for (const k of ["status", "type"]) if (!ENUM[k].includes(m[k])) err(`${at}: ${k} "${m[k]}" isn't one of ${ENUM[k].join(", ")}`);
     if (!ENUM.stage.includes(m.stage ?? null)) err(`${at}: stage "${m.stage}" isn't one of ${ENUM.stage.slice(0, -1).join(", ")}, or null`);
     if (m.status === "locked" && m.stage) err(`${at}: locked but stage is "${m.stage}"; a locked module has stage null`);
-    if (m.status === "active" && !m.stage) err(`${at}: active but has no stage`);
-    if (m.status === "completed" && m.stage !== "done") err(`${at}: completed but stage is "${m.stage}", not "done"`);
+    if (m.status === "active" && (!m.stage || m.stage === "done")) err(`${at}: active but stage is "${m.stage}"; an active module is at lesson, quiz, review, assignment or evaluation`);
+    if (["completed", "assisted"].includes(m.status) && m.stage !== "done") err(`${at}: ${m.status} but stage is "${m.stage}", not "done"`);
     if (m.type === "theory" && ["assignment", "evaluation"].includes(m.stage)) err(`${at}: a theory module has no ${m.stage} stage`);
     date(m.started_at, `${at}.started_at`);
     date(m.completed_at, `${at}.completed_at`);
