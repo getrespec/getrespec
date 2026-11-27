@@ -238,17 +238,17 @@
       },
       {
         "id": "m06",
-        "title": "Embeddings and vector search",
+        "title": "Evals: testing non-deterministic output",
         "phase": "f2",
-        "type": "mixed",
+        "type": "practice",
         "objectives": [
-          "Can generate embeddings and run a similarity search"
+          "Can write an eval set and measure prompt changes"
         ],
         "skills": [
-          "rag.search"
+          "quality.evals"
         ],
-        "why": "A prerequisite for RAG.",
-        "est_hours": 4,
+        "why": "Quality assurance for AI in production.",
+        "est_hours": 6,
         "resources": [],
         "status": "locked",
         "stage": null,
@@ -286,6 +286,30 @@
       },
       {
         "id": "m08",
+        "title": "Embeddings and vector search",
+        "phase": "f2",
+        "type": "mixed",
+        "objectives": [
+          "Can generate embeddings and run a similarity search"
+        ],
+        "skills": [
+          "rag.search"
+        ],
+        "why": "A prerequisite for RAG.",
+        "est_hours": 4,
+        "resources": [],
+        "status": "locked",
+        "stage": null,
+        "score": {
+          "quiz": null,
+          "assignment": null
+        },
+        "attempts": 0,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "id": "m09",
         "title": "The agent loop and orchestration",
         "phase": "f2",
         "type": "practice",
@@ -309,42 +333,18 @@
         "completed_at": null
       },
       {
-        "id": "m09",
-        "title": "Evals: testing non-deterministic output",
-        "phase": "f2",
+        "id": "m10",
+        "title": "Observability and deployment",
+        "phase": "f3",
         "type": "practice",
         "objectives": [
-          "Can write an eval set and measure prompt changes"
+          "Can ship an AI feature with monitoring"
         ],
         "skills": [
-          "quality.evals"
+          "quality.observability"
         ],
-        "why": "Quality assurance for AI in production.",
-        "est_hours": 6,
-        "resources": [],
-        "status": "locked",
-        "stage": null,
-        "score": {
-          "quiz": null,
-          "assignment": null
-        },
-        "attempts": 0,
-        "started_at": null,
-        "completed_at": null
-      },
-      {
-        "id": "m10",
-        "title": "Cost, latency, and caching",
-        "phase": "f3",
-        "type": "mixed",
-        "objectives": [
-          "Can measure and reduce per-request cost and latency"
-        ],
-        "skills": [
-          "quality.cost-latency"
-        ],
-        "why": "The basis of production decisions.",
-        "est_hours": 4,
+        "why": "Taking the product from demo to production.",
+        "est_hours": 5,
         "resources": [],
         "status": "locked",
         "stage": null,
@@ -382,17 +382,17 @@
       },
       {
         "id": "m12",
-        "title": "Observability and deployment",
+        "title": "Cost, latency, and caching",
         "phase": "f3",
-        "type": "practice",
+        "type": "mixed",
         "objectives": [
-          "Can ship an AI feature with monitoring"
+          "Can measure and reduce per-request cost and latency"
         ],
         "skills": [
-          "quality.observability"
+          "quality.cost-latency"
         ],
-        "why": "Taking the product from demo to production.",
-        "est_hours": 5,
+        "why": "The basis of production decisions.",
+        "est_hours": 4,
         "resources": [],
         "status": "locked",
         "stage": null,
@@ -510,7 +510,7 @@
         "depth": "working",
         "status": "covered",
         "modules": [
-          "m06"
+          "m08"
         ],
         "note": "Needed for RAG"
       },
@@ -532,7 +532,7 @@
         "depth": "working",
         "status": "covered",
         "modules": [
-          "m08"
+          "m09"
         ],
         "note": "Part of the 2026 expectation (ODSC)"
       },
@@ -543,7 +543,7 @@
         "depth": "deep",
         "status": "covered",
         "modules": [
-          "m09"
+          "m06"
         ],
         "note": "Part of the 2026 expectation (ODSC)"
       },
@@ -554,7 +554,7 @@
         "depth": "working",
         "status": "covered",
         "modules": [
-          "m10"
+          "m12"
         ],
         "note": "Listed in the role's typical skills"
       },
@@ -576,7 +576,7 @@
         "depth": "working",
         "status": "covered",
         "modules": [
-          "m12"
+          "m10"
         ],
         "note": "Part of the 2026 expectation (ODSC)"
       },

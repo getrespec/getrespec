@@ -14,7 +14,7 @@
    - never discard changes without the learner's explicit answer.
 5. **Confirm, then update.** Ask "Update from `current` to `latest.version` now?". On yes, run `git pull --ff-only`. If that fails because the branches have diverged, stop and explain; don't merge or rebase on your own.
 6. **After the pull.**
-   - Run `node scripts/migrate-state.mjs`. It does nothing when the state is already current.
+   - Run `node scripts/migrate-state.mjs`. It does nothing when the state is already current. Then run `node scripts/check-state.mjs` and fix what it reports.
    - If the dashboard server is running, it must be restarted to serve the new version: stop it and start `node scripts/serve.mjs` again (or ask the learner to).
    - Re-read `AGENTS.md` and the flow files: instructions may have changed.
    - If `state.learner.language` isn't `en` or `tr`, bring `learner/ui-strings.json` up to date: write it if it's missing, or add the keys the new `en` strings have (AGENTS.md → Dashboard interface strings).

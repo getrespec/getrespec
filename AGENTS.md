@@ -89,6 +89,7 @@ examples/learner-demo/         A sample learner folder; its state.json is the re
 scripts/serve.mjs             Local dashboard server (read-only)
 dashboard/                    Dashboard app source (React); dashboard/dist is the built app
 scripts/migrate-state.mjs     Upgrades older state files
+scripts/check-state.mjs       Checks learner/state.json against the rules below
 scripts/check-update.mjs      Checks GitHub for a newer Respec release (cached once a day)
 scripts/dossier.mjs           Renders learner/dossier/<id>.json into a self-contained HTML file (--pdf: also a PDF)
 package.json, CHANGELOG.md    The installed Respec version and what changed in each release
@@ -120,6 +121,7 @@ learner/                      Learner-specific; never committed
 
 - The format matches `examples/learner-demo/state.json` exactly, plus the optional fields described in `flows/plan.md` (`learner.target_postings`; `id`, `priority`, `depth`, and `postings` on coverage items; `skills` on modules). Don't add or rename other fields; put anything extra in `notes`.
 - After every stage transition, update the state. The dashboard app reads `learner/` live; there's nothing to rebuild.
+- After every change to `state.json`, run `node scripts/check-state.mjs`. Fix every `error` before going on: errors break the dashboard or lose progress. Fix `warning`s too, unless the learner chose it (for example, a module order they asked for); then say so in `notes`. Don't mention the check to the learner when it passes.
 - Module `status`: `locked` → `active` → `completed` or `assisted`. Only one module is `active` at a time.
 - Module `stage`: `lesson` → `quiz` → `review` (if needed) → `assignment` → `evaluation` → `done`. Modules with `type: "theory"` have no assignment; passing the quiz completes them.
 - Module `type`: `theory`, `practice`, `mixed`, `capstone`.
