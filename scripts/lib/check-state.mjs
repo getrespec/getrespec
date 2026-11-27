@@ -125,10 +125,11 @@ export function checkState(state, { catalog, packIds = [] }) {
     if (c.status === "covered" && !c.modules?.length) err(`${at}: covered but lists no module`);
   }
   // Module skills and coverage must agree.
-  for (const m of modules) {
+  if (cur.coverage == null && modules.some((m) => m.skills?.length)) warn("curriculum.coverage is missing but modules teach skills; rebuild it as in flows/plan.md");
+  else for (const m of modules) {
     for (const s of m.skills ?? []) {
       const c = (cur.coverage ?? []).find((x) => x.id === s);
-      if (cur.coverage && (!c || !c.modules?.includes(m.id))) warn(`module ${m.id}: teaches ${s}, but its coverage item doesn't list ${m.id}`);
+      if (!c || !c.modules?.includes(m.id)) warn(`module ${m.id}: teaches ${s}, but its coverage item doesn't list ${m.id}`);
     }
   }
 
