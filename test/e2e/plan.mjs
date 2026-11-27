@@ -39,18 +39,23 @@ function beforePlan(roleId, title) {
   return s;
 }
 
+// Every core skill of the role is in the plan at the pack's depth (flows/plan.md).
+function coreCovered(state, roleId, fail) {
+  for (const row of pack(roleId).filter((r) => r.priority.startsWith("core"))) {
+    const c = state.curriculum.coverage.find((x) => x.id === row.id);
+    if (!c) fail(`core skill ${row.id} has no coverage item`);
+    else if (c.depth !== row.depth) fail(`${row.id}: depth ${c.depth}, pack says ${row.depth}`);
+    if (c && !["known", "covered"].includes(c.status)) fail(`core skill ${row.id} is ${c.status}; a core skill is known or covered`);
+  }
+}
+
 const scenarios = {
   // A new plan for the sample learner's role.
   fresh: {
     role: "ai-engineer",
     state: () => beforePlan("ai-engineer", "Applied AI Engineer"),
     check(state, out, fail) {
-      for (const row of pack("ai-engineer").filter((r) => r.priority.startsWith("core"))) {
-        const c = state.curriculum.coverage.find((x) => x.id === row.id);
-        if (!c) fail(`core skill ${row.id} has no coverage item`);
-        else if (c.depth !== row.depth) fail(`${row.id}: depth ${c.depth}, pack says ${row.depth}`);
-        if (c && !["known", "covered"].includes(c.status)) fail(`core skill ${row.id} is ${c.status}; a core skill is known or covered`);
-      }
+      coreCovered(state, "ai-engineer", fail);
       if (!/Forward-Deployed/i.test(out)) fail("the confirmation doesn't mention a neighbouring role (Forward-Deployed Engineer covers well over half)");
     },
   },
@@ -60,6 +65,7 @@ const scenarios = {
     state: () => beforePlan("ai-product-engineer", "AI Product Engineer"),
     archive: () => demo.curriculum,
     check(state, _out, fail) {
+      coreCovered(state, "ai-product-engineer", fail);
       const aie = new Map(pack("ai-engineer").map((r) => [r.id, r]));
       const aipe = new Map(pack("ai-product-engineer").map((r) => [r.id, r]));
       const learned = demo.curriculum.modules.filter((m) => m.status === "completed").flatMap((m) => m.skills ?? []);
