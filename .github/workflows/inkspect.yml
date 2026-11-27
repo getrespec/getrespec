@@ -13,7 +13,8 @@ concurrency:
 jobs:
   review:
     name: Inkspect Code Review
-    if: ${{ !github.event.pull_request.draft }}
+    # Release PRs only bump versions and date the changelog; skip them to save the daily review quota.
+    if: ${{ !github.event.pull_request.draft && !startsWith(github.head_ref, 'release/') }}
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
