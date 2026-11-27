@@ -48,7 +48,8 @@ export function checkState(state, { catalog, packIds = [] }) {
     return { errors, warnings };
   }
   // Wrong shapes would crash the checks below, so they stop the check here.
-  for (const k of ["learner", "placement", "target_role", "curriculum"]) if (state[k] != null && !isObject(state[k])) err(`${k} isn't an object`);
+  if (!isObject(state.learner)) err("learner is missing or isn't an object; the dashboard needs it");
+  for (const k of ["placement", "target_role", "curriculum"]) if (state[k] != null && !isObject(state[k])) err(`${k} isn't an object`);
   const lists = { "curriculum.phases": state.curriculum?.phases, "curriculum.modules": state.curriculum?.modules, "curriculum.coverage": state.curriculum?.coverage, weak_points: state.weak_points, history: state.history };
   for (const [name, list] of Object.entries(lists)) {
     if (list == null) continue;

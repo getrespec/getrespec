@@ -50,6 +50,8 @@ test("errors: what breaks the dashboard or loses progress", () => {
     [(s) => (mod(s, "m02").skills = "llm.api"), /curriculum.modules\[2\].skills isn't a list/],
     [(s) => (cov(s, "llm.api").modules = "m02"), /modules isn't a list/],
     [(s) => (s.weak_points = "none"), /weak_points isn't a list/],
+    [(s) => delete s.learner, /learner is missing or isn't an object/],
+    [(s) => (s.learner = null), /learner is missing or isn't an object/],
     [(s) => (mod(s, "m04").stage = "done"), /module m04: active but stage is "done"/],
     [(s) => (mod(s, "m02").status = "assisted") && (mod(s, "m02").stage = "quiz"), /module m02: assisted but stage is "quiz"/],
     [(s) => (cov(s, "llm.api").id = "A2"), /"A2" isn't in data\/skills.md/],
