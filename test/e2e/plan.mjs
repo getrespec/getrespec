@@ -14,7 +14,7 @@
 import { cpSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readCatalog, readPack } from "../../scripts/lib/skills.mjs";
 import { checkState } from "../../scripts/lib/check-state.mjs";
@@ -49,6 +49,7 @@ const scenarios = {
         const c = state.curriculum.coverage.find((x) => x.id === row.id);
         if (!c) fail(`core skill ${row.id} has no coverage item`);
         else if (c.depth !== row.depth) fail(`${row.id}: depth ${c.depth}, pack says ${row.depth}`);
+        if (c && !["known", "covered"].includes(c.status)) fail(`core skill ${row.id} is ${c.status}; a core skill is known or covered`);
       }
       if (!/Forward-Deployed/i.test(out)) fail("the confirmation doesn't mention a neighbouring role (Forward-Deployed Engineer covers well over half)");
     },
@@ -76,7 +77,8 @@ const scenarios = {
 function run(name) {
   const sc = scenarios[name];
   const dir = mkdtempSync(join(tmpdir(), `respec-e2e-${name}-`));
-  cpSync(root, dir, { recursive: true, filter: (src) => !/\/(\.git|node_modules|learner|\.gstack|\.serena)(\/|$)/.test(src.slice(root.length)) });
+  const skip = new Set([".git", "node_modules", "learner", ".gstack", ".serena"]);
+  cpSync(root, dir, { recursive: true, filter: (src) => !relative(root, src).split(sep).some((part) => skip.has(part)) });
   const learner = join(dir, "learner");
   mkdirSync(learner);
   cpSync(join(demoDir, "profile.md"), join(learner, "profile.md"));
@@ -106,8 +108,10 @@ function run(name) {
   const failures = [];
   const fail = (m) => failures.push(m);
   if (r.error) fail(`couldn't run claude: ${r.error.message}`);
+  else if (r.status !== 0) fail(`claude exited with ${r.status ?? r.signal}`);
   if (res.is_error) fail(`the agent stopped with an error: ${res.subtype ?? out.slice(0, 200)}`);
-  if (/[çğışÇĞİŞ]/.test(out)) fail("the agent answered in Turkish; the sample learner's language is en");
+  // ğ and dotless ı are Turkish-only; ç and ş also appear in English text (façade, names).
+  if (/[ğıĞİ]/.test(out)) fail("the agent answered in Turkish; the sample learner's language is en");
   let state;
   try {
     state = JSON.parse(readFileSync(join(learner, "state.json"), "utf8"));
