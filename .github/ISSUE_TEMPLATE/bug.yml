@@ -1,0 +1,48 @@
+name: Something went wrong
+description: A command, script, or the dashboard didn't do what it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Issues are public. Don't paste your CV, API keys, `.env`, or files from `learner/`; describe what happened instead. Any language is fine.
+  - type: input
+    id: version
+    attributes:
+      label: Respec version
+      description: From `package.json`, or the dashboard footer.
+      placeholder: "0.3.0"
+    validations:
+      required: true
+  - type: input
+    id: agent
+    attributes:
+      label: Coding agent and model
+      placeholder: "Claude Code, Opus"
+  - type: dropdown
+    id: command
+    attributes:
+      label: Where it happened
+      options:
+        - /respec start
+        - /respec role
+        - /respec plan
+        - /respec next (lesson, quiz, review, assignment)
+        - /respec submit
+        - /respec dashboard
+        - /respec update
+        - /respec update-trends
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Include the error message if there was one.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected

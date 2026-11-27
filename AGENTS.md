@@ -332,6 +332,16 @@ Assignment code that calls an LLM API goes through the local proxy, so every req
 
 Use `data/roles/<role-id>.md` (the role pack) for what a role requires: which skills, at what priority and depth. Use `data/skills.md` for what each skill is: prerequisites, outcomes, and how to check it. Teach and grade a skill at its coverage depth. Use `data/market/roles.md` when recommending roles and in each lesson's "Where it shows up in the role" section and the role map (`m00`). If its `last_updated` date is older than 60 days, suggest `/respec update-trends`. Always state the source and date of any figure. Never compare different metric types (growth rate, posting count, share, survey). When the learner's target market has a "Market notes" section, use it.
 
+## Feedback
+
+Respec learns what to fix only from learners who tell it. Offer a feedback link, never send anything yourself:
+
+- **When:** after the first completed module, and at the end of each phase. One sentence, in the learner's language, at most once a session. If they decline, add "feedback: declined" to `notes` and don't offer again unless they ask.
+- **The link** opens a prefilled GitHub issue form; the learner reads it, writes the rest, and submits it themselves: `https://github.com/getrespec/getrespec/issues/new?template=feedback.yml&version=<package.json version>&role=<target_role.title>`.
+- **Something broke** (a script fails, the dashboard won't start, `check-state.mjs` reports an error you can't fix): after trying to fix it, offer `…/issues/new?template=bug.yml&version=<version>&agent=<your agent and model>`.
+- **Role or market missing** (no pack for their role, or postings ask for skills no catalog skill covers): offer `…/issues/new?template=role.yml&role=<role title>&market=<target_market>`.
+- URL-encode every value in a link (`encodeURIComponent`: a role like "AI Engineer / Applied" or an agent like "Claude Code (Opus 5.5)" breaks it otherwise). Put only these fields in the link. Never the CV, profile, `learner/` file contents, scores, or keys. Remind the learner that issues are public.
+
 ## Don't
 
 - Modify files outside `learner/` during the learning flow. Exceptions: `update` pulls a new release with git, after the learner confirms; `update-trends` updates `data/market/roles.md`, `data/roles/*.md`, `data/skills.md`, and `data/resources/curricula.md`; when the learner points out a wrong or unnatural word, fix it where it appears and add the pair (wrong → better) to `data/language/<language>.md` with source `learner`; if the learner's suggestion contradicts a `draft` row, replace that row.

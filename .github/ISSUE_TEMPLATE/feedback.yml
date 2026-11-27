@@ -1,0 +1,41 @@
+name: Feedback on learning with Respec
+description: What worked, what didn't, after a module or a phase.
+labels: [feedback]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking a minute. Issues are public, so don't paste your CV, keys, or files from `learner/`. Any language is fine.
+  - type: input
+    id: version
+    attributes:
+      label: Respec version
+      placeholder: "0.3.0"
+  - type: input
+    id: role
+    attributes:
+      label: Target role
+      placeholder: "AI Product Engineer"
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Mostly about
+      options:
+        - Lessons
+        - Quizzes and review
+        - Assignments and evaluation
+        - The plan (modules, order, pace)
+        - Dashboard
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: worked
+    attributes:
+      label: What worked
+  - type: textarea
+    id: didnt
+    attributes:
+      label: What didn't, or what you'd change
+    validations:
+      required: true
