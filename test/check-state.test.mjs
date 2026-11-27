@@ -66,6 +66,12 @@ test("errors: what breaks the dashboard or loses progress", () => {
   }
 });
 
+test("a curriculum without a coverage map gets one warning", () => {
+  const s = demo();
+  delete s.curriculum.coverage;
+  assert.deepEqual(check(s).warnings, ["curriculum.coverage is missing but modules teach skills; rebuild it as in flows/plan.md"]);
+});
+
 test("warnings: rules the agent should fix", () => {
   const cases = [
     [(s) => (s.curriculum.extra = 1), /curriculum: unknown field "extra"; put extra information in notes/],
