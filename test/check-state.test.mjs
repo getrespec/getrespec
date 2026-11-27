@@ -27,6 +27,10 @@ test("an old schema stops the check and names the migration", () => {
   assert.match(check(s).errors.join(), /run node scripts\/migrate-state\.mjs/);
 });
 
+test("a file that isn't a state object is an error, not a crash", () => {
+  for (const v of [null, [], "state", 3]) assert.match(check(v).errors.join(), /isn't a JSON object/);
+});
+
 test("errors: what breaks the dashboard or loses progress", () => {
   const cases = [
     [(s) => (mod(s, "m05").status = "active"), /2 modules are active \(m04, m05\)/],
@@ -39,6 +43,13 @@ test("errors: what breaks the dashboard or loses progress", () => {
     [(s) => (mod(s, "m02").skills = ["llm.made-up"]), /skill "llm.made-up" isn't in data\/skills.md/],
     [(s) => (mod(s, "m02").completed_at = "25.11.2026"), /isn't a YYYY-MM-DD date/],
     [(s) => (mod(s, "m02").completed_at = "2026-02-30"), /"2026-02-30" isn't a YYYY-MM-DD date/],
+    [(s) => (mod(s, "m02").completed_at = "2026-13-01"), /"2026-13-01" isn't a YYYY-MM-DD date/],
+    [(s) => (mod(s, "m02").started_at = "2026-11-00"), /"2026-11-00" isn't a YYYY-MM-DD date/],
+    [(s) => (s.curriculum.modules = {}), /curriculum.modules isn't a list/],
+    [(s) => (s.curriculum.modules[2] = null), /curriculum.modules\[2\] isn't an object/],
+    [(s) => (mod(s, "m02").skills = "llm.api"), /curriculum.modules\[2\].skills isn't a list/],
+    [(s) => (cov(s, "llm.api").modules = "m02"), /modules isn't a list/],
+    [(s) => (s.weak_points = "none"), /weak_points isn't a list/],
     [(s) => (mod(s, "m04").stage = "done"), /module m04: active but stage is "done"/],
     [(s) => (mod(s, "m02").status = "assisted") && (mod(s, "m02").stage = "quiz"), /module m02: assisted but stage is "quiz"/],
     [(s) => (cov(s, "llm.api").id = "A2"), /"A2" isn't in data\/skills.md/],
@@ -89,4 +100,10 @@ test("the command exits 1 on errors and 0 on a valid state", () => {
   assert.match(r.out, /^error: module m00: status "done"/m);
   writeFileSync(bad, "{ not json");
   assert.equal(run(bad).code, 1);
+  writeFileSync(bad, "null");
+  assert.deepEqual(run(bad), { code: 1, out: "error: the file isn't a JSON object\n1 errors, 0 warnings\n" });
+  s.curriculum.modules[0].status = "completed";
+  s.curriculum.modules[0].completed_at = "2026-13-01";
+  writeFileSync(bad, JSON.stringify(s));
+  assert.match(run(bad).out, /^error: module m00.completed_at: "2026-13-01" isn't a YYYY-MM-DD date$/m);
 });

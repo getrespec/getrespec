@@ -18,6 +18,7 @@ const FIELDS = {
   coverage: ["skill", "id", "priority", "depth", "status", "modules", "postings", "note"],
 };
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
+const isObject = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
 export const SCHEMA_VERSION = 3;
 
 /**
@@ -32,14 +33,32 @@ export function checkState(state, { catalog, packIds = [] }) {
     for (const k of Object.keys(obj ?? {})) if (!allowed.includes(k)) warn(`${where}: unknown field "${k}"; put extra information in notes`);
   };
   const date = (v, where) => {
-    // The round trip rejects dates that don't exist, like 2026-02-30.
-    if (v != null && !(DATE.test(v) && new Date(`${v}T00:00:00Z`).toISOString().startsWith(v))) err(`${where}: "${v}" isn't a YYYY-MM-DD date`);
+    if (v == null) return;
+    // The round trip rejects dates that don't exist, like 2026-02-30; 2026-13-01 is an Invalid Date.
+    const d = new Date(`${v}T00:00:00Z`);
+    if (!DATE.test(v) || isNaN(d) || !d.toISOString().startsWith(v)) err(`${where}: "${v}" isn't a YYYY-MM-DD date`);
   };
 
+  if (!isObject(state)) {
+    err("the file isn't a JSON object");
+    return { errors, warnings };
+  }
   if (state.schema_version !== SCHEMA_VERSION) {
     err(`schema_version is ${JSON.stringify(state.schema_version)}, expected ${SCHEMA_VERSION}; run node scripts/migrate-state.mjs`);
     return { errors, warnings };
   }
+  // Wrong shapes would crash the checks below, so they stop the check here.
+  for (const k of ["learner", "placement", "target_role", "curriculum"]) if (state[k] != null && !isObject(state[k])) err(`${k} isn't an object`);
+  const lists = { "curriculum.phases": state.curriculum?.phases, "curriculum.modules": state.curriculum?.modules, "curriculum.coverage": state.curriculum?.coverage, weak_points: state.weak_points, history: state.history };
+  for (const [name, list] of Object.entries(lists)) {
+    if (list == null) continue;
+    if (!Array.isArray(list)) err(`${name} isn't a list`);
+    else list.forEach((x, i) => isObject(x) || err(`${name}[${i}] isn't an object`));
+  }
+  for (const [i, m] of (Array.isArray(lists["curriculum.modules"]) ? lists["curriculum.modules"] : []).entries()) if (isObject(m) && m.skills != null && !Array.isArray(m.skills)) err(`curriculum.modules[${i}].skills isn't a list`);
+  for (const [i, c] of (Array.isArray(lists["curriculum.coverage"]) ? lists["curriculum.coverage"] : []).entries()) if (isObject(c) && c.modules != null && !Array.isArray(c.modules)) err(`curriculum.coverage[${i}].modules isn't a list`);
+  if (errors.length) return { errors, warnings };
+
   extra(state, FIELDS[""], "state");
   extra(state.learner, FIELDS.learner, "learner");
   date(state.placement?.date, "placement.date");

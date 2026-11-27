@@ -31,12 +31,12 @@ This demo was written without a live search, so it uses the role's requirements 
 |---|---|---|
 | "Experience integrating LLM APIs into production applications" | Calling a model from your server, handling errors, streaming the answer | m02 |
 | "Prompt and context engineering" | Deciding what text, data, and instructions the model sees, in what order | m01, m03 |
-| "RAG, embeddings, vector search" | Finding the relevant documents and putting them in the prompt | m06, m07 |
-| "Tool use / function calling, agents" | Letting the model ask your code to do things (look up an order), in a loop | m05, m08 |
-| "Evaluation pipelines" | Measuring answer quality with a fixed test set instead of eyeballing | m09 |
-| "Cost and latency optimization" | Knowing what each request costs and making it cheaper and faster | m10 |
+| "RAG, embeddings, vector search" | Finding the relevant documents and putting them in the prompt | m07, m08 |
+| "Tool use / function calling, agents" | Letting the model ask your code to do things (look up an order), in a loop | m05, m09 |
+| "Evaluation pipelines" | Measuring answer quality with a fixed test set instead of eyeballing | m06 |
+| "Cost and latency optimization" | Knowing what each request costs and making it cheaper and faster | m12 |
 | "LLM security (prompt injection)" | Stopping user text or documents from overriding your instructions | m11 |
-| "Observability and deployment" | Logging and tracing each request so you can debug it in production | m12 |
+| "Observability and deployment" | Logging and tracing each request so you can debug it in production | m10 |
 | "TypeScript or Python" | Product-side roles accept TypeScript; ML-leaning roles want Python | Known (TypeScript); Python optional |
 | "PyTorch, LangChain" | Model training library; an LLM framework | Optional (see skill map) |
 
@@ -49,13 +49,13 @@ This demo was written without a live search, so it uses the role's requirements 
 | Prompt and context design | In your plan | m03 |
 | Structured output | In your plan | m04 |
 | Tool use | In your plan | m05 |
-| Embeddings and vector search | In your plan | m06 |
+| Evals | In your plan | m06 |
 | RAG | In your plan | m07 |
-| Agent loop | In your plan | m08 |
-| Evals | In your plan | m09 |
-| Cost, latency, prompt caching | In your plan | m10 |
+| Embeddings and vector search | In your plan | m08 |
+| Agent loop | In your plan | m09 |
+| Observability and deployment | In your plan | m10 |
 | Prompt injection and safe rendering | In your plan | m11 |
-| Observability and deployment | In your plan | m12 |
+| Cost, latency, prompt caching | In your plan | m12 |
 | Consuming REST APIs, streaming UI state, TypeScript | You already know | Placement |
 | Python | Optional | Some postings ask for it; product-side roles accept TypeScript |
 | LangChain | Optional | You'll learn the patterns directly; add it if a posting you target asks for it |
