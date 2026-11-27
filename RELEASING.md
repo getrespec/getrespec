@@ -25,6 +25,8 @@ Open a release pull request when `## [Unreleased]` has something learners would 
 
 ## How
 
+If the release changes `AGENTS.md` or `flows/`, first run the end-to-end check, which runs `/respec plan` with a real Claude Code agent on the sample learner and checks the state it writes: `node test/e2e/plan.mjs`. It isn't in CI because every run costs model usage, about 3 minutes and $1–2 per scenario, capped at $5 (`RESPEC_E2E_BUDGET`). Write the result in the release pull request.
+
 ```bash
 git switch main && git pull
 git switch -c release/v0.2.0
