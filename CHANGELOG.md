@@ -6,6 +6,8 @@ To update an existing copy, run `/respec update` in your agent. Your `learner/` 
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-27
+
 ### Added
 - Feedback: after your first module and at the end of each phase, the agent offers a link to a GitHub feedback form with only your Respec version and target role filled in. You write the rest and send it yourself. New issue forms for something that broke, a missing role or market, and general feedback.
 - `scripts/check-state.mjs` checks `learner/state.json` after every change the agent makes: statuses and stages, one active module, dates, catalog skill IDs, coverage that points to real modules, and modules ordered after the skills they need. The agent fixes errors before going on, so a slip in the state is caught before it breaks the dashboard or loses progress.

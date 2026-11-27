@@ -1,6 +1,6 @@
 {
   "name": "respec",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Respec your career for the AI era: a folder your coding agent turns into a tutor, evaluator, and career guide.",
   "license": "FSL-1.1-ALv2",
   "private": true,
